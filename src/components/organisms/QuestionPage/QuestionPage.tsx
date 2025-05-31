@@ -1,5 +1,5 @@
 import "./styles.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Select,
     MenuItem,
@@ -17,6 +17,17 @@ import type { SurveyType } from "../../../types/survey";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
 
+const questionDefault = {
+    questionTypeId: 1,
+    content: "",
+    description: "",
+    timeLimit: 30,
+    isVoiced: false,
+    order: 1,
+    configJsonString: {},
+    options: [],
+};
+
 type Props = {
     formData: SurveyType;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
@@ -32,6 +43,27 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
     const handleQuestionTypeChange = (event: SelectChangeEvent) => {
         setQuestionType(event.target.value);
     };
+
+    const handleAddQuestion = () => {
+        setFormData((prev) => ({
+            ...prev,
+            questions: [
+                ...prev.questions,
+                {
+                    ...questionDefault,
+                    questionTypeId:
+                        prev.questions[prev.questions.length - 1]
+                            .questionTypeId + 1,
+                },
+            ],
+        }));
+    };
+
+    useEffect(() => {
+        if (!formData?.questions?.length) {
+            setFormData((prev) => ({ ...prev, questions: [questionDefault] }));
+        }
+    }, []);
 
     return (
         <div className="question-page flex flex-col h-full">
@@ -188,7 +220,10 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             index={item.questionTypeId}
                         />
                     ))}
-                    <div className="add-question-btn flex flex-col items-center justify-center">
+                    <div
+                        className="add-question-btn flex flex-col items-center justify-center"
+                        onClick={handleAddQuestion}
+                    >
                         <AddCircleIcon fontSize="small" className="add-icon" />
                         <span className="add-text">Thêm Câu Hỏi</span>
                     </div>

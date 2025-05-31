@@ -32,39 +32,7 @@ const defaultValue = {
         buttonContentColor: "#ffffff",
         password: "123456",
     },
-    questions: [
-        {
-            questionTypeId: 1,
-            content: "Bạn thích món nào nhất trong các món sau?",
-            description: "Chỉ chọn 1 đáp án",
-            timeLimit: 30,
-            isVoiced: false,
-            order: 1,
-            configJsonString: {},
-            options: [
-                { content: "Phở", order: 1 },
-                { content: "Bún", order: 2 },
-                { content: "Mì Quảng", order: 3 },
-            ],
-        },
-        {
-            questionTypeId: 2,
-            content: "Bạn đã từng ăn những món nào sau đây?",
-            description: "Có thể chọn nhiều",
-            timeLimit: 30,
-            isVoiced: false,
-            order: 2,
-            configJsonString: {
-                minChoiceCount: 2,
-                maxChoiceCount: 4,
-            },
-            options: [
-                { content: "Phở", order: 1 },
-                { content: "Bún bò", order: 2 },
-                { content: "Hủ tiếu", order: 3 },
-            ],
-        },
-    ],
+    questions: [],
 };
 const SurveyNew = () => {
     const [activeTab, setActiveTab] = useState(0);
