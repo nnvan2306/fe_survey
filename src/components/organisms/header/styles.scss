@@ -1,0 +1,38 @@
+.header-root {
+  border-bottom: 1px solid #e0e0e0;
+  background: #fff;
+  min-height: 60px;
+  z-index: 10;
+}
+
+.header-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.header-link {
+  color: #222;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s;
+  &:hover {
+    color: #3bb2b8;
+  }
+}
+
+.header-username {
+  color: #222;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.header-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #42e695 0%, #3bb2b8 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(59, 178, 184, 0.08);
+  user-select: none;
+}

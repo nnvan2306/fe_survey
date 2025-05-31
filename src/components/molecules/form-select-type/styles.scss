@@ -1,0 +1,33 @@
+.form-select-type-grid {
+    width: 65%;
+    background-color: #333; 
+}
+
+.form-select-type-card {
+    
+    color: #fff; 
+    padding: 1.5rem; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+
+  
+
+    .form-select-type-icon {
+        margin-bottom: 0.5rem; 
+        
+        .MuiSvgIcon-root { 
+            font-size: 2.5rem; 
+            color: #fff; 
+        }
+    }
+
+    .form-select-type-label {
+        font-size: 1rem; 
+        font-weight: 500;
+        color: #fff; 
+    }
+}

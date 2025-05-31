@@ -1,0 +1,266 @@
+.question-page {
+    background-size: cover;
+
+    height: 100%;
+}
+
+.question-page-overlay {
+    position        : absolute;
+    top             : 0;
+    left            : 0;
+    width           : 100%;
+    height          : 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index         : 0;
+}
+
+.question-page>.flex-1>.relative.z-10:first-child {
+    input[type='text'] {
+        font-size     : 1.5rem;
+        font-weight   : 600;
+        color         : #222;
+        border-bottom : 1px solid #ccc;
+        padding-bottom: 0.5rem;
+
+        &::placeholder {
+            color: #666;
+        }
+    }
+
+    textarea {
+        font-size: 1rem;
+        color    : #444;
+
+        &::placeholder {
+            color: #888;
+        }
+    }
+}
+
+.question-page>.flex-1>.relative.z-10:last-child {
+    .bg-gray-800 {
+        background-color: #333;
+    }
+
+    .text-white {
+        color: #fff;
+    }
+
+    .p-6 {
+        padding: 1.5rem;
+    }
+
+    .rounded-lg {
+        border-radius: 0.5rem;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .flex-col {
+        flex-direction: column;
+    }
+
+    .items-center {
+        align-items: center;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .text-green-500 {
+        color: #48bb78;
+    }
+
+    .text-yellow-500 {
+        color: #ecc94b;
+    }
+
+    .text-blue-500 {
+        color: #4299e1;
+    }
+
+    .text-red-500 {
+        color: #f56565;
+    }
+
+    img {
+        display: block;
+    }
+
+    .MuiTypography-root.MuiTypography-h6 {
+        font-size  : 1rem;
+        font-weight: 600;
+    }
+}
+
+.question-sidebar {
+    min-width       : 320px;
+    max-width       : 320px;
+    background-color: #fff;
+    padding         : 1.5rem;
+    box-shadow      : -4px 0 8px rgba(0, 0, 0, 0.1);
+    overflow-y      : auto;
+    border-left     : 1px solid #eee;
+
+    h4 {
+        font-size    : 1.1rem;
+        font-weight  : 700;
+        margin-bottom: 1rem;
+        color        : #222;
+    }
+
+    .mb-6.pb-4.border-b.border-gray-200 {
+        margin-bottom : 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom : 1px solid #eee;
+
+        &:last-child {
+            border-bottom : none;
+            padding-bottom: 0;
+        }
+    }
+
+    label.block.text-sm.font-medium.text-gray-700 {
+        font-size    : 0.9rem;
+        font-weight  : 600;
+        color        : #555;
+        margin-bottom: 0.5rem;
+    }
+
+    .MuiFormControl-root.MuiFormControl-fullWidth {
+        .MuiInputLabel-root {
+            font-size  : 0.9rem;
+            font-weight: 600;
+            color      : #555;
+            transform  : translate(14px, 12px) scale(1);
+
+            &.Mui-focused,
+            &.Mui-shrink {
+                transform: translate(14px, -9px) scale(0.75);
+            }
+        }
+
+        .MuiOutlinedInput-root {
+            font-size: 0.9rem;
+            padding  : 8px 12px;
+
+            .MuiOutlinedInput-notchedOutline {
+                border-color: #ccc;
+            }
+
+            &:hover .MuiOutlinedInput-notchedOutline {
+                border-color: #999;
+            }
+
+            &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                border-color: #3bb2b8;
+            }
+        }
+
+        .MuiSelect-select {
+            padding: 8px 32px 8px 12px;
+        }
+
+        .MuiSelect-icon {
+            color: #999;
+        }
+    }
+
+    .flex.items-center.justify-between {
+        .MuiTypography-root.MuiTypography-body2 {
+            font-size: 0.8rem;
+            color    : #666;
+        }
+
+        .MuiSwitch-root {
+            .MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+                background-color: #42e695;
+            }
+
+            .MuiSwitch-switchBase.Mui-checked {
+                color: #fff;
+            }
+        }
+
+        .MuiSvgIcon-root.Mui- {
+            color: #999;
+        }
+    }
+
+    .MuiSvgIcon-root.MuiSvgIcon-fontSizeSmall {
+        font-size: 1rem;
+    }
+
+    .ml-1 {
+        margin-left: 0.25rem;
+    }
+
+    .cursor-help {
+        cursor: help;
+    }
+}
+
+.question-footer {
+    border-top: 1px solid #eee;
+
+    .flex.space-x-4> :not([hidden])~ :not([hidden]) {
+        margin-left: 1rem;
+    }
+
+    .flex-shrink-0.w-20.h-24 {
+        width          : 80px;
+        height         : 96px;
+        border-radius  : 0.375rem;
+        display        : flex;
+        flex-direction : column;
+        align-items    : center;
+        justify-content: center;
+        padding        : 0.5rem;
+        cursor         : pointer;
+        transition     : transform 0.2s, box-shadow 0.2s;
+
+        &.border-green-500 {
+            border-color: #48bb78;
+        }
+
+        &.text-green-600 {
+            color: #38a169;
+        }
+
+        &.border-gray-300 {
+            border-color: #d1d5db;
+        }
+
+        &.text-gray-500 {
+            color: #a0aec0;
+        }
+
+        &:hover {
+            transform : translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .MuiSvgIcon-root.MuiSvgIcon-fontSizeSmall {
+            font-size: 1.2rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+    }
+}

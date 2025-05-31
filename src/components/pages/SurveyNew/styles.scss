@@ -1,0 +1,64 @@
+.survey-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+    height: 50px;
+}
+
+.survey-tabs {
+    display: flex;
+    align-items: center;
+
+    .tab-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .tab-separator {
+        color: #999;
+        margin: 0 8px;
+    }
+
+    .MuiTab-root {
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: none;
+        min-width: 100px;
+        padding: 0;
+        
+        &.tab-active {
+            color: #000;
+            font-weight: 600;
+        }
+        
+        &.tab-inactive {
+            color: #999;
+        }
+        
+        &.Mui-disabled {
+            color: #999;
+            opacity: 0.5;
+        }
+    }
+}
+
+.survey-actions {
+    display: flex;
+    gap: 12px;
+
+    .btn-save {
+        background-color: #4caf50 !important;
+        color: white !important;
+        text-transform: none !important;
+        &:hover {
+            background-color: #43a047 !important;
+        }
+    }
+
+    button {
+        text-transform: none !important;
+    }
+}
