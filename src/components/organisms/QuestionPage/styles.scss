@@ -1,7 +1,249 @@
 .question-page {
     background-size: cover;
-
     height: 100%;
+
+    .question-content {
+        height: 80%;
+    }
+
+    .question-main {
+        padding: 1.5rem;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .question-input-container {
+        padding: 2.5rem 2rem 2rem 2rem;
+        border-radius: 8px;
+        max-width: 42rem;
+        margin: 0 auto 2rem;
+        width: 100%;
+
+        .question-title-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 3rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #222;
+            
+            &:hover {
+                background-color: rgb(249 249 249);
+            }
+
+            &:focus {
+                background-color: rgb(249 249 249);
+            }
+
+            &::placeholder {
+                color: #666;
+            }
+        }
+
+        .question-description-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 1.25rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            resize: none;
+            color: #444;
+            padding: 8px 0;
+
+            &:hover {
+                background-color: rgb(249 249 249);
+            }
+
+            &:focus {
+                background-color: rgb(249 249 249);
+            }
+
+            &::placeholder {
+                color: #888;
+            }
+        }
+    }
+
+    .question-sidebar {
+        width: 20rem;
+        background-color: #fff;
+        padding: 1.5rem;
+        box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+        border-left: 1px solid #eee;
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+
+            &:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+            .section-label {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #555;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+            .section-control {
+                .control-icon {
+                    color: #999;
+                    margin-right: 0.25rem;
+                }
+
+                .help-icon {
+                    color: #999;
+                    margin-left: 0.25rem;
+                    cursor: help;
+                }
+            }
+        }
+
+        .MuiFormControl-root.MuiFormControl-fullWidth {
+            .MuiInputLabel-root {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #555;
+                transform: translate(14px, 12px) scale(1);
+
+                &.Mui-focused,
+                &.Mui-shrink {
+                    transform: translate(14px, -9px) scale(0.75);
+                }
+            }
+
+            .MuiOutlinedInput-root {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+
+                .MuiOutlinedInput-notchedOutline {
+                    border-color: #ccc;
+                }
+
+                &:hover .MuiOutlinedInput-notchedOutline {
+                    border-color: #999;
+                }
+
+                &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                    border-color: #3bb2b8;
+                }
+            }
+
+            .MuiSelect-select {
+                padding: 8px 32px 8px 12px;
+            }
+
+            .MuiSelect-icon {
+                color: #999;
+            }
+        }
+
+        .MuiTypography-root.MuiTypography-body2 {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .MuiSwitch-root {
+            .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+                background-color: #42e695;
+            }
+
+            .MuiSwitch-switchBase.Mui-checked {
+                color: #fff;
+            }
+        }
+    }
+
+    .question-footer {
+        height: 20%;
+        padding: 1rem;
+        background-color: #fff;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid #eee;
+
+        .footer-content {
+            gap: 1rem;
+        }
+
+        .question-item {
+            flex-shrink: 0;
+            width: 6rem;
+            height: 6rem;
+            border: 1px solid #48bb78;
+            border-radius: 0.375rem;
+            color: #38a169;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .item-icon {
+                margin-bottom: 0.25rem;
+            }
+
+            .item-text {
+                font-size: 0.875rem;
+            }
+        }
+
+        .add-question-btn {
+            flex-shrink: 0;
+            width: 5rem;
+            height: 6rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .add-icon {
+                margin-bottom: 0.25rem;
+            }
+
+            .add-text {
+                font-size: 0.875rem;
+            }
+        }
+    }
+}
+
+// Common styles
+.MuiSvgIcon-root.MuiSvgIcon-fontSizeSmall {
+    font-size: 1.2rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
 }
 
 .question-page-overlay {
@@ -12,29 +254,6 @@
     height          : 100%;
     background-color: rgba(0, 0, 0, 0.3);
     z-index         : 0;
-}
-
-.question-page>.flex-1>.relative.z-10:first-child {
-    input[type='text'] {
-        font-size     : 1.5rem;
-        font-weight   : 600;
-        color         : #222;
-        border-bottom : 1px solid #ccc;
-        padding-bottom: 0.5rem;
-
-        &::placeholder {
-            color: #666;
-        }
-    }
-
-    textarea {
-        font-size: 1rem;
-        color    : #444;
-
-        &::placeholder {
-            color: #888;
-        }
-    }
 }
 
 .question-page>.flex-1>.relative.z-10:last-child {
@@ -101,166 +320,5 @@
     .MuiTypography-root.MuiTypography-h6 {
         font-size  : 1rem;
         font-weight: 600;
-    }
-}
-
-.question-sidebar {
-    min-width       : 320px;
-    max-width       : 320px;
-    background-color: #fff;
-    padding         : 1.5rem;
-    box-shadow      : -4px 0 8px rgba(0, 0, 0, 0.1);
-    overflow-y      : auto;
-    border-left     : 1px solid #eee;
-
-    h4 {
-        font-size    : 1.1rem;
-        font-weight  : 700;
-        margin-bottom: 1rem;
-        color        : #222;
-    }
-
-    .mb-6.pb-4.border-b.border-gray-200 {
-        margin-bottom : 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom : 1px solid #eee;
-
-        &:last-child {
-            border-bottom : none;
-            padding-bottom: 0;
-        }
-    }
-
-    label.block.text-sm.font-medium.text-gray-700 {
-        font-size    : 0.9rem;
-        font-weight  : 600;
-        color        : #555;
-        margin-bottom: 0.5rem;
-    }
-
-    .MuiFormControl-root.MuiFormControl-fullWidth {
-        .MuiInputLabel-root {
-            font-size  : 0.9rem;
-            font-weight: 600;
-            color      : #555;
-            transform  : translate(14px, 12px) scale(1);
-
-            &.Mui-focused,
-            &.Mui-shrink {
-                transform: translate(14px, -9px) scale(0.75);
-            }
-        }
-
-        .MuiOutlinedInput-root {
-            font-size: 0.9rem;
-            padding  : 8px 12px;
-
-            .MuiOutlinedInput-notchedOutline {
-                border-color: #ccc;
-            }
-
-            &:hover .MuiOutlinedInput-notchedOutline {
-                border-color: #999;
-            }
-
-            &.Mui-focused .MuiOutlinedInput-notchedOutline {
-                border-color: #3bb2b8;
-            }
-        }
-
-        .MuiSelect-select {
-            padding: 8px 32px 8px 12px;
-        }
-
-        .MuiSelect-icon {
-            color: #999;
-        }
-    }
-
-    .flex.items-center.justify-between {
-        .MuiTypography-root.MuiTypography-body2 {
-            font-size: 0.8rem;
-            color    : #666;
-        }
-
-        .MuiSwitch-root {
-            .MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
-                background-color: #42e695;
-            }
-
-            .MuiSwitch-switchBase.Mui-checked {
-                color: #fff;
-            }
-        }
-
-        .MuiSvgIcon-root.Mui- {
-            color: #999;
-        }
-    }
-
-    .MuiSvgIcon-root.MuiSvgIcon-fontSizeSmall {
-        font-size: 1rem;
-    }
-
-    .ml-1 {
-        margin-left: 0.25rem;
-    }
-
-    .cursor-help {
-        cursor: help;
-    }
-}
-
-.question-footer {
-    border-top: 1px solid #eee;
-
-    .flex.space-x-4> :not([hidden])~ :not([hidden]) {
-        margin-left: 1rem;
-    }
-
-    .flex-shrink-0.w-20.h-24 {
-        width          : 80px;
-        height         : 96px;
-        border-radius  : 0.375rem;
-        display        : flex;
-        flex-direction : column;
-        align-items    : center;
-        justify-content: center;
-        padding        : 0.5rem;
-        cursor         : pointer;
-        transition     : transform 0.2s, box-shadow 0.2s;
-
-        &.border-green-500 {
-            border-color: #48bb78;
-        }
-
-        &.text-green-600 {
-            color: #38a169;
-        }
-
-        &.border-gray-300 {
-            border-color: #d1d5db;
-        }
-
-        &.text-gray-500 {
-            color: #a0aec0;
-        }
-
-        &:hover {
-            transform : translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .MuiSvgIcon-root.MuiSvgIcon-fontSizeSmall {
-            font-size: 1.2rem;
-        }
-
-        .mb-1 {
-            margin-bottom: 0.25rem;
-        }
-
-        .text-sm {
-            font-size: 0.875rem;
-        }
     }
 }
