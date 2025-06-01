@@ -121,7 +121,13 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         />
                     ) : null;
                 case 7:
-                    return <Ranking />;
+                    return questionedit ? (
+                        <Ranking
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+
                 default:
                     return (
                         <FormSelectType
@@ -133,7 +139,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         [handleUpdateQuestion, questionedit]
     );
 
-    const handleAddQuestion = () => {
+    const handleAddQuestion = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
             questions: [
@@ -144,8 +150,8 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 },
             ],
         }));
-        setOrderCurrent(orderCurrent + 1);
-    };
+        setOrderCurrent(formData?.questions?.length + 1);
+    }, [formData?.questions?.length, setFormData]);
 
     const handleChangeQuestion = (order: number) => {
         setOrderCurrent(order);
