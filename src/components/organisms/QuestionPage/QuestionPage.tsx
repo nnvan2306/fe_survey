@@ -176,11 +176,22 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             type="text"
                             placeholder="Nhập câu hỏi tại đây"
                             className="question-title-input"
+                            value={questionedit?.content || ""}
+                            onChange={(e) =>
+                                handleUpdateQuestion("content", e.target.value)
+                            }
                         />
                         <textarea
                             placeholder="Nhập mô tả tại đây"
                             rows={2}
                             className="question-description-input"
+                            value={questionedit?.description || ""}
+                            onChange={(e) =>
+                                handleUpdateQuestion(
+                                    "description",
+                                    e.target.value
+                                )
+                            }
                         ></textarea>
                     </div>
                     <div className="flex justify-center">
