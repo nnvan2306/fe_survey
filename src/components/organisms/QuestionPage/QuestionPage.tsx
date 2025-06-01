@@ -1,5 +1,5 @@
 import "./styles.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Select,
     MenuItem,
@@ -16,14 +16,21 @@ import type { SelectChangeEvent } from "@mui/material/Select";
 import type { SurveyType } from "../../../types/survey";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
+import SingleChoice from "../SingleChoice/SingleChoice";
+import MultipleChoice from "../MultipleChoice/MultipleChoice";
+import SingleSlider from "../SingleSlider/SingleSlider";
+import RangeSlider from "../RangeSlider/RangeSlider";
+import SingleInput from "../SingleInput/SingleInput";
+import Rating from "../Rating/Rating";
+import Ranking from "../Ranking/Ranking";
 
 const questionDefault = {
-    questionTypeId: 1,
+    questionTypeId: 0,
     content: "",
     description: "",
     timeLimit: 30,
     isVoiced: false,
-    order: 1,
+    order: 0,
     configJsonString: {},
     options: [],
 };
@@ -34,14 +41,37 @@ type Props = {
 };
 
 const QuestionPage = ({ formData, setFormData }: Props) => {
-    const [questionType, setQuestionType] = useState("");
     const [isRequired, setIsRequired] = useState(true);
     const [showLabel, setShowLabel] = useState(false);
     const [showMedia, setShowMedia] = useState(false);
     const [carryForwardChoices, setCarryForwardChoices] = useState(false);
+    const [orderCurrent, setOrderCurrent] = useState(1);
 
-    const handleQuestionTypeChange = (event: SelectChangeEvent) => {
-        setQuestionType(event.target.value);
+    const questionedit = useMemo(() => {
+        return (formData?.questions || []).find((item) => {
+            return item?.order === orderCurrent;
+        });
+    }, [formData?.questions, orderCurrent]);
+
+    const handleRenderView = (id: number) => {
+        switch (id) {
+            case 1:
+                return <SingleChoice />;
+            case 2:
+                return <MultipleChoice />;
+            case 3:
+                return <SingleSlider />;
+            case 4:
+                return <RangeSlider />;
+            case 5:
+                return <SingleInput />;
+            case 6:
+                return <Rating />;
+            case 7:
+                return <Ranking />;
+            default:
+                return <FormSelectType />;
+        }
     };
 
     const handleAddQuestion = () => {
@@ -51,17 +81,22 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 ...prev.questions,
                 {
                     ...questionDefault,
-                    questionTypeId:
-                        prev.questions[prev.questions.length - 1]
-                            .questionTypeId + 1,
+                    order: prev.questions[prev.questions.length - 1].order + 1,
                 },
             ],
         }));
     };
 
+    const handleChangeQuestion = (order: number) => {
+        setOrderCurrent(order);
+    };
+
     useEffect(() => {
         if (!formData?.questions?.length) {
-            setFormData((prev) => ({ ...prev, questions: [questionDefault] }));
+            setFormData((prev) => ({
+                ...prev,
+                questions: [{ ...questionDefault, order: 1 }],
+            }));
         }
     }, []);
 
@@ -88,6 +123,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             className="question-description-input"
                         ></textarea>
                     </div>
+                    {handleRenderView(questionedit?.questionTypeId || 0)}
                     <FormSelectType />
                 </div>
 
@@ -98,9 +134,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         <FormControl fullWidth size="small">
                             <InputLabel>LOẠI CÂU HỎI</InputLabel>
                             <Select
-                                value={questionType}
+                                // value={questionType}
                                 label="LOẠI CÂU HỎI"
-                                onChange={handleQuestionTypeChange}
+                                // onChange={handleQuestionTypeChange}
                             >
                                 <MenuItem value="">Loại câu hỏi</MenuItem>
                                 <MenuItem value="multiple-choice">
@@ -216,8 +252,10 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 <div className="footer-content flex">
                     {(formData?.questions || [])?.map((item) => (
                         <QuestionItem
-                            key={item.questionTypeId}
-                            index={item.questionTypeId}
+                            key={item.order}
+                            order={item.order}
+                            orderCurrent={orderCurrent}
+                            onChange={handleChangeQuestion}
                         />
                     ))}
                     <div
@@ -235,11 +273,24 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
 
 export default QuestionPage;
 
-const QuestionItem = ({ index }: { index: number }) => {
+const QuestionItem = ({
+    order,
+    orderCurrent,
+    onChange,
+}: {
+    order: number;
+    orderCurrent: number;
+    onChange: (order: number) => void;
+}) => {
     return (
-        <div className="question-item flex flex-col items-center justify-center">
+        <div
+            className={`question-item flex flex-col items-center justify-center ${
+                order === orderCurrent && "question-active"
+            }`}
+            onClick={() => onChange(order)}
+        >
             <CheckCircleIcon fontSize="small" className="item-icon" />
-            <span className="item-text">{index}.</span>
+            <span className="item-text">{order}.</span>
         </div>
     );
 };

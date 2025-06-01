@@ -185,7 +185,7 @@
             flex-shrink: 0;
             width: 6rem;
             height: 6rem;
-            border: 1px solid #48bb78;
+            border: 1px solid #ccc;
             border-radius: 0.375rem;
             color: #38a169;
             cursor: pointer;
@@ -204,6 +204,11 @@
             .item-text {
                 font-size: 0.875rem;
             }
+        }
+
+        .question-active{
+            border: 3px solid #48bb78 !important;
+            
         }
 
         .add-question-btn {

@@ -11,6 +11,7 @@ import SharePage from "../../organisms/SharePage/SharePage";
 import ReportPage from "../../organisms/ReportPage/ReportPage";
 import { HEADER_HEIGHT } from "../../../constants";
 import type { SurveyType } from "../../../types/survey";
+import useBlocker from "../../../hooks/useBlocker";
 
 const defaultValue = {
     id: 1,
@@ -70,6 +71,7 @@ const SurveyNew = () => {
 
     const ActiveComponent = tabs[activeTab].component;
 
+    useBlocker(true);
     return (
         <MainTemPlate>
             <div
