@@ -10,7 +10,7 @@ export type QuestionType = {
     timeLimit: number;
     isVoiced: boolean;
     order: number;
-    configJsonString: any;
+    configJsonString: Record<string, string | number>;
     options: OptionType[];
 };
 
