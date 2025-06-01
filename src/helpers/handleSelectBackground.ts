@@ -25,6 +25,8 @@ export const handleSelectBackground = (background: string) => {
             return start7;
         case "start8":
             return start8;
+        case "default_color":
+            return "";
         default:
             return start1;
     }

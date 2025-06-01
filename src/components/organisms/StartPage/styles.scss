@@ -22,7 +22,7 @@
   border-radius: 8px;
   padding: 2.5rem 2rem 2rem 2rem;
   margin: 0 auto;
-//   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  //   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   max-width: 700px;
 }
 
@@ -35,7 +35,7 @@
   font-weight: 300;
   text-align: center;
   margin-bottom: 1.5rem;
-  
+
   &:hover {
     background-color: rgb(249 249 249);
   }
@@ -46,7 +46,7 @@
 }
 
 .startpage-desc-input {
-    padding: 8px 0;
+  padding: 8px 0;
   width: 100%;
   background: transparent;
   border: none;
@@ -55,6 +55,7 @@
   text-align: center;
   margin-bottom: 2.5rem;
   resize: none;
+
   &:hover {
     background-color: rgb(249 249 249);
   }
@@ -69,7 +70,7 @@
   color: #fff;
   font-size: 1.25rem;
   border-radius: 2rem;
-  padding: 0.75rem 2.5rem;
+  padding: 0.35rem 1rem;
   font-weight: 500;
   transition: background 0.2s;
   border: none;
@@ -79,18 +80,33 @@
   justify-content: center;
   margin: 0 auto;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
+
 .startpage-btn:hover {
-  background: #0d4f63;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.startpage-icon-wrapper {
+  background-color: #00000033;
+  padding: 8px 8px 8px 8px;
+  border-radius: 50%;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .startpage-options {
-    padding-bottom: 100px;
+  padding-bottom: 100px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
   border-left: 1px solid #f0f0f0;
-  scrollbar-width: none; 
-  -ms-overflow-style: none; 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
 .startpage-options::-webkit-scrollbar {
   display: none;
 }
@@ -113,11 +129,13 @@
   width: 40px;
   height: 22px;
 }
+
 .toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .toggle-slider {
   position: absolute;
   cursor: pointer;
@@ -129,9 +147,11 @@
   border-radius: 22px;
   transition: 0.2s;
 }
-.toggle-switch input:checked + .toggle-slider {
+
+.toggle-switch input:checked+.toggle-slider {
   background-color: #156e8a;
 }
+
 .toggle-slider:before {
   position: absolute;
   content: "";
@@ -143,14 +163,16 @@
   border-radius: 50%;
   transition: 0.2s;
 }
-.toggle-switch input:checked + .toggle-slider:before {
+
+.toggle-switch input:checked+.toggle-slider:before {
   transform: translateX(18px);
 }
 
 .buy-now-button {
-  background: #4fd1c5;
-  color: #fff;
-  border: none;
+  background-color: #26ba99;
+  color: white;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   border-radius: 1.5rem;
   padding: 0.5rem 1.5rem;
   font-weight: 500;
@@ -158,8 +180,29 @@
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .buy-now-button:hover {
   background: #38b2ac;
+}
+
+.customize-button {
+  background: linear-gradient(to right, #4fd1c5, #2d9a8c);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.35rem 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .date-picker-button {
@@ -176,11 +219,76 @@
   gap: 0.5rem;
 }
 
+.date-picker-button.date-selected {
+  background-color: #f44336;
+  /* Red background */
+  color: #fff;
+  /* White text */
+
+  .MuiSvgIcon-root {
+    color: #fff;
+    /* White icon */
+  }
+}
+
+.clear-icon {
+  margin-left: 10px;
+  cursor: pointer;
+
+  &:hover {
+    color: #f44336;
+    /* A red color on hover for delete/clear */
+  }
+}
+
 .background-preview {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
+
+.background-main-preview {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &.active {
+    border: 3px solid #26ba99; // Green border for active state
+  }
+
+  .main-check-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background-color: grey; // Default grey background for inactive state
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-color 0.2s ease-in-out;
+
+    &.MuiSvgIcon-root {
+      font-size: 2rem;
+    }
+  }
+
+  &.active .main-check-icon {
+    background-color: #26ba99; // Green background when active
+  }
+}
+
 .background-thumbnail {
   width: 100%;
   border-radius: 0.5rem;
@@ -188,11 +296,71 @@
   position: relative;
   margin-bottom: 0.5rem;
 
-  img{
+  img {
     width: 60px;
     height: 40px;
   }
 }
+
+.background-thumbnail-item {
+  position: relative;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  border: 2px solid transparent;
+  /* Default border */
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  &.active {
+    border-color: #4fd1c5;
+    /* Green border for active item */
+  }
+
+  .check-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: #4fd1c5;
+    /* Green color for check icon */
+    background-color: white;
+    border-radius: 50%;
+  }
+}
+
+.upload-icon-container {
+  cursor: pointer;
+  padding: 15px;
+  border: 1px dashed #ccc;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  .upload-icon {
+    font-size: 2.5rem !important;
+    /* Larger icon */
+    color: #666;
+  }
+
+  .click-to-change-text {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+  }
+}
+
 .background-check-button {
   position: absolute;
   bottom: 8px;
@@ -208,5 +376,11 @@
   justify-content: center;
   font-size: 1.25rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.color-picker-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
