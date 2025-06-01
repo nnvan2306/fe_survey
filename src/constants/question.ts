@@ -14,3 +14,15 @@ export const SurveyQuestionType: SurveyQuestionType[] = [
 ];
 
 export const answerDefault = { content: "", order: 0 };
+
+export const SurveyFieldInputType = [
+    { id: 1, name: "Kiểu câu ngắn không xuống dòng" },
+    { id: 2, name: "Kiểu văn bản dài có xuống dòng" },
+    { id: 3, name: "Kiểu email" },
+    { id: 4, name: "Kiểu số" },
+    { id: 5, name: "Kiểu ngày tháng năm (DD/MM/YYYY)" },
+    { id: 6, name: "Kiểu ngày tháng (DD/MM)" },
+    { id: 7, name: "Kiểu năm (4 số)" },
+    { id: 8, name: "Kiểu giờ phút (HH:MM)" },
+    { id: 9, name: "Kiểu ngày tháng năm giờ phút (DD/MM/YYYY HH:MM)" },
+];
