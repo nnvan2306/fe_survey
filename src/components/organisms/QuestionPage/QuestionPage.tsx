@@ -103,7 +103,12 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         />
                     ) : null;
                 case 3:
-                    return <SingleSlider />;
+                    return questionedit ? (
+                        <SingleSlider
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
                 case 4:
                     return <RangeSlider />;
                 case 5:
