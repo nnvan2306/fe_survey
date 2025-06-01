@@ -50,7 +50,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         return (formData?.questions || []).find((item) => {
             return item?.order === orderCurrent;
         });
-    }, [formData?.questions, orderCurrent]);
+    }, [formData, orderCurrent]);
 
     const handleUpdateQuestion = useCallback(
         (
@@ -73,7 +73,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 }),
             }));
         },
-        [questionedit?.order, setFormData]
+        [questionedit?.order]
     );
 
     const handleRenderView = useCallback(
@@ -99,10 +99,14 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 7:
                     return <Ranking />;
                 default:
-                    return <FormSelectType />;
+                    return (
+                        <FormSelectType
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    );
             }
         },
-        [questionedit]
+        [handleUpdateQuestion, questionedit]
     );
 
     const handleAddQuestion = () => {
@@ -155,7 +159,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         ></textarea>
                     </div>
                     {handleRenderView(questionedit?.questionTypeId || 0)}
-                    <FormSelectType />
                 </div>
 
                 <div className="question-sidebar flex flex-col overflow-y-auto">
