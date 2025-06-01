@@ -11,6 +11,9 @@ import {
 import type { OptionType, QuestionType } from "../../../types/survey";
 import { useGetQuestionType } from "../../../services/question/get-question-type";
 import { SurveyFieldInputType } from "../../../constants/question";
+import Email from "../../molecules/email/Email";
+import TextArea from "../../molecules/text-area/TextArea";
+import Number from "../../molecules/number/Number";
 
 type Props = {
     question: QuestionType;
@@ -64,6 +67,10 @@ const SingleInput = ({ question, handleUpdateQuestion }: Props) => {
                     })}
                 </Select>
             </FormControl>
+
+            <Number />
+            <Email />
+            <TextArea />
         </Box>
     );
 };
