@@ -96,7 +96,12 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         />
                     ) : null;
                 case 2:
-                    return <MultipleChoice />;
+                    return questionedit ? (
+                        <MultipleChoice
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
                 case 3:
                     return <SingleSlider />;
                 case 4:
