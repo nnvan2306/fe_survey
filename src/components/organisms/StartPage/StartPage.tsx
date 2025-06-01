@@ -304,14 +304,12 @@ const StartPage = ({ formData, setFormData }: Props) => {
                         </div>
                     </div>
                     <div className="w-full max-w-md mx-auto bg-white">
-                        {/* MÀU CHỮ CỦA NỘI DUNG KHẢO SÁT */}
                         <div className="mb-8">
                             <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-6">
                                 MÀU CHỮ CỦA NỘI DUNG KHẢO SÁT
                             </h3>
 
                             <div className="space-y-4">
-                                {/* Màu tiêu đề */}
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu tiêu đề</span>
                                     <div className="flex-1 max-w-20">
@@ -326,7 +324,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                     </div>
                                 </div>
 
-                                {/* Màu nội dung */}
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu nội dung</span>
                                     <div className="flex-1 max-w-20">
@@ -343,14 +340,12 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             </div>
                         </div>
 
-                        {/* MÀU SẮC NÚT BẤM */}
                         <div>
                             <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-6">
                                 MÀU SẮC NÚT BẤM
                             </h3>
 
                             <div className="space-y-4">
-                                {/* Màu nền */}
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu nền</span>
                                     <div className="flex-1 max-w-20">
@@ -368,7 +363,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                     </div>
                                 </div>
 
-                                {/* Màu chữ */}
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu chữ</span>
                                     <div className="flex-1 max-w-20">
@@ -467,8 +461,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
                         setPickerForBackground(false);
                     }}
                     initialColors={(() => {
-                        let initialColor1 = '#FCE38A'; // Default fallback
-                        let initialColor2 = '#F38181'; // Default fallback
+                        let initialColor1 = '#FCE38A';
+                        let initialColor2 = '#F38181';
 
                         if (pickerForBackground) {
                             initialColor1 = formData.configJsonString.backgroundGradient1Color || '#FCE38A';
