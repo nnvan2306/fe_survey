@@ -12,7 +12,11 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import type { QuestionType, SurveyType } from "../../../types/survey";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
 import SingleChoice from "../SingleChoice/SingleChoice";
@@ -55,7 +59,12 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
     const handleUpdateQuestion = useCallback(
         (
             key: keyof QuestionType,
-            value: string | number | boolean | Record<string, string | number>
+            value:
+                | string
+                | number
+                | boolean
+                | OptionType[]
+                | Record<string, string | number>
         ) => {
             setFormData((prev) => ({
                 ...prev,
@@ -82,7 +91,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 1:
                     return questionedit ? (
                         <SingleChoice
-                            data={questionedit}
+                            question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                         />
                     ) : null;
@@ -158,7 +167,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             className="question-description-input"
                         ></textarea>
                     </div>
-                    {handleRenderView(questionedit?.questionTypeId || 0)}
+                    <div className="flex justify-center">
+                        {handleRenderView(questionedit?.questionTypeId || 0)}
+                    </div>
                 </div>
 
                 <div className="question-sidebar flex flex-col overflow-y-auto">

@@ -12,3 +12,5 @@ export const SurveyQuestionType: SurveyQuestionType[] = [
     { id: 6, name: "Rating" }, // Đánh giá sao
     { id: 7, name: "Ranking" }, // Xếp hạng
 ];
+
+export const answerDefault = { content: "", order: 0 };

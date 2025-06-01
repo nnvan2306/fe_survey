@@ -1,15 +1,70 @@
-import type { QuestionType } from "../../../types/survey";
+import { useEffect } from "react";
+import type { OptionType, QuestionType } from "../../../types/survey";
+import ButtonAddAnswer from "../../molecules/buttons/ButtonAddAnswer";
 import "./styles.scss";
+import { answerDefault } from "../../../constants/question";
+import Answer from "../../molecules/answer/Answer";
 
 type Props = {
-    data: QuestionType;
+    question: QuestionType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
-        value: string | number | boolean | Record<string, string | number>
+        value:
+            | string
+            | number
+            | boolean
+            | OptionType[]
+            | Record<string, string | number>
     ) => void;
 };
-const SingleChoice = ({ data, handleUpdateQuestion }: Props) => {
-    return <div className="single-choice"></div>;
+const SingleChoice = ({ question, handleUpdateQuestion }: Props) => {
+    useEffect(() => {
+        if (!question?.options?.length) {
+            handleUpdateQuestion("options", [{ ...answerDefault, order: 1 }]);
+        }
+    }, [question]);
+
+    const handleUpdateOption = (updatedOption: OptionType) => {
+        const updatedOptions = question.options.map((option) =>
+            option.order === updatedOption.order ? updatedOption : option
+        );
+        handleUpdateQuestion("options", updatedOptions);
+    };
+
+    const handleDeleteOption = (orderToDelete: number) => {
+        const updatedOptions = question.options.filter(
+            (option) => option.order !== orderToDelete
+        );
+        handleUpdateQuestion("options", updatedOptions);
+    };
+
+    const handleAddAnswer = () => {
+        const newOrder =
+            question.options.length > 0
+                ? Math.max(...question.options.map((o) => o.order)) + 1
+                : 1;
+        const newOption = { ...answerDefault, order: newOrder };
+        const updatedOptions = [...question.options, newOption];
+        handleUpdateQuestion("options", updatedOptions);
+    };
+
+    return (
+        <div className="single-choice flex flex-col gap-2">
+            {question?.options?.length
+                ? question.options.map((item) => {
+                      return (
+                          <Answer
+                              data={item}
+                              key={item.order}
+                              handleUpdateOption={handleUpdateOption}
+                              handleDeleteOption={handleDeleteOption}
+                          />
+                      );
+                  })
+                : null}
+            <ButtonAddAnswer onClick={handleAddAnswer} />
+        </div>
+    );
 };
 
 export default SingleChoice;
