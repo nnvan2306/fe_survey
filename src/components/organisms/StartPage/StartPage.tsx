@@ -4,7 +4,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Slider } from '@mui/material';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HexColorPicker } from 'react-colorful';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,7 +13,7 @@ import type { SurveyType } from "../../../types/survey";
 import "./styles.scss";
 
 const backgrounds = Array.from(
-    { length: 7 },
+    { length: 12 },
     (_, index) => `start${index + 1}`
 );
 
@@ -43,11 +43,19 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [customBackgroundImageUrl, setCustomBackgroundImageUrl] = useState<string | null>(null);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
     const [selectedColor, setSelectedColor] = useState<string>('#cccccc');
-    const [titleColor, setTitleColor] = useState('#2f2f2f');
-    const [contentColor, setContentColor] = useState('#444444');
-    const [buttonBgColor, setButtonBgColor] = useState('#f75c83');
-    const [buttonTextColor, setButtonTextColor] = useState('#ffffff');
-    const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background);
+    const [titleColor, setTitleColor] = useState<string>('');
+    const [contentColor, setContentColor] = useState<string>('');
+    const [buttonBgColor, setButtonBgColor] = useState<string>('');
+    const [buttonTextColor, setButtonTextColor] = useState<string>('');
+    const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
+
+    useEffect(() => {
+        const initialConfig = handleSelectBackground(formData.background);
+        setTitleColor(initialConfig.colors.titleColor);
+        setContentColor(initialConfig.colors.contentColor);
+        setButtonBgColor(initialConfig.colors.buttonBgColor);
+        setButtonTextColor(initialConfig.colors.buttonTextColor);
+    }, [formData.background]);
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
         setBrightness(newValue as number);
@@ -61,6 +69,11 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 setCustomBackgroundImageUrl(reader.result as string);
                 setFormData((prev) => ({ ...prev, background: 'custom' })); // Mark as custom if needed
                 setBackgroundMode('image'); // Set background mode to image when an image is uploaded
+                const customConfig = handleSelectBackground('custom');
+                setTitleColor(customConfig.colors.titleColor);
+                setContentColor(customConfig.colors.contentColor);
+                setButtonBgColor(customConfig.colors.buttonBgColor);
+                setButtonTextColor(customConfig.colors.buttonTextColor);
             };
             reader.readAsDataURL(file);
         }
@@ -78,7 +91,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 className="relative flex-1 flex items-center justify-center"
                 style={{
                     backgroundImage: backgroundMode === 'image' ? `url(${currentBackground})` : 'none',
-                    backgroundColor: backgroundMode === 'color' ? formData.background === 'default_color' ? '#cccccc' : formData.background : 'transparent',
+                    backgroundColor: backgroundMode === 'color' ? (formData.background === 'default_color' ? '#cccccc' : formData.background) : 'transparent',
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     filter: backgroundMode === 'image' ? `brightness(${brightness / 100})` : 'none',
@@ -108,7 +121,11 @@ const StartPage = ({ formData, setFormData }: Props) => {
                         <button
                             onClick={handleStartSurvey}
                             className="startpage-btn group"
-                            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+                            style={{
+                                background: buttonBgColor.startsWith('linear-gradient') || buttonBgColor.startsWith('radial-gradient') ? buttonBgColor : '',
+                                backgroundColor: !(buttonBgColor.startsWith('linear-gradient') || buttonBgColor.startsWith('radial-gradient')) ? buttonBgColor : '',
+                                color: buttonTextColor
+                            }}
                         >
                             <span>Bắt đầu</span>
                             <span className="startpage-icon-wrapper">
@@ -372,10 +389,15 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                                         }));
                                                         setBackgroundMode('image'); // Set background mode to image
                                                         setCustomBackgroundImageUrl(null); // Clear custom image URL
+                                                        const selectedConfig = handleSelectBackground(item);
+                                                        setTitleColor(selectedConfig.colors.titleColor);
+                                                        setContentColor(selectedConfig.colors.contentColor);
+                                                        setButtonBgColor(selectedConfig.colors.buttonBgColor);
+                                                        setButtonTextColor(selectedConfig.colors.buttonTextColor);
                                                     }}
                                                 >
                                                     <img
-                                                        src={handleSelectBackground(item)}
+                                                        src={handleSelectBackground(item).imagePath}
                                                         alt="background"
                                                     />
                                                 </div>
