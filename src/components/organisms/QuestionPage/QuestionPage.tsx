@@ -114,7 +114,12 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 5:
                     return <SingleInput />;
                 case 6:
-                    return <Rating />;
+                    return questionedit ? (
+                        <Rating
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
                 case 7:
                     return <Ranking />;
                 default:
@@ -139,6 +144,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 },
             ],
         }));
+        setOrderCurrent(orderCurrent + 1);
     };
 
     const handleChangeQuestion = (order: number) => {
