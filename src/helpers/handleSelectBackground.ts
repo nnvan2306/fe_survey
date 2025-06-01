@@ -20,6 +20,16 @@ interface BackgroundConfig {
     };
 }
 
+interface ConfigJsonString {
+    backgroundGradient1Color: string;
+    backgroundGradient2Color: string;
+    titleColor: string;
+    contentColor: string;
+    buttonBackgroundColor: string;
+    buttonContentColor: string;
+    password: string;
+}
+
 const defaultColors = {
     titleColor: "#2f2f2f",
     contentColor: "#444444",
@@ -39,11 +49,29 @@ const backgroundConfigs: Record<string, Omit<BackgroundConfig, 'imagePath'> & { 
     start9: { imagePath: start9, colors: { ...defaultColors, buttonBgColor: "#027186" } },
     start10: { imagePath: start10, colors: { ...defaultColors, buttonBgColor: "#6EAF99" } },
     start12: { imagePath: start12, colors: { ...defaultColors, buttonBgColor: "#00BBC1" } },
-    default_color: { imagePath: "", colors: { ...defaultColors } },
+    default_color: {
+        imagePath: "",
+        colors: {
+            titleColor: "#2f2f2f",
+            contentColor: "#444444",
+            buttonBgColor: "#f75c83",
+            buttonTextColor: "#ffffff",
+        },
+    },
     custom: { colors: { ...defaultColors } }, // For custom uploaded images
 };
 
-export const handleSelectBackground = (background: string): BackgroundConfig => {
+export const handleSelectBackground = (background: string, configJsonString?: ConfigJsonString): BackgroundConfig => {
+    if (background === 'color_gradient' && configJsonString) {
+        return {
+            imagePath: "",
+            colors: {
+                ...defaultColors,
+                buttonBgColor: defaultColors.buttonBgColor,
+                buttonTextColor: defaultColors.buttonTextColor,
+            },
+        };
+    }
     const config = backgroundConfigs[background] || backgroundConfigs.start1;
 
     return {

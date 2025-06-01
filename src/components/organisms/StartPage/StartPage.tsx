@@ -5,11 +5,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Slider } from '@mui/material';
 import React, { useEffect, useState } from "react";
-import { HexColorPicker } from 'react-colorful';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import type { SurveyType } from "../../../types/survey";
+import ColorPickerModal from './Components/ColorPickerModal';
 import SecurityModal from './Components/SecurityModal';
 import "./styles.scss";
 
@@ -43,21 +43,21 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [brightness, setBrightness] = useState<number>(100);
     const [customBackgroundImageUrl, setCustomBackgroundImageUrl] = useState<string | null>(null);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
-    const [selectedColor, setSelectedColor] = useState<string>('#cccccc');
     const [titleColor, setTitleColor] = useState<string>('');
     const [contentColor, setContentColor] = useState<string>('');
     const [buttonBgColor, setButtonBgColor] = useState<string>('');
     const [buttonTextColor, setButtonTextColor] = useState<string>('');
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showColorModal, setShowColorModal] = useState(false);
     const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
 
     useEffect(() => {
-        const initialConfig = handleSelectBackground(formData.background);
+        const initialConfig = handleSelectBackground(formData.background, formData.configJsonString);
         setTitleColor(initialConfig.colors.titleColor);
         setContentColor(initialConfig.colors.contentColor);
         setButtonBgColor(initialConfig.colors.buttonBgColor);
         setButtonTextColor(initialConfig.colors.buttonTextColor);
-    }, [formData.background]);
+    }, [formData.background, formData.configJsonString]);
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
         setBrightness(newValue as number);
@@ -71,11 +71,11 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 setCustomBackgroundImageUrl(reader.result as string);
                 setFormData((prev) => ({ ...prev, background: 'custom' }));
                 setBackgroundMode('image');
-                const customConfig = handleSelectBackground('custom');
-                setTitleColor(customConfig.colors.titleColor);
-                setContentColor(customConfig.colors.contentColor);
-                setButtonBgColor(customConfig.colors.buttonBgColor);
-                setButtonTextColor(customConfig.colors.buttonTextColor);
+                const defaultConfig = handleSelectBackground('default_color');
+                setTitleColor(defaultConfig.colors.titleColor);
+                setContentColor(defaultConfig.colors.contentColor);
+                setButtonBgColor(defaultConfig.colors.buttonBgColor);
+                setButtonTextColor(defaultConfig.colors.buttonTextColor);
             };
             reader.readAsDataURL(file);
         }
@@ -84,7 +84,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const handleSelectColorBackground = () => {
         setBackgroundMode('color');
         setCustomBackgroundImageUrl(null);
-        setFormData((prev) => ({ ...prev, background: selectedColor }));
+        setShowColorModal(true);
     };
 
     const handleCustomizePassword = () => {
@@ -97,7 +97,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 className="relative flex-1 flex items-center justify-center"
                 style={{
                     backgroundImage: backgroundMode === 'image' ? `url(${currentBackground})` : 'none',
-                    backgroundColor: backgroundMode === 'color' ? (formData.background === 'default_color' ? '#cccccc' : formData.background) : 'transparent',
+                    backgroundColor: backgroundMode === 'color' ? (formData.background.startsWith('#') ? formData.background : '#cccccc') : 'transparent',
+                    background: backgroundMode === 'color' ? `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})` : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     filter: backgroundMode === 'image' ? `brightness(${brightness / 100})` : 'none',
@@ -286,7 +287,9 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             className={`background-main-preview ${backgroundMode === 'color' ? 'active' : ''}`}
                             onClick={handleSelectColorBackground}
                             style={{
-                                backgroundColor: selectedColor,
+                                background: formData.background === 'color_gradient'
+                                    ? `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`
+                                    : (formData.background.startsWith('#') ? formData.background : '#cccccc'),
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                             }}
@@ -295,14 +298,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             <CheckIcon className="absolute main-check-icon" />
                             <div className="absolute inset-0 bg-black opacity-30 z-0"></div>
                         </div>
-                        {backgroundMode === 'color' && (
-                            <div className="color-picker-container" style={{ marginTop: '15px' }}>
-                                <HexColorPicker color={selectedColor} onChange={(color) => {
-                                    setSelectedColor(color);
-                                    setFormData((prev) => ({ ...prev, background: color }));
-                                }} />
-                            </div>
-                        )}
                     </div>
                     <div className="w-full max-w-md mx-auto bg-white">
                         {/* MÀU CHỮ CỦA NỘI DUNG KHẢO SÁT */}
@@ -422,6 +417,28 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 <SecurityModal
                     open={showPasswordModal}
                     onClose={() => setShowPasswordModal(false)}
+                />
+            )}
+
+            {showColorModal && (
+                <ColorPickerModal
+                    open={showColorModal}
+                    onClose={() => setShowColorModal(false)}
+                    onSelectColors={({ color1, color2 }) => {
+                        setFormData((prev) => ({
+                            ...prev,
+                            configJsonString: {
+                                ...prev.configJsonString,
+                                backgroundGradient1Color: color1,
+                                backgroundGradient2Color: color2,
+                            },
+                            background: 'color_gradient', // Set background to a special value to indicate gradient
+                        }));
+                    }}
+                    initialColors={[
+                        formData.configJsonString.backgroundGradient1Color || '#FCE38A',
+                        formData.configJsonString.backgroundGradient2Color || '#F38181',
+                    ]}
                 />
             )}
         </div >

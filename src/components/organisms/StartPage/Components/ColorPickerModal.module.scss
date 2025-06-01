@@ -1,0 +1,39 @@
+.modal-background {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent black overlay */
+}
+
+.modal-container {
+    background: linear-gradient(to bottom, #FCE38A, #F38181);
+    /* Apply gradient to the container */
+    box-shadow: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    background-color: transparent;
+    border-bottom: none;
+}
+
+.modal-title {
+    color: #2f2f2f;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.modal-footer {
+    background-color: transparent;
+    border-top: none;
+}
+
+.submit-button {
+    background-color: #2EC4B6;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+
+    &:hover {
+        background-color: darken(#2EC4B6, 10%);
+    }
+}
