@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import type { SurveyType } from "../../../types/survey";
+import SecurityModal from './Components/SecurityModal';
 import "./styles.scss";
 
 const backgrounds = Array.from(
@@ -47,6 +48,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [contentColor, setContentColor] = useState<string>('');
     const [buttonBgColor, setButtonBgColor] = useState<string>('');
     const [buttonTextColor, setButtonTextColor] = useState<string>('');
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
     const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
 
     useEffect(() => {
@@ -67,8 +69,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setCustomBackgroundImageUrl(reader.result as string);
-                setFormData((prev) => ({ ...prev, background: 'custom' })); // Mark as custom if needed
-                setBackgroundMode('image'); // Set background mode to image when an image is uploaded
+                setFormData((prev) => ({ ...prev, background: 'custom' }));
+                setBackgroundMode('image');
                 const customConfig = handleSelectBackground('custom');
                 setTitleColor(customConfig.colors.titleColor);
                 setContentColor(customConfig.colors.contentColor);
@@ -81,8 +83,12 @@ const StartPage = ({ formData, setFormData }: Props) => {
 
     const handleSelectColorBackground = () => {
         setBackgroundMode('color');
-        setCustomBackgroundImageUrl(null); // Clear custom image URL when switching to color
-        setFormData((prev) => ({ ...prev, background: selectedColor })); // Use selectedColor for background
+        setCustomBackgroundImageUrl(null);
+        setFormData((prev) => ({ ...prev, background: selectedColor }));
+    };
+
+    const handleCustomizePassword = () => {
+        setShowPasswordModal(true);
     };
 
     return (
@@ -186,7 +192,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             </label>
                         </div>
                         {passwordProtection && (
-                            <button className="customize-button">
+                            <button className="customize-button"
+                                onClick={handleCustomizePassword}>
                                 <SettingsIcon fontSize="small" />
                                 <span>Tùy chỉnh</span>
                             </button>
@@ -411,7 +418,13 @@ const StartPage = ({ formData, setFormData }: Props) => {
                     </div>
                 </div>
             </div >
-        </div>
+            {showPasswordModal && (
+                <SecurityModal
+                    open={showPasswordModal}
+                    onClose={() => setShowPasswordModal(false)}
+                />
+            )}
+        </div >
     );
 };
 
