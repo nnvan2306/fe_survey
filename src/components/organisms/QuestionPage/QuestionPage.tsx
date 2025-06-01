@@ -1,5 +1,5 @@
 import "./styles.scss";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Select,
     MenuItem,
@@ -12,8 +12,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import type { SurveyType } from "../../../types/survey";
+import type { QuestionType, SurveyType } from "../../../types/survey";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
 import SingleChoice from "../SingleChoice/SingleChoice";
@@ -53,26 +52,58 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         });
     }, [formData?.questions, orderCurrent]);
 
-    const handleRenderView = (id: number) => {
-        switch (id) {
-            case 1:
-                return <SingleChoice />;
-            case 2:
-                return <MultipleChoice />;
-            case 3:
-                return <SingleSlider />;
-            case 4:
-                return <RangeSlider />;
-            case 5:
-                return <SingleInput />;
-            case 6:
-                return <Rating />;
-            case 7:
-                return <Ranking />;
-            default:
-                return <FormSelectType />;
-        }
-    };
+    const handleUpdateQuestion = useCallback(
+        (
+            key: keyof QuestionType,
+            value: string | number | boolean | Record<string, string | number>
+        ) => {
+            setFormData((prev) => ({
+                ...prev,
+                questions: prev.questions.map((item) => {
+                    if (
+                        questionedit?.order &&
+                        item.order === questionedit?.order
+                    ) {
+                        return {
+                            ...item,
+                            [key]: value,
+                        };
+                    }
+                    return item;
+                }),
+            }));
+        },
+        [questionedit?.order, setFormData]
+    );
+
+    const handleRenderView = useCallback(
+        (id: number) => {
+            switch (id) {
+                case 1:
+                    return questionedit ? (
+                        <SingleChoice
+                            data={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 2:
+                    return <MultipleChoice />;
+                case 3:
+                    return <SingleSlider />;
+                case 4:
+                    return <RangeSlider />;
+                case 5:
+                    return <SingleInput />;
+                case 6:
+                    return <Rating />;
+                case 7:
+                    return <Ranking />;
+                default:
+                    return <FormSelectType />;
+            }
+        },
+        [questionedit]
+    );
 
     const handleAddQuestion = () => {
         setFormData((prev) => ({
@@ -98,7 +129,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 questions: [{ ...questionDefault, order: 1 }],
             }));
         }
-    }, []);
+    }, [formData?.questions?.length, setFormData]);
 
     return (
         <div className="question-page flex flex-col h-full">
