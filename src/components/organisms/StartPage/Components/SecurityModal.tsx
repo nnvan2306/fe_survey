@@ -24,7 +24,6 @@ const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose }) => {
   return (
     <div className={`${styles['modal-background']} fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100 ease-out' : 'opacity-0 ease-in pointer-events-none'}`}>
       <div className={`${styles['modal-container']} w-full max-w-2xl`}>
-        {/* Header */}
         <div className={`flex items-center justify-between px-6 py-4 ${styles['modal-header']}`}>
           <h2 className={`${styles['modal-title']}`}>
             MẬT KHẨU TRUY CẬP KHẢO SÁT
@@ -50,7 +49,6 @@ const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose }) => {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="px-6 pt-6">
           <div className="flex">
             <button
@@ -102,7 +100,6 @@ const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose }) => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="px-6 py-8">
           {activeTab === 'general' ? (
             <div className="space-y-6">
@@ -209,7 +206,6 @@ const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose }) => {
           )}
         </div>
 
-        {/* Footer */}
         <div className={`flex justify-end px-6 py-4 ${styles['modal-footer']}`}>
           <button
             onClick={handleSubmit}

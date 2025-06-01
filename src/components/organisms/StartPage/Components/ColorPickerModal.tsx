@@ -1,20 +1,18 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, { useEffect, useState } from 'react';
-import styles from './ColorPickerModal.module.scss'; // Using its own styles
-// import CloseIcon from '@mui/icons-material/Close'; // No longer needed for individual color removal
+import styles from './ColorPickerModal.module.scss';
 
 interface ColorPickerModalProps {
     open: boolean;
     onClose: () => void;
-    onSelectColors: (colors: { color1: string; color2: string }) => void; // Changed to accept an object with two colors
-    initialColors: string[]; // Still accepts an array, but we'll use first two elements
+    onSelectColors: (colors: { color1: string; color2: string }) => void;
+    initialColors: string[];
 }
 
 const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ open, onClose, onSelectColors, initialColors }) => {
-    // Assuming initialColors will always have at least two elements, or we default them
-    const [color1, setColor1] = useState(initialColors[0] || '#FCE38A'); // Default to a color from the image
-    const [color2, setColor2] = useState(initialColors[1] || '#F38181'); // Default to a color from the image
+    const [color1, setColor1] = useState(initialColors[0] || '#FCE38A');
+    const [color2, setColor2] = useState(initialColors[1] || '#F38181');
     const [isGradientMode, setIsGradientMode] = useState(false);
 
     useEffect(() => {
@@ -23,9 +21,9 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ open, onClose, onSe
             setColor2(initialColors[1]);
         } else if (initialColors.length === 1) {
             setColor1(initialColors[0]);
-            setColor2('#F38181'); // Default second color if only one is provided
+            setColor2('#F38181');
         } else {
-            setColor1('#FCE38A'); // Default both if none are provided
+            setColor1('#FCE38A');
             setColor2('#F38181');
         }
     }, [initialColors]);
@@ -46,21 +44,18 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ open, onClose, onSe
                 style={{
                     background: isGradientMode ? `linear-gradient(to right, ${color1}, ${color2})` : color1,
                 }}
-            > {/* Increased max-width for two columns */}
-                {/* Header */}
+            >
                 <div className={`flex items-center justify-between px-6 py-4 ${styles['modal-header']}`}>
                     <h2 className={`${styles['modal-title']}`}>
                         CHỌN MÀU NỀN
                     </h2>
                 </div>
 
-                {/* Content */}
                 <div className="px-6 py-8">
                     <div className="flex flex-col items-center">
                         <span className="text-gray-600 mb-4">Nhấn vào mã màu để đổi</span>
                         <div className="flex space-x-4 w-full">
 
-                            {/* Color Input 1 */}
                             <div className={`flex transition-all duration-300 ${isGradientMode ? 'flex-1' : 'w-[80%]'}`}>
                                 <label
                                     className={`relative flex items-center justify-between py-2 shadow-md cursor-pointer ${isGradientMode ? 'rounded-l-none rounded-r-full pr-4' : 'rounded-full px-4'}`}
@@ -97,7 +92,6 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ open, onClose, onSe
                                 </label>
                             </div>
 
-                            {/* Color Input 2 */}
                             <div className={`flex transition-all duration-300 ${isGradientMode ? 'flex-1 flex' : 'w-0 hidden'}`}>
                                 <label
                                     className={`relative flex items-center justify-between py-2 shadow-md cursor-pointer ${isGradientMode ? 'rounded-l-full rounded-r-none pl-4' : 'rounded-full px-4'}`}
@@ -126,7 +120,6 @@ const ColorPickerModal: React.FC<ColorPickerModalProps> = ({ open, onClose, onSe
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className={`flex justify-end px-6 py-4 ${styles['modal-footer']}`}>
                     <button
                         onClick={handleSubmit}
