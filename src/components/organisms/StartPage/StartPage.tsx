@@ -49,6 +49,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [buttonTextColor, setButtonTextColor] = useState<string>('');
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showColorModal, setShowColorModal] = useState(false);
+    const [activeColorSetter, setActiveColorSetter] = useState<React.Dispatch<React.SetStateAction<string>> | null>(null);
+    const [pickerForBackground, setPickerForBackground] = useState(false);
     const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
 
     useEffect(() => {
@@ -84,6 +86,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const handleSelectColorBackground = () => {
         setBackgroundMode('color');
         setCustomBackgroundImageUrl(null);
+        setPickerForBackground(true);
         setShowColorModal(true);
     };
 
@@ -99,8 +102,9 @@ const StartPage = ({ formData, setFormData }: Props) => {
                     backgroundImage: backgroundMode === 'image' ? `url(${currentBackground})` : 'none',
                     backgroundColor: backgroundMode === 'color' ? (formData.background.startsWith('#') ? formData.background : '#cccccc') : 'transparent',
                     background: backgroundMode === 'color' ? `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})` : undefined,
-                    backgroundSize: "cover",
+                    backgroundSize: "100% 100%",
                     backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
                     filter: backgroundMode === 'image' ? `brightness(${brightness / 100})` : 'none',
                 }}
             >
@@ -311,13 +315,14 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu tiêu đề</span>
                                     <div className="flex-1 max-w-20">
-                                        <input
-                                            type="color"
-                                            value={titleColor}
-                                            onChange={(e) => setTitleColor(e.target.value)}
+                                        <div
                                             className="w-full h-8 rounded border border-gray-300 cursor-pointer"
                                             style={{ backgroundColor: titleColor }}
-                                        />
+                                            onClick={() => {
+                                                setShowColorModal(true);
+                                                setActiveColorSetter(() => setTitleColor);
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
 
@@ -325,13 +330,14 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu nội dung</span>
                                     <div className="flex-1 max-w-20">
-                                        <input
-                                            type="color"
-                                            value={contentColor}
-                                            onChange={(e) => setContentColor(e.target.value)}
+                                        <div
                                             className="w-full h-8 rounded border border-gray-300 cursor-pointer"
                                             style={{ backgroundColor: contentColor }}
-                                        />
+                                            onClick={() => {
+                                                setShowColorModal(true);
+                                                setActiveColorSetter(() => setContentColor);
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
                             </div>
@@ -348,13 +354,17 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu nền</span>
                                     <div className="flex-1 max-w-20">
-                                        <input
-                                            type="color"
-                                            value={buttonBgColor}
-                                            onChange={(e) => setButtonBgColor(e.target.value)}
+                                        <div
                                             className="w-full h-8 rounded border border-gray-300 cursor-pointer"
-                                            style={{ backgroundColor: buttonBgColor }}
-                                        />
+                                            style={{
+                                                background: buttonBgColor.startsWith('linear-gradient') || buttonBgColor.startsWith('radial-gradient') ? buttonBgColor : '',
+                                                backgroundColor: !(buttonBgColor.startsWith('linear-gradient') || buttonBgColor.startsWith('radial-gradient')) ? buttonBgColor : '',
+                                            }}
+                                            onClick={() => {
+                                                setShowColorModal(true);
+                                                setActiveColorSetter(() => setButtonBgColor);
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
 
@@ -362,13 +372,14 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-gray-500 w-24">Màu chữ</span>
                                     <div className="flex-1 max-w-20">
-                                        <input
-                                            type="color"
-                                            value={buttonTextColor}
-                                            onChange={(e) => setButtonTextColor(e.target.value)}
+                                        <div
                                             className="w-full h-8 rounded border border-gray-300 cursor-pointer"
                                             style={{ backgroundColor: buttonTextColor }}
-                                        />
+                                            onClick={() => {
+                                                setShowColorModal(true);
+                                                setActiveColorSetter(() => setButtonTextColor);
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
                             </div>
@@ -401,6 +412,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                                     <img
                                                         src={handleSelectBackground(item).imagePath}
                                                         alt="background"
+                                                        className="w-full h-full object-cover"
                                                     />
                                                 </div>
                                             );
@@ -423,22 +435,73 @@ const StartPage = ({ formData, setFormData }: Props) => {
             {showColorModal && (
                 <ColorPickerModal
                     open={showColorModal}
-                    onClose={() => setShowColorModal(false)}
-                    onSelectColors={({ color1, color2 }) => {
-                        setFormData((prev) => ({
-                            ...prev,
-                            configJsonString: {
-                                ...prev.configJsonString,
-                                backgroundGradient1Color: color1,
-                                backgroundGradient2Color: color2,
-                            },
-                            background: 'color_gradient', // Set background to a special value to indicate gradient
-                        }));
+                    onClose={() => {
+                        setShowColorModal(false);
+                        setActiveColorSetter(null);
+                        setPickerForBackground(false);
                     }}
-                    initialColors={[
-                        formData.configJsonString.backgroundGradient1Color || '#FCE38A',
-                        formData.configJsonString.backgroundGradient2Color || '#F38181',
-                    ]}
+                    onSelectColors={({ color1, color2 }) => {
+                        if (pickerForBackground) {
+                            setFormData((prev) => ({
+                                ...prev,
+                                configJsonString: {
+                                    ...prev.configJsonString,
+                                    backgroundGradient1Color: color1,
+                                    backgroundGradient2Color: color2,
+                                },
+                                background: (color1 !== color2) ? 'color_gradient' : color1, // Set background to a special value to indicate gradient or solid color
+                            }));
+                        } else if (activeColorSetter) {
+                            if (activeColorSetter === setButtonBgColor) {
+                                if (color1 !== color2) {
+                                    activeColorSetter(`linear-gradient(to right, ${color1}, ${color2})`);
+                                } else {
+                                    activeColorSetter(color1);
+                                }
+                            } else {
+                                activeColorSetter(color1);
+                            }
+                        }
+                        setShowColorModal(false);
+                        setActiveColorSetter(null);
+                        setPickerForBackground(false);
+                    }}
+                    initialColors={(() => {
+                        let initialColor1 = '#FCE38A'; // Default fallback
+                        let initialColor2 = '#F38181'; // Default fallback
+
+                        if (pickerForBackground) {
+                            initialColor1 = formData.configJsonString.backgroundGradient1Color || '#FCE38A';
+                            initialColor2 = formData.configJsonString.backgroundGradient2Color || '#F38181';
+                        } else if (activeColorSetter === setTitleColor) {
+                            initialColor1 = titleColor;
+                            initialColor2 = titleColor;
+                        } else if (activeColorSetter === setContentColor) {
+                            initialColor1 = contentColor;
+                            initialColor2 = contentColor;
+                        } else if (activeColorSetter === setButtonTextColor) {
+                            initialColor1 = buttonTextColor;
+                            initialColor2 = buttonTextColor;
+                        } else if (activeColorSetter === setButtonBgColor) {
+                            if (buttonBgColor.startsWith('linear-gradient')) {
+                                const colors = buttonBgColor.match(/#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})/g);
+                                if (colors && colors.length >= 2) {
+                                    initialColor1 = colors[0];
+                                    initialColor2 = colors[1];
+                                } else {
+                                    initialColor1 = '#FCE38A';
+                                    initialColor2 = '#F38181';
+                                }
+                            } else if (buttonBgColor.startsWith('#')) {
+                                initialColor1 = buttonBgColor;
+                                initialColor2 = buttonBgColor;
+                            } else {
+                                initialColor1 = '#FCE38A';
+                                initialColor2 = '#F38181';
+                            }
+                        }
+                        return [initialColor1, initialColor2];
+                    })()}
                 />
             )}
         </div >
