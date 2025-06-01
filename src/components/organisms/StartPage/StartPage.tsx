@@ -43,6 +43,10 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [customBackgroundImageUrl, setCustomBackgroundImageUrl] = useState<string | null>(null);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
     const [selectedColor, setSelectedColor] = useState<string>('#cccccc');
+    const [titleColor, setTitleColor] = useState('#2f2f2f');
+    const [contentColor, setContentColor] = useState('#444444');
+    const [buttonBgColor, setButtonBgColor] = useState('#f75c83');
+    const [buttonTextColor, setButtonTextColor] = useState('#ffffff');
     const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background);
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
@@ -90,6 +94,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             }
                             className="startpage-title-input"
                             placeholder="Nhập tiêu đề"
+                            style={{ color: titleColor }}
                         />
                         <input
                             value={formData.description}
@@ -98,10 +103,12 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             }
                             className="startpage-desc-input"
                             placeholder="Nhập mô tả tại đây"
+                            style={{ color: contentColor }}
                         />
                         <button
                             onClick={handleStartSurvey}
                             className="startpage-btn group"
+                            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
                         >
                             <span>Bắt đầu</span>
                             <span className="startpage-icon-wrapper">
@@ -273,40 +280,115 @@ const StartPage = ({ formData, setFormData }: Props) => {
                             </div>
                         )}
                     </div>
-                    <div className="config-section">
-                        <h3 className="config-title">GỢI Ý THIẾT KẾ</h3>
-                        <div className="background-preview">
-                            <div className="background-thumbnail">
-                                <div className="grid grid-cols-5 gap-4">
-                                    {backgrounds.map((item, index) => {
-                                        const isSelected = formData.background === item && !customBackgroundImageUrl;
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`background-thumbnail-item ${isSelected && backgroundMode === 'image' ? 'active' : ''}`}
-                                                onClick={() => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        background: item,
-                                                    }));
-                                                    setBackgroundMode('image'); // Set background mode to image
-                                                    setCustomBackgroundImageUrl(null); // Clear custom image URL
-                                                }}
-                                            >
-                                                <img
-                                                    src={handleSelectBackground(item)}
-                                                    alt="background"
-                                                />
-                                            </div>
-                                        );
-                                    })}
+                    <div className="w-full max-w-md mx-auto bg-white">
+                        {/* MÀU CHỮ CỦA NỘI DUNG KHẢO SÁT */}
+                        <div className="mb-8">
+                            <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-6">
+                                MÀU CHỮ CỦA NỘI DUNG KHẢO SÁT
+                            </h3>
+
+                            <div className="space-y-4">
+                                {/* Màu tiêu đề */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-500 w-24">Màu tiêu đề</span>
+                                    <div className="flex-1 max-w-20">
+                                        <input
+                                            type="color"
+                                            value={titleColor}
+                                            onChange={(e) => setTitleColor(e.target.value)}
+                                            className="w-full h-8 rounded border border-gray-300 cursor-pointer"
+                                            style={{ backgroundColor: titleColor }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Màu nội dung */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-500 w-24">Màu nội dung</span>
+                                    <div className="flex-1 max-w-20">
+                                        <input
+                                            type="color"
+                                            value={contentColor}
+                                            onChange={(e) => setContentColor(e.target.value)}
+                                            className="w-full h-8 rounded border border-gray-300 cursor-pointer"
+                                            style={{ backgroundColor: contentColor }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                        {/* MÀU SẮC NÚT BẤM */}
+                        <div>
+                            <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide mb-6">
+                                MÀU SẮC NÚT BẤM
+                            </h3>
+
+                            <div className="space-y-4">
+                                {/* Màu nền */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-500 w-24">Màu nền</span>
+                                    <div className="flex-1 max-w-20">
+                                        <input
+                                            type="color"
+                                            value={buttonBgColor}
+                                            onChange={(e) => setButtonBgColor(e.target.value)}
+                                            className="w-full h-8 rounded border border-gray-300 cursor-pointer"
+                                            style={{ backgroundColor: buttonBgColor }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Màu chữ */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-500 w-24">Màu chữ</span>
+                                    <div className="flex-1 max-w-20">
+                                        <input
+                                            type="color"
+                                            value={buttonTextColor}
+                                            onChange={(e) => setButtonTextColor(e.target.value)}
+                                            className="w-full h-8 rounded border border-gray-300 cursor-pointer"
+                                            style={{ backgroundColor: buttonTextColor }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="config-section">
+                            <h3 className="config-title">GỢI Ý THIẾT KẾ</h3>
+                            <div className="background-preview">
+                                <div className="background-thumbnail">
+                                    <div className="grid grid-cols-5 gap-4">
+                                        {backgrounds.map((item, index) => {
+                                            const isSelected = formData.background === item && !customBackgroundImageUrl;
+                                            return (
+                                                <div
+                                                    key={index}
+                                                    className={`background-thumbnail-item ${isSelected && backgroundMode === 'image' ? 'active' : ''}`}
+                                                    onClick={() => {
+                                                        setFormData((prev) => ({
+                                                            ...prev,
+                                                            background: item,
+                                                        }));
+                                                        setBackgroundMode('image'); // Set background mode to image
+                                                        setCustomBackgroundImageUrl(null); // Clear custom image URL
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={handleSelectBackground(item)}
+                                                        alt="background"
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            </div >
         </div>
     );
 };
