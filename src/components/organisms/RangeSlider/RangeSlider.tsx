@@ -91,25 +91,26 @@ const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
     }, [handleUpdateQuestion, question?.configJsonString?.data, values]);
 
     useEffect(() => {
-        if (
-            !question?.configJsonString ||
-            !Array.isArray(question.configJsonString.data) ||
-            question.configJsonString.data.length === 0
-        ) {
+        const config = question?.configJsonString;
+        // Check if configJsonString is an empty object OR if data is missing/empty
+        const isEmptyConfigObject =
+            config &&
+            typeof config === "object" &&
+            Object.keys(config).length === 0;
+        const isDataMissingOrEmpty =
+            !Array.isArray(config?.data) || config.data.length === 0;
+
+        if (isEmptyConfigObject || isDataMissingOrEmpty) {
+            // Only call handleUpdateQuestion if it is a function
             if (typeof handleUpdateQuestion === "function") {
                 handleUpdateQuestion("configJsonString", {
-                    ...question?.configJsonString,
+                    ...config, // Preserve other existing properties if any (unlikely for empty object)
                     data: [{ ...defaultData }],
                 });
-                setValues([10]);
+                setValues([defaultData.max]); // Initialize values for the first item
             }
-        } else {
-            const newValues = question.configJsonString.data.map(
-                (item) => item.max
-            );
-            setValues(newValues);
         }
-    }, [question?.configJsonString?.data, handleUpdateQuestion]);
+    }, [question?.configJsonString, handleUpdateQuestion]); // Depend on configJsonString itself
 
     return (
         <div className="range-slider">

@@ -1,5 +1,5 @@
 import "./styles.scss";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -91,6 +91,17 @@ const SingleSlider = ({ question, handleUpdateQuestion }: Props) => {
             unit: event.target.value,
         });
     };
+
+    useEffect(() => {
+        if (Object.keys(question.configJsonString).length === 0) {
+            handleUpdateQuestion("configJsonString", {
+                min: 0,
+                max: 10,
+                step: 1,
+                unit: "",
+            });
+        }
+    }, [handleUpdateQuestion, question.configJsonString]);
 
     return (
         <Box className="single-slider bg-gray-500 p-6 rounded-lg flex flex-col gap-6">
