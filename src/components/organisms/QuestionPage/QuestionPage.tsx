@@ -73,6 +73,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
                         backgroundImage: `url(${formData.background})`,
+                        filter: `brightness(${formData.configJsonString.brightness / 100})`,
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">

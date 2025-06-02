@@ -37,6 +37,7 @@ const mockSurveyData: SurveyType = {
         buttonBackgroundColor: "#007bff",
         buttonContentColor: "#ffffff",
         password: "",
+        brightness: 100,
     },
     description: "Mô tả khảo sát mặc định",
     title: "Tiêu đề khảo sát mặc định",
@@ -89,7 +90,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [passwordProtection, setPasswordProtection] = useState(false);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    const [brightness, setBrightness] = useState<number>(100);
+    const [brightness, setBrightness] = useState<number>(formData.configJsonString.brightness || 100);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
     const [titleColor, setTitleColor] = useState<string>('');
     const [contentColor, setContentColor] = useState<string>('');
@@ -116,6 +117,9 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 if (initialData.customBackgroundImageUrl === undefined) {
                     initialData.customBackgroundImageUrl = null;
                 }
+                if (initialData.configJsonString.brightness === undefined) {
+                    initialData.configJsonString.brightness = 100; // Default brightness
+                }
             } else {
                 initialData = await fetchSurveyData();
             }
@@ -133,6 +137,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
 
         setSelectedSurveyTopic(formData.surveyTopicId);
         setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
+        setBrightness(formData.configJsonString.brightness);
 
         if (formData.background === 'custom' && formData.customBackgroundImageUrl) {
             setBackgroundMode('image');
@@ -151,7 +156,15 @@ const StartPage = ({ formData, setFormData }: Props) => {
     }, [formData, backgrounds]);
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
-        setBrightness(newValue as number);
+        const newBrightness = newValue as number;
+        setBrightness(newBrightness);
+        setFormData((prev) => ({
+            ...prev,
+            configJsonString: {
+                ...prev.configJsonString,
+                brightness: newBrightness,
+            },
+        }));
     };
 
     const handleBackgroundUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

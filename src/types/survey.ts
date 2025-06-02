@@ -34,6 +34,7 @@ export type SurveyType = {
         buttonBackgroundColor: string;
         buttonContentColor: string;
         password: string;
+        brightness: number;
     };
     questions: QuestionType[];
 };

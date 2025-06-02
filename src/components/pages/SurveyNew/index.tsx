@@ -31,6 +31,7 @@ const defaultValue = {
         buttonBackgroundColor: "#007bff",
         buttonContentColor: "#ffffff",
         password: "123456",
+        brightness: 100,
     },
     questions: [],
 };
@@ -57,13 +58,13 @@ const SurveyNew = () => {
                 <QuestionPage formData={formData} setFormData={setFormData} />
             ),
         },
-        { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
-        { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
-        { label: "Chia Sẻ", value: 4, component: <SharePage /> },
+        { label: "Trang Kết Thúc", value: 2, component: <EndPage formData={formData} setFormData={setFormData} /> },
+        { label: "Hoàn Tất", value: 3, component: <CompletePage formData={formData} setFormData={setFormData} /> },
+        { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} /> },
         {
             label: "Báo cáo",
             value: 5,
-            component: <ReportPage />,
+            component: <ReportPage formData={formData} setFormData={setFormData} />,
             disabled: true,
         },
     ];
