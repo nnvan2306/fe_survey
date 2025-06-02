@@ -1,0 +1,23 @@
+.date-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between date fields */
+    width: 100%;
+}
+
+.date-field {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.date-field label {
+    margin-bottom: 5px;
+    // font-weight: bold;
+}
+
+.date-field select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

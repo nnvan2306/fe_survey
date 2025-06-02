@@ -1,7 +1,7 @@
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
-const Number = () => {
+const NumberInput = () => {
     return (
         <Box className="number-input w-full">
             <TextField
@@ -15,4 +15,4 @@ const Number = () => {
     );
 };
 
-export default Number;
+export default NumberInput;
