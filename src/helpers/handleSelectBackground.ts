@@ -15,8 +15,8 @@ interface BackgroundConfig {
     colors: {
         titleColor: string;
         contentColor: string;
-        buttonBgColor: string;
-        buttonTextColor: string;
+        buttonBackgroundColor: string;
+        buttonContentColor: string;
     };
 }
 
@@ -33,29 +33,29 @@ interface ConfigJsonString {
 const defaultColors = {
     titleColor: "#2f2f2f",
     contentColor: "#444444",
-    buttonBgColor: "#f75c83",
-    buttonTextColor: "#ffffff",
+    buttonBackgroundColor: "#f75c83",
+    buttonContentColor: "#ffffff",
 };
 
 const backgroundConfigs: Record<string, Omit<BackgroundConfig, 'imagePath'> & { imagePath?: string }> = {
-    start1: { imagePath: start1, colors: { ...defaultColors, buttonBgColor: "#FEC347" } },
-    start2: { imagePath: start2, colors: { ...defaultColors, buttonBgColor: "#FCBC72" } },
-    start3: { imagePath: start3, colors: { ...defaultColors, buttonBgColor: "#BC73BC" } },
-    start4: { imagePath: start4, colors: { ...defaultColors, buttonBgColor: "#4EA295" } },
-    start11: { imagePath: start11, colors: { ...defaultColors, buttonBgColor: "linear-gradient(to right, #F52828, #E84F4F)" } },
-    start6: { imagePath: start6, colors: { ...defaultColors, buttonBgColor: "#BC6235" } },
-    start7: { imagePath: start7, colors: { ...defaultColors, buttonBgColor: "linear-gradient(to right, #F27186, #F83D6E)" } },
-    start8: { imagePath: start8, colors: { ...defaultColors, buttonBgColor: "linear-gradient(to right, #19A0BB, #1CB3D1)" } },
-    start9: { imagePath: start9, colors: { ...defaultColors, buttonBgColor: "#027186" } },
-    start10: { imagePath: start10, colors: { ...defaultColors, buttonBgColor: "#6EAF99" } },
-    start12: { imagePath: start12, colors: { ...defaultColors, buttonBgColor: "#00BBC1" } },
+    start1: { imagePath: start1, colors: { ...defaultColors, buttonBackgroundColor: "#FEC347" } },
+    start2: { imagePath: start2, colors: { ...defaultColors, buttonBackgroundColor: "#FCBC72" } },
+    start3: { imagePath: start3, colors: { ...defaultColors, buttonBackgroundColor: "#BC73BC" } },
+    start4: { imagePath: start4, colors: { ...defaultColors, buttonBackgroundColor: "#4EA295" } },
+    start11: { imagePath: start11, colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #F52828, #E84F4F)" } },
+    start6: { imagePath: start6, colors: { ...defaultColors, buttonBackgroundColor: "#BC6235" } },
+    start7: { imagePath: start7, colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #F27186, #F83D6E)" } },
+    start8: { imagePath: start8, colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #19A0BB, #1CB3D1)" } },
+    start9: { imagePath: start9, colors: { ...defaultColors, buttonBackgroundColor: "#027186" } },
+    start10: { imagePath: start10, colors: { ...defaultColors, buttonBackgroundColor: "#6EAF99" } },
+    start12: { imagePath: start12, colors: { ...defaultColors, buttonBackgroundColor: "#00BBC1" } },
     default_color: {
         imagePath: "",
         colors: {
             titleColor: "#2f2f2f",
             contentColor: "#444444",
-            buttonBgColor: "#f75c83",
-            buttonTextColor: "#ffffff",
+            buttonBackgroundColor: "#f75c83",
+            buttonContentColor: "#ffffff",
         },
     },
     custom: { colors: { ...defaultColors } }, // For custom uploaded images
@@ -67,8 +67,8 @@ export const handleSelectBackground = (background: string, configJsonString?: Co
             imagePath: "",
             colors: {
                 ...defaultColors,
-                buttonBgColor: defaultColors.buttonBgColor,
-                buttonTextColor: defaultColors.buttonTextColor,
+                buttonBackgroundColor: defaultColors.buttonBackgroundColor,
+                buttonContentColor: defaultColors.buttonContentColor,
             },
         };
     }

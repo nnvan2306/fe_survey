@@ -3,10 +3,11 @@ import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Slider } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Slider } from '@mui/material';
 import React, { useEffect, useState } from "react";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { SurveySpecificTopic, SurveyTopic } from "../../../data/surveyData";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import type { SurveyType } from "../../../types/survey";
 import ColorPickerModal from './Components/ColorPickerModal';
@@ -17,6 +18,47 @@ const backgrounds = Array.from(
     { length: 12 },
     (_, index) => `start${index + 1}`
 );
+
+const mockSurveyData: SurveyType = {
+    id: 1,
+    requesterId: 1,
+    surveyTypeId: 1,
+    surveyTopicId: 0,
+    surveySpecificTopicId: 0,
+    surveyStatusId: 1,
+    securityModeId: 1,
+    background: "start1",
+    customBackgroundImageUrl: null,
+    configJsonString: {
+        backgroundGradient1Color: "#FCE38A",
+        backgroundGradient2Color: "#F38181",
+        titleColor: "#FFFFFF",
+        contentColor: "#CCCCCC",
+        buttonBackgroundColor: "#007bff",
+        buttonContentColor: "#ffffff",
+        password: "",
+    },
+    description: "Mô tả khảo sát mặc định",
+    title: "Tiêu đề khảo sát mặc định",
+    questions: [],
+};
+
+const fetchSurveyData = (): Promise<SurveyType> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(mockSurveyData);
+        }, 500);
+    });
+};
+
+const saveSurveyData = (data: SurveyType): Promise<void> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log("Simulating API call to save data:", data);
+            resolve();
+        }, 500);
+    });
+};
 
 type Props = {
     formData: SurveyType;
@@ -33,6 +75,13 @@ const StartPage = ({ formData, setFormData }: Props) => {
 
     const handleStartSurvey = () => {
         console.log("Starting survey with data:", formData);
+        saveSurveyData(formData)
+            .then(() => {
+                console.log("Survey data saved successfully (simulated).");
+            })
+            .catch((error) => {
+                console.error("Error saving survey data (simulated):", error);
+            });
     };
 
     const [skipStartPage, setSkipStartPage] = useState(false);
@@ -51,15 +100,48 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [showColorModal, setShowColorModal] = useState(false);
     const [activeColorSetter, setActiveColorSetter] = useState<React.Dispatch<React.SetStateAction<string>> | null>(null);
     const [pickerForBackground, setPickerForBackground] = useState(false);
+    const [selectedSurveyTopic, setSelectedSurveyTopic] = useState<number>(formData.surveyTopicId);
+    const [selectedSurveySpecificTopic, setSelectedSurveySpecificTopic] = useState<number>(formData.surveySpecificTopicId);
     const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
 
     useEffect(() => {
+        localStorage.setItem('surveyFormData', JSON.stringify(formData));
+    }, [formData]);
+
+    useEffect(() => {
+        const loadInitialData = async () => {
+            let initialData: SurveyType;
+            const savedFormData = localStorage.getItem('surveyFormData');
+
+            if (savedFormData) {
+                initialData = JSON.parse(savedFormData);
+            } else {
+                initialData = await fetchSurveyData();
+            }
+            setFormData(initialData);
+        };
+
+        loadInitialData();
+    }, []);
+
+    useEffect(() => {
+        setSelectedSurveyTopic(formData.surveyTopicId);
+        setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
+        setCustomBackgroundImageUrl(formData.customBackgroundImageUrl || null);
+
+        if (formData.background === 'custom' || backgrounds.includes(formData.background)) {
+            setBackgroundMode('image');
+        } else if (formData.background.startsWith('#') || formData.background === 'color_gradient') {
+            setBackgroundMode('color');
+        }
+
         const initialConfig = handleSelectBackground(formData.background, formData.configJsonString);
         setTitleColor(initialConfig.colors.titleColor);
         setContentColor(initialConfig.colors.contentColor);
-        setButtonBgColor(initialConfig.colors.buttonBgColor);
-        setButtonTextColor(initialConfig.colors.buttonTextColor);
-    }, [formData.background, formData.configJsonString]);
+        setButtonBgColor(initialConfig.colors.buttonBackgroundColor);
+        setButtonTextColor(initialConfig.colors.buttonContentColor);
+
+    }, [formData, backgrounds]); // Listen to formData prop and backgrounds array changes
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
         setBrightness(newValue as number);
@@ -70,14 +152,19 @@ const StartPage = ({ formData, setFormData }: Props) => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setCustomBackgroundImageUrl(reader.result as string);
-                setFormData((prev) => ({ ...prev, background: 'custom' }));
+                const imageUrl = reader.result as string;
+                setCustomBackgroundImageUrl(imageUrl);
+                setFormData((prev) => ({
+                    ...prev,
+                    background: 'custom',
+                    customBackgroundImageUrl: imageUrl,
+                }));
                 setBackgroundMode('image');
                 const defaultConfig = handleSelectBackground('default_color');
                 setTitleColor(defaultConfig.colors.titleColor);
                 setContentColor(defaultConfig.colors.contentColor);
-                setButtonBgColor(defaultConfig.colors.buttonBgColor);
-                setButtonTextColor(defaultConfig.colors.buttonTextColor);
+                setButtonBgColor(defaultConfig.colors.buttonBackgroundColor);
+                setButtonTextColor(defaultConfig.colors.buttonContentColor);
             };
             reader.readAsDataURL(file);
         }
@@ -161,6 +248,111 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <span className="toggle-slider"></span>
                             </label>
                         </div>
+                    </div>
+                    <div className="config-section">
+                        <h3>CHỦ ĐỀ KHẢO SÁT</h3>
+                        <FormControl fullWidth sx={{
+                            '.MuiOutlinedInput-root': {
+                                height: '48px',
+                                borderRadius: '8px',
+                                border: '1px solid #D1D5DB',
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' },
+                            },
+                            '.MuiInputLabel-root': {
+                                transform: 'translate(14px, 14px) scale(1)',
+                                '&.Mui-focused': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                                '&.MuiInputLabel-shrink': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                            },
+                            '.MuiSelect-select': {
+                                padding: '12px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                            },
+                            '.MuiSelect-icon': {
+                                right: '14px',
+                                color: '#6B7280',
+                            },
+                        }}>
+                            <InputLabel id="survey-topic-select-label">Chọn chủ đề</InputLabel>
+                            <Select
+                                labelId="survey-topic-select-label"
+                                id="survey-topic-select"
+                                value={selectedSurveyTopic}
+                                label="Chọn chủ đề"
+                                onChange={(e) => {
+                                    const newTopicId = e.target.value as number;
+                                    setSelectedSurveyTopic(newTopicId);
+                                    setFormData((prev) => ({ ...prev, surveyTopicId: newTopicId, surveySpecificTopicId: 0 }));
+                                    setSelectedSurveySpecificTopic(0);
+                                }}
+                            >
+                                <MenuItem value={0}>Chọn chủ đề</MenuItem>
+                                {SurveyTopic.map((topic) => (
+                                    <MenuItem key={topic.id} value={topic.id}>
+                                        {topic.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="config-section">
+                        <h3>CHỦ ĐỀ KHẢO SÁT CỤ THỂ</h3>
+                        <FormControl fullWidth sx={{
+                            '.MuiOutlinedInput-root': {
+                                height: '48px',
+                                borderRadius: '8px',
+                                border: '1px solid #D1D5DB',
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' },
+                            },
+                            '.MuiInputLabel-root': {
+                                transform: 'translate(14px, 14px) scale(1)',
+                                '&.Mui-focused': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                                '&.MuiInputLabel-shrink': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                            },
+                            '.MuiSelect-select': {
+                                padding: '12px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                            },
+                            '.MuiSelect-icon': {
+                                right: '14px',
+                                color: '#6B7280',
+                            },
+                        }} disabled={!selectedSurveyTopic}>
+                            <InputLabel id="survey-specific-topic-select-label">Chọn chủ đề cụ thể</InputLabel>
+                            <Select
+                                labelId="survey-specific-topic-select-label"
+                                id="survey-specific-topic-select"
+                                value={selectedSurveySpecificTopic}
+                                label="Chọn chủ đề cụ thể"
+                                onChange={(e) => {
+                                    const newSpecificTopicId = e.target.value as number;
+                                    setSelectedSurveySpecificTopic(newSpecificTopicId);
+                                    setFormData((prev) => ({ ...prev, surveySpecificTopicId: newSpecificTopicId }));
+                                }}
+                            >
+                                <MenuItem value={0}>Chọn chủ đề cụ thể</MenuItem>
+                                {SurveySpecificTopic.filter(
+                                    (topic) => topic.surveyTopicId === selectedSurveyTopic
+                                ).map((topic) => (
+                                    <MenuItem key={topic.id} value={topic.id}>
+                                        {topic.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
                     <div className="config-section">
                         <h3 className="config-title">
@@ -395,12 +587,11 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                                             background: item,
                                                         }));
                                                         setBackgroundMode('image'); // Set background mode to image
-                                                        setCustomBackgroundImageUrl(null); // Clear custom image URL
                                                         const selectedConfig = handleSelectBackground(item);
                                                         setTitleColor(selectedConfig.colors.titleColor);
                                                         setContentColor(selectedConfig.colors.contentColor);
-                                                        setButtonBgColor(selectedConfig.colors.buttonBgColor);
-                                                        setButtonTextColor(selectedConfig.colors.buttonTextColor);
+                                                        setButtonBgColor(selectedConfig.colors.buttonBackgroundColor);
+                                                        setButtonTextColor(selectedConfig.colors.buttonContentColor);
                                                     }}
                                                 >
                                                     <img
