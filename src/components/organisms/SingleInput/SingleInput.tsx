@@ -14,6 +14,8 @@ import { SurveyFieldInputType } from "../../../constants/question";
 import Email from "../../molecules/email/Email";
 import TextArea from "../../molecules/text-area/TextArea";
 import Number from "../../molecules/number/Number";
+import ShortSentences from "../../molecules/short-sentences/ShortSentences";
+import Date from "../../molecules/date/Date";
 
 type Props = {
     question: QuestionType;
@@ -71,6 +73,11 @@ const SingleInput = ({ question, handleUpdateQuestion }: Props) => {
             <Number />
             <Email />
             <TextArea />
+            <ShortSentences
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+            />
+            <Date />
         </Box>
     );
 };
