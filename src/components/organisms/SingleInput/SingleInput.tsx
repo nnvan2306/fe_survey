@@ -107,7 +107,7 @@ const SingleInput = ({ question, handleUpdateQuestion }: Props) => {
         handleUpdateQuestion,
         question,
     ]);
-    console.log(question);
+
     return (
         <Box className="single-input flex flex-col gap-4 p-4 bg-gray-100 rounded-lg">
             <Typography variant="body1" className="text-gray-700">

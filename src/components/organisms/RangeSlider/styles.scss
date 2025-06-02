@@ -1,3 +1,37 @@
 .range-slider{
     margin: 0;
 }
+
+.range-slider-item {
+    margin-bottom: 20px; /* Add some space between range slider items */
+    border: 1px solid #ccc; /* Optional: Add a border to distinguish items */
+    padding: 15px; /* Optional: Add some padding */
+    border-radius: 8px; /* Optional: Rounded corners */
+    background-color: #4b5563; 
+}
+
+.add-range-button {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between icon and text */
+    cursor: pointer;
+    color: #1976d2; /* Example color (Material UI primary) */
+    margin-top: 20px; /* Space above the button */
+}
+
+.add-range-button:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+.single-slider{
+    margin: 0;
+    .MuiSlider-track {
+        background-color: #4b5563; /* Tailwind gray-600 */
+    }
+    .MuiSlider-rail {
+        background-color: #4b5563; /* Tailwind gray-600 */
+    }
+    .MuiSlider-thumb {
+        background-color: #f59e0b; /* Tailwind yellow-500 */
+    }
+}

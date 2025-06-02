@@ -26,6 +26,7 @@ import RangeSlider from "../RangeSlider/RangeSlider";
 import SingleInput from "../SingleInput/SingleInput";
 import Rating from "../Rating/Rating";
 import Ranking from "../Ranking/Ranking";
+import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
 
 const questionDefault = {
     questionTypeId: 0,
@@ -65,6 +66,8 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 | boolean
                 | OptionType[]
                 | Record<string, string | number>
+                | RangeSliderConfigJsonStringType
+                | Record<string, unknown>
         ) => {
             setFormData((prev) => ({
                 ...prev,
@@ -110,7 +113,12 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         />
                     ) : null;
                 case 4:
-                    return <RangeSlider />;
+                    return questionedit ? (
+                        <RangeSlider
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
                 case 5:
                     return questionedit ? (
                         <SingleInput

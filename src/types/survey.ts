@@ -3,6 +3,12 @@ export type OptionType = {
     order: number;
 };
 
+export type SlideType = {
+    min: number;
+    max: number;
+    step: number;
+    unit: string;
+};
 export type QuestionType = {
     questionTypeId: number;
     content: string;
@@ -10,7 +16,7 @@ export type QuestionType = {
     timeLimit: number;
     isVoiced: boolean;
     order: number;
-    configJsonString: Record<string, string | number>;
+    configJsonString: Record<string, string | number | SlideType[]>;
     options: OptionType[];
 };
 
