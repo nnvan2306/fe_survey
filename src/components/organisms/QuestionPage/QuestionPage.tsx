@@ -1,21 +1,20 @@
-import "./styles.scss";
-import { useEffect, useState } from "react";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import FlashOnIcon from "@mui/icons-material/FlashOn";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import {
-    Select,
-    MenuItem,
     FormControl,
     InputLabel,
+    MenuItem,
+    Select,
     Switch,
     Typography,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import { useEffect, useState } from "react";
 import type { SurveyType } from "../../../types/survey";
-import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
+import "./styles.scss";
 
 const questionDefault = {
     questionTypeId: 1,
@@ -65,15 +64,15 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         }
     }, []);
 
+    console.log("formData:", formData);
+
     return (
         <div className="question-page flex flex-col h-full">
             <div className="question-content flex flex-1 overflow-hidden">
                 <div
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
-                        backgroundImage: `url(${handleSelectBackground(
-                            formData.background
-                        )})`,
+                        backgroundImage: `url(${formData.background})`,
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">

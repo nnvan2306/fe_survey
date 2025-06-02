@@ -90,7 +90,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [brightness, setBrightness] = useState<number>(100);
-    const [customBackgroundImageUrl, setCustomBackgroundImageUrl] = useState<string | null>(null);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
     const [titleColor, setTitleColor] = useState<string>('');
     const [contentColor, setContentColor] = useState<string>('');
@@ -102,7 +101,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
     const [pickerForBackground, setPickerForBackground] = useState(false);
     const [selectedSurveyTopic, setSelectedSurveyTopic] = useState<number>(formData.surveyTopicId);
     const [selectedSurveySpecificTopic, setSelectedSurveySpecificTopic] = useState<number>(formData.surveySpecificTopicId);
-    const currentBackground = customBackgroundImageUrl || handleSelectBackground(formData.background).imagePath;
 
     useEffect(() => {
         localStorage.setItem('surveyFormData', JSON.stringify(formData));
@@ -115,6 +113,9 @@ const StartPage = ({ formData, setFormData }: Props) => {
 
             if (savedFormData) {
                 initialData = JSON.parse(savedFormData);
+                if (initialData.customBackgroundImageUrl === undefined) {
+                    initialData.customBackgroundImageUrl = null;
+                }
             } else {
                 initialData = await fetchSurveyData();
             }
@@ -124,24 +125,30 @@ const StartPage = ({ formData, setFormData }: Props) => {
         loadInitialData();
     }, []);
 
+    console.log("buttonBgColor:", buttonBgColor);
+
+
     useEffect(() => {
+        console.log("formData prop changed, synchronizing local states:", formData);
+
         setSelectedSurveyTopic(formData.surveyTopicId);
         setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
-        setCustomBackgroundImageUrl(formData.customBackgroundImageUrl || null);
 
-        if (formData.background === 'custom' || backgrounds.includes(formData.background)) {
+        if (formData.background === 'custom' && formData.customBackgroundImageUrl) {
+            setBackgroundMode('image');
+        } else if (backgrounds.includes(formData.background)) {
             setBackgroundMode('image');
         } else if (formData.background.startsWith('#') || formData.background === 'color_gradient') {
             setBackgroundMode('color');
         }
 
-        const initialConfig = handleSelectBackground(formData.background, formData.configJsonString);
-        setTitleColor(initialConfig.colors.titleColor);
-        setContentColor(initialConfig.colors.contentColor);
-        setButtonBgColor(initialConfig.colors.buttonBackgroundColor);
-        setButtonTextColor(initialConfig.colors.buttonContentColor);
+        // const initialConfig = handleSelectBackground(formData.background, formData.configJsonString);
+        // setTitleColor(initialConfig.colors.titleColor);
+        // setContentColor(initialConfig.colors.contentColor);
+        // setButtonBgColor(initialConfig.colors.buttonBackgroundColor);
+        // setButtonTextColor(initialConfig.colors.buttonContentColor);
 
-    }, [formData, backgrounds]); // Listen to formData prop and backgrounds array changes
+    }, [formData, backgrounds]);
 
     const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
         setBrightness(newValue as number);
@@ -153,7 +160,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
-                setCustomBackgroundImageUrl(imageUrl);
                 setFormData((prev) => ({
                     ...prev,
                     background: 'custom',
@@ -172,7 +178,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
 
     const handleSelectColorBackground = () => {
         setBackgroundMode('color');
-        setCustomBackgroundImageUrl(null);
+        setFormData((prev) => ({ ...prev, customBackgroundImageUrl: null, background: 'color_gradient' })); // Set background to a color type
         setPickerForBackground(true);
         setShowColorModal(true);
     };
@@ -186,13 +192,21 @@ const StartPage = ({ formData, setFormData }: Props) => {
             <div
                 className="relative flex-1 flex items-center justify-center"
                 style={{
-                    backgroundImage: backgroundMode === 'image' ? `url(${currentBackground})` : 'none',
-                    backgroundColor: backgroundMode === 'color' ? (formData.background.startsWith('#') ? formData.background : '#cccccc') : 'transparent',
-                    background: backgroundMode === 'color' ? `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})` : undefined,
-                    backgroundSize: "100% 100%",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    filter: backgroundMode === 'image' ? `brightness(${brightness / 100})` : 'none',
+                    ...(backgroundMode === 'image' && {
+                        backgroundImage: `url(${formData.background})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        filter: `brightness(${brightness / 100})`,
+                        backgroundColor: 'transparent',
+                    }),
+                    ...(backgroundMode === 'color' && {
+                        ...(formData.background.startsWith('#') ? {
+                            backgroundColor: formData.background,
+                        } : {
+                            background: `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`,
+                        }),
+                    }),
                 }}
             >
                 <div className="relative z-10 flex flex-col items-center w-full max-w-2xl px-8">
@@ -437,7 +451,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 document.getElementById('backgroundInput')?.click();
                             }}
                             style={{
-                                backgroundImage: `url(${currentBackground})`,
+                                backgroundImage: `url(${formData.background})`,
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                             }}
@@ -576,18 +590,17 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <div className="background-thumbnail">
                                     <div className="grid grid-cols-5 gap-4">
                                         {backgrounds.map((item, index) => {
-                                            const isSelected = formData.background === item && !customBackgroundImageUrl;
                                             return (
                                                 <div
                                                     key={index}
-                                                    className={`background-thumbnail-item ${isSelected && backgroundMode === 'image' ? 'active' : ''}`}
+                                                    className={`background-thumbnail-item ${formData.background === `/assets/start${index + 1}.webp` && backgroundMode === 'image' ? 'active' : ''}`}
                                                     onClick={() => {
                                                         setFormData((prev) => ({
                                                             ...prev,
-                                                            background: item,
+                                                            background: `/assets/start${index + 1}.webp`,
                                                         }));
-                                                        setBackgroundMode('image'); // Set background mode to image
-                                                        const selectedConfig = handleSelectBackground(item);
+                                                        setBackgroundMode('image');
+                                                        const selectedConfig = handleSelectBackground(`start${index + 1}`);
                                                         setTitleColor(selectedConfig.colors.titleColor);
                                                         setContentColor(selectedConfig.colors.contentColor);
                                                         setButtonBgColor(selectedConfig.colors.buttonBackgroundColor);
@@ -595,7 +608,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                                     }}
                                                 >
                                                     <img
-                                                        src={handleSelectBackground(item).imagePath}
+                                                        src={`/assets/start${index + 1}.webp`}
                                                         alt="background"
                                                         className="w-full h-full object-cover"
                                                     />
@@ -634,7 +647,8 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                     backgroundGradient1Color: color1,
                                     backgroundGradient2Color: color2,
                                 },
-                                background: (color1 !== color2) ? 'color_gradient' : color1, // Set background to a special value to indicate gradient or solid color
+                                background: (color1 !== color2) ? 'color_gradient' : color1,
+                                customBackgroundImageUrl: null,
                             }));
                         } else if (activeColorSetter) {
                             if (activeColorSetter === setButtonBgColor) {

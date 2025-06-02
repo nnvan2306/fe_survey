@@ -1,16 +1,16 @@
-import { Button, Tab } from "@mui/material";
-import MainTemPlate from "../../templates/MainTemPlate";
-import "./styles.scss";
-import { useState } from "react";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import StartPage from "../../organisms/StartPage/StartPage";
-import QuestionPage from "../../organisms/QuestionPage/QuestionPage";
-import EndPage from "../../organisms/EndPage/EndPage";
-import CompletePage from "../../organisms/CompletePage/CompletePage";
-import SharePage from "../../organisms/SharePage/SharePage";
-import ReportPage from "../../organisms/ReportPage/ReportPage";
+import { Button, Tab } from "@mui/material";
+import { useState } from "react";
 import { HEADER_HEIGHT } from "../../../constants";
 import type { SurveyType } from "../../../types/survey";
+import CompletePage from "../../organisms/CompletePage/CompletePage";
+import EndPage from "../../organisms/EndPage/EndPage";
+import QuestionPage from "../../organisms/QuestionPage/QuestionPage";
+import ReportPage from "../../organisms/ReportPage/ReportPage";
+import SharePage from "../../organisms/SharePage/SharePage";
+import StartPage from "../../organisms/StartPage/StartPage";
+import MainTemPlate from "../../templates/MainTemPlate";
+import "./styles.scss";
 
 const defaultValue = {
     id: 1,
@@ -22,7 +22,7 @@ const defaultValue = {
     surveySpecificTopicId: 5,
     surveyStatusId: 1,
     securityModeId: 2,
-    background: "start1",
+    background: "/assets/start1.webp",
     configJsonString: {
         backgroundGradient1Color: "#ffffff",
         backgroundGradient2Color: "#f0f0f0",
