@@ -93,10 +93,10 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [brightness, setBrightness] = useState<number>(formData.configJsonString.brightness || 100);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
-    const [titleColor, setTitleColor] = useState<string>('');
-    const [contentColor, setContentColor] = useState<string>('');
-    const [buttonBgColor, setButtonBgColor] = useState<string>('');
-    const [buttonTextColor, setButtonTextColor] = useState<string>('');
+    const [titleColor, setTitleColor] = useState<string>(formData.configJsonString.titleColor || '#FFFFFF');
+    const [contentColor, setContentColor] = useState<string>(formData.configJsonString.contentColor || '#CCCCCC');
+    const [buttonBgColor, setButtonBgColor] = useState<string>(formData.configJsonString.buttonBackgroundColor || '#007bff');
+    const [buttonTextColor, setButtonTextColor] = useState<string>(formData.configJsonString.buttonContentColor || '#ffffff');
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showColorModal, setShowColorModal] = useState(false);
     const [activeColorSetter, setActiveColorSetter] = useState<React.Dispatch<React.SetStateAction<string>> | null>(null);
@@ -151,6 +151,11 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
         } else if (formData.background.startsWith('#') || formData.background === 'color_gradient') {
             setBackgroundMode('color');
         }
+
+        setTitleColor(formData.configJsonString.titleColor);
+        setContentColor(formData.configJsonString.contentColor);
+        setButtonBgColor(formData.configJsonString.buttonBackgroundColor);
+        setButtonTextColor(formData.configJsonString.buttonContentColor);
 
     }, [formData, backgrounds]);
 
@@ -662,8 +667,29 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 } else {
                                     activeColorSetter(color1);
                                 }
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    configJsonString: {
+                                        ...prev.configJsonString,
+                                        buttonBackgroundColor: (color1 !== color2) ? `linear-gradient(to right, ${color1}, ${color2})` : color1,
+                                    },
+                                }));
                             } else {
                                 activeColorSetter(color1);
+                                setFormData((prev) => {
+                                    const newConfig = { ...prev.configJsonString };
+                                    if (activeColorSetter === setTitleColor) {
+                                        newConfig.titleColor = color1;
+                                    } else if (activeColorSetter === setContentColor) {
+                                        newConfig.contentColor = color1;
+                                    } else if (activeColorSetter === setButtonTextColor) {
+                                        newConfig.buttonContentColor = color1;
+                                    }
+                                    return {
+                                        ...prev,
+                                        configJsonString: newConfig,
+                                    };
+                                });
                             }
                         }
                         setShowColorModal(false);

@@ -67,8 +67,22 @@ const QuestionPage = ({ formData, setFormData }: PageProps) => {
                 <div
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
-                        backgroundImage: `url(${formData.background})`,
-                        filter: `brightness(${formData.configJsonString.brightness / 100})`,
+                        ...(formData.background.startsWith('/') && {
+                            backgroundImage: `url(${formData.background})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            filter: `brightness(${formData.configJsonString.brightness / 100})`,
+                            backgroundColor: 'transparent',
+                        }),
+                        ...(formData.background === 'color_gradient' && {
+                            background: `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`,
+                            filter: `brightness(${formData.configJsonString.brightness / 100})`,
+                        }),
+                        ...(formData.background.startsWith('#') && {
+                            backgroundColor: formData.background,
+                            filter: `brightness(${formData.configJsonString.brightness / 100})`,
+                        }),
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">
