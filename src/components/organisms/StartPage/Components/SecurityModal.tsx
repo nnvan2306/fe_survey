@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './SecurityModal.module.scss';
 
 interface SecurityModalProps {
   open: boolean;
   onClose: () => void;
+  onSavePassword: (password: string) => void;
+  initialPassword: string;
 }
 
-const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose }) => {
+const SecurityModal: React.FC<SecurityModalProps> = ({ open, onClose, onSavePassword, initialPassword }) => {
   const [activeTab, setActiveTab] = useState<'general' | 'individual'>('general');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(initialPassword);
   const [showPassword, setShowPassword] = useState(false);
   const [customMessage, setCustomMessage] = useState('');
+
+  useEffect(() => {
+    setPassword(initialPassword);
+  }, [initialPassword]);
 
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSubmit = () => {
-    console.log('Password submitted:', password);
+    onSavePassword(password);
     onClose();
   };
 

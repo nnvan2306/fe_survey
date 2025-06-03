@@ -1,11 +1,8 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import CloseIcon from '@mui/icons-material/Close';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { FormControl, InputLabel, MenuItem, Select, Slider } from '@mui/material';
 import React, { useEffect, useState } from "react";
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { SurveySpecificTopic, SurveyTopic } from "../../../data/surveyData";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
@@ -88,7 +85,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
 
     const [skipStartPage, setSkipStartPage] = useState(false);
     const [audioSurvey, setAudioSurvey] = useState(false);
-    const [passwordProtection, setPasswordProtection] = useState(false);
+    const [passwordProtection, setPasswordProtection] = useState(formData.securityModeId === 2);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [brightness, setBrightness] = useState<number>(formData.configJsonString.brightness || 100);
@@ -103,9 +100,11 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
     const [pickerForBackground, setPickerForBackground] = useState(false);
     const [selectedSurveyTopic, setSelectedSurveyTopic] = useState<number>(formData.surveyTopicId);
     const [selectedSurveySpecificTopic, setSelectedSurveySpecificTopic] = useState<number>(formData.surveySpecificTopicId);
+    const [surveyStatusChecked, setSurveyStatusChecked] = useState<boolean>(formData.surveyStatusId === 1);
 
     useEffect(() => {
         localStorage.setItem('surveyFormData', JSON.stringify(formData));
+        console.log("formData updated in localStorage:", formData.securityModeId, formData.configJsonString.password);
     }, [formData]);
 
     useEffect(() => {
@@ -115,6 +114,18 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
 
             if (savedFormData) {
                 initialData = JSON.parse(savedFormData);
+                if (!initialData.configJsonString) {
+                    initialData.configJsonString = {
+                        backgroundGradient1Color: "#FCE38A",
+                        backgroundGradient2Color: "#F38181",
+                        titleColor: "#FFFFFF",
+                        contentColor: "#CCCCCC",
+                        buttonBackgroundColor: "#007bff",
+                        buttonContentColor: "#ffffff",
+                        password: "",
+                        brightness: 100,
+                    };
+                }
                 if (initialData.customBackgroundImageUrl === undefined) {
                     initialData.customBackgroundImageUrl = null;
                 }
@@ -124,11 +135,20 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                 if (initialData.skipStartPage === undefined) {
                     initialData.skipStartPage = false;
                 }
+                if (initialData.surveyStatusId === undefined) {
+                    initialData.surveyStatusId = 1; // Default to active
+                }
+                if (initialData.securityModeId === undefined) {
+                    initialData.securityModeId = 1; // Default to no password protection
+                }
             } else {
                 initialData = await fetchSurveyData();
             }
             setFormData(initialData);
             setSkipStartPage(initialData.skipStartPage || false);
+            setSurveyStatusChecked(initialData.surveyStatusId === 1);
+            setPasswordProtection(initialData.securityModeId === 2);
+            console.log("Initial formData loaded:", initialData.securityModeId, initialData.configJsonString.password);
         };
 
         loadInitialData();
@@ -143,6 +163,9 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
         setSelectedSurveyTopic(formData.surveyTopicId);
         setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
         setBrightness(formData.configJsonString.brightness);
+        setSurveyStatusChecked(formData.surveyStatusId === 1);
+        setPasswordProtection(formData.securityModeId === 2);
+        console.log("Synchronized states with formData:", formData.securityModeId, formData.configJsonString.password);
 
         if (formData.background === 'custom' && formData.customBackgroundImageUrl) {
             setBackgroundMode('image');
@@ -386,6 +409,30 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                         </FormControl>
                     </div>
                     <div className="config-section">
+                        <div className="flex items-center mb-3">
+                            <h3 className="config-title">
+                                TRẠNG THÁI KHẢO SÁT
+                            </h3>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={surveyStatusChecked}
+                                    onChange={(e) => {
+                                        const newCheckedStatus = e.target.checked;
+                                        setSurveyStatusChecked(newCheckedStatus);
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            surveyStatusId: newCheckedStatus ? 1 : 2, // 1 for active, 2 for inactive
+                                        }));
+                                    }}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div className="config-section">
                         <h3 className="config-title">
                             KHẢO SÁT TRÊN NỀN AUDIO
                         </h3>
@@ -407,7 +454,18 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 <input
                                     type="checkbox"
                                     checked={passwordProtection}
-                                    onChange={(e) => setPasswordProtection(e.target.checked)}
+                                    onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        setPasswordProtection(isChecked);
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            securityModeId: isChecked ? 2 : 1,
+                                            configJsonString: {
+                                                ...prev.configJsonString,
+                                                password: isChecked ? prev.configJsonString.password : "",
+                                            },
+                                        }));
+                                    }}
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
@@ -420,7 +478,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             </button>
                         )}
                     </div>
-                    <div className="config-section">
+                    {/* <div className="config-section">
                         <h3 className="config-title">NGÀY BẮT ĐẦU</h3>
                         <DatePicker
                             selected={startDate}
@@ -451,7 +509,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 </button>
                             }
                         />
-                    </div>
+                    </div> */}
                     <div>
                         <h3>SỬ DỤNG HÌNH NỀN</h3>
                         <div
@@ -640,6 +698,17 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                 <SecurityModal
                     open={showPasswordModal}
                     onClose={() => setShowPasswordModal(false)}
+                    onSavePassword={(newPassword) => {
+                        setFormData((prev) => ({
+                            ...prev,
+                            securityModeId: newPassword ? 2 : 1, // Set to 2 if password is provided, 1 otherwise
+                            configJsonString: {
+                                ...prev.configJsonString,
+                                password: newPassword,
+                            },
+                        }));
+                    }}
+                    initialPassword={formData.configJsonString.password || ''}
                 />
             )}
 
