@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -71,7 +72,6 @@ const fetchSurveyData = (): Promise<SurveyType> => {
 const saveSurveyData = (data: SurveyType): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            console.log("Simulating API call to save data:", data);
             resolve();
         }, 500);
     });
@@ -91,10 +91,8 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
     };
 
     const handleStartSurvey = () => {
-        console.log("Starting survey with data:", formData);
         saveSurveyData(formData)
             .then(() => {
-                console.log("Survey data saved successfully (simulated).");
             })
             .catch((error) => {
                 console.error("Error saving survey data (simulated):", error);
@@ -119,7 +117,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
 
     useEffect(() => {
         localStorage.setItem('surveyFormData', JSON.stringify(formData));
-        console.log("formData updated in localStorage:", formData.securityModeId, formData.configJsonString.password);
     }, [formData]);
 
     useEffect(() => {
@@ -163,24 +160,21 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
             setSkipStartPage(initialData.skipStartPage || false);
             setSurveyStatusChecked(initialData.surveyStatusId === 1);
             setSelectedSecurityMode(initialData.securityModeId);
-            console.log("Initial formData loaded:", initialData.securityModeId, initialData.configJsonString.password);
         };
 
         loadInitialData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    console.log("buttonBgColor:", buttonBgColor);
 
 
     useEffect(() => {
-        console.log("formData prop changed, synchronizing local states:", formData);
 
         setSelectedSurveyTopic(formData.surveyTopicId);
         setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
         setBrightness(formData.configJsonString.brightness);
         setSurveyStatusChecked(formData.surveyStatusId === 1);
         setSelectedSecurityMode(formData.securityModeId);
-        console.log("Synchronized states with formData:", formData.securityModeId, formData.configJsonString.password);
 
         if (formData.background === 'custom' && formData.customBackgroundImageUrl) {
             setBackgroundMode('image');
@@ -195,9 +189,10 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
         setButtonBgColor(formData.configJsonString.buttonBackgroundColor);
         setButtonTextColor(formData.configJsonString.buttonContentColor);
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData, backgrounds]);
 
-    const handleBrightnessChange = (event: Event, newValue: number | number[]) => {
+    const handleBrightnessChange = (_event: Event, newValue: number | number[]) => {
         const newBrightness = newValue as number;
         setBrightness(newBrightness);
         setFormData((prev) => ({
@@ -319,109 +314,13 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             </label>
                         </div>
                     </div>
-                    <div className="config-section">
-                        <h3>CHỦ ĐỀ KHẢO SÁT</h3>
-                        <FormControl fullWidth sx={{
-                            '.MuiOutlinedInput-root': {
-                                height: '48px',
-                                borderRadius: '8px',
-                                border: '1px solid #D1D5DB',
-                                '& fieldset': { border: 'none' },
-                                '&:hover fieldset': { border: 'none' },
-                                '&.Mui-focused fieldset': { border: 'none' },
-                            },
-                            '.MuiInputLabel-root': {
-                                transform: 'translate(14px, 14px) scale(1)',
-                                '&.Mui-focused': {
-                                    transform: 'translate(14px, -9px) scale(0.75)',
-                                },
-                                '&.MuiInputLabel-shrink': {
-                                    transform: 'translate(14px, -9px) scale(0.75)',
-                                },
-                            },
-                            '.MuiSelect-select': {
-                                padding: '12px 14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                            },
-                            '.MuiSelect-icon': {
-                                right: '14px',
-                                color: '#6B7280',
-                            },
-                        }}>
-                            <Select
-                                labelId="survey-topic-select-label"
-                                id="survey-topic-select"
-                                value={selectedSurveyTopic}
-                                label="Chọn chủ đề"
-                                onChange={(e) => {
-                                    const newTopicId = e.target.value as number;
-                                    setSelectedSurveyTopic(newTopicId);
-                                    setFormData((prev) => ({ ...prev, surveyTopicId: newTopicId, surveySpecificTopicId: 0 }));
-                                    setSelectedSurveySpecificTopic(0);
-                                }}
-                            >
-                                <MenuItem value={0}>Chọn chủ đề</MenuItem>
-                                {SurveyTopic.map((topic) => (
-                                    <MenuItem key={topic.id} value={topic.id}>
-                                        {topic.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="config-section">
-                        <h3>CHỦ ĐỀ KHẢO SÁT CỤ THỂ</h3>
-                        <FormControl fullWidth sx={{
-                            '.MuiOutlinedInput-root': {
-                                height: '48px',
-                                borderRadius: '8px',
-                                border: '1px solid #D1D5DB',
-                                '& fieldset': { border: 'none' },
-                                '&:hover fieldset': { border: 'none' },
-                                '&.Mui-focused fieldset': { border: 'none' },
-                            },
-                            '.MuiInputLabel-root': {
-                                transform: 'translate(14px, 14px) scale(1)',
-                                '&.Mui-focused': {
-                                    transform: 'translate(14px, -9px) scale(0.75)',
-                                },
-                                '&.MuiInputLabel-shrink': {
-                                    transform: 'translate(14px, -9px) scale(0.75)',
-                                },
-                            },
-                            '.MuiSelect-select': {
-                                padding: '12px 14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                            },
-                            '.MuiSelect-icon': {
-                                right: '14px',
-                                color: '#6B7280',
-                            },
-                        }} disabled={!selectedSurveyTopic}>
-                            <Select
-                                labelId="survey-specific-topic-select-label"
-                                id="survey-specific-topic-select"
-                                value={selectedSurveySpecificTopic}
-                                label="Chọn chủ đề cụ thể"
-                                onChange={(e) => {
-                                    const newSpecificTopicId = e.target.value as number;
-                                    setSelectedSurveySpecificTopic(newSpecificTopicId);
-                                    setFormData((prev) => ({ ...prev, surveySpecificTopicId: newSpecificTopicId }));
-                                }}
-                            >
-                                <MenuItem value={0}>Chọn chủ đề cụ thể</MenuItem>
-                                {SurveySpecificTopic.filter(
-                                    (topic) => topic.surveyTopicId === selectedSurveyTopic
-                                ).map((topic) => (
-                                    <MenuItem key={topic.id} value={topic.id}>
-                                        {topic.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </div>
+                    <ToppicSurvey
+                        selectedSurveyTopic={selectedSurveyTopic}
+                        setSelectedSurveyTopic={setSelectedSurveyTopic}
+                        selectedSurveySpecificTopic={selectedSurveySpecificTopic}
+                        setSelectedSurveySpecificTopic={setSelectedSurveySpecificTopic}
+                        setFormData={setFormData}
+                    />
                     <div className="config-section">
                         <div className="flex items-center mb-3">
                             <h3 className="config-title">
@@ -545,38 +444,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             </Select>
                         </FormControl>
                     </div>
-                    {/* <div className="config-section">
-                        <h3 className="config-title">NGÀY BẮT ĐẦU</h3>
-                        <DatePicker
-                            selected={startDate}
-                            onChange={(date: Date | null) => setStartDate(date)}
-                            showTimeSelect
-                            dateFormat="dd/MM/yyyy HH:mm"
-                            customInput={
-                                <button className={`date-picker-button ${startDate ? 'date-selected' : ''}`}>
-                                    <AccessTimeIcon fontSize="small" />
-                                    {startDate ? startDate.toLocaleDateString('vi-VN') + ' ' + startDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : 'Chọn ngày'}
-                                    {startDate && <CloseIcon fontSize="small" className="clear-icon" onClick={(e) => { e.stopPropagation(); setStartDate(null); }} />}
-                                </button>
-                            }
-                        />
-                    </div>
-                    <div className="config-section">
-                        <h3 className="config-title">NGÀY KẾT THÚC</h3>
-                        <DatePicker
-                            selected={endDate}
-                            onChange={(date: Date | null) => setEndDate(date)}
-                            showTimeSelect
-                            dateFormat="dd/MM/yyyy HH:mm"
-                            customInput={
-                                <button className={`date-picker-button ${endDate ? 'date-selected' : ''}`}>
-                                    <AccessTimeIcon fontSize="small" />
-                                    {endDate ? endDate.toLocaleDateString('vi-VN') + ' ' + endDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) : 'Chọn ngày'}
-                                    {endDate && <CloseIcon fontSize="small" className="clear-icon" onClick={(e) => { e.stopPropagation(); setEndDate(null); }} />}
-                                </button>
-                            }
-                        />
-                    </div> */}
                     <div>
                         <h3>SỬ DỤNG HÌNH NỀN</h3>
                         <div
@@ -725,7 +592,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             <div className="background-preview">
                                 <div className="background-thumbnail">
                                     <div className="grid grid-cols-5 gap-4">
-                                        {backgrounds.map((item, index) => {
+                                        {backgrounds.map((_item, index) => {
                                             const selectedConfig = handleSelectBackground(`start${index + 1}`);
                                             return (
                                                 <div
@@ -879,3 +746,112 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
 };
 
 export default StartPage;
+
+
+function ToppicSurvey({ selectedSurveyTopic, setSelectedSurveyTopic, selectedSurveySpecificTopic, setSelectedSurveySpecificTopic, setFormData }: any) {
+    return <>
+        <div className="config-section">
+            <h3>CHỦ ĐỀ KHẢO SÁT</h3>
+            <FormControl fullWidth sx={{
+                '.MuiOutlinedInput-root': {
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: '1px solid #D1D5DB',
+                    '& fieldset': { border: 'none' },
+                    '&:hover fieldset': { border: 'none' },
+                    '&.Mui-focused fieldset': { border: 'none' },
+                },
+                '.MuiInputLabel-root': {
+                    transform: 'translate(14px, 14px) scale(1)',
+                    '&.Mui-focused': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                    },
+                    '&.MuiInputLabel-shrink': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                    },
+                },
+                '.MuiSelect-select': {
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                },
+                '.MuiSelect-icon': {
+                    right: '14px',
+                    color: '#6B7280',
+                },
+            }}>
+                <Select
+                    labelId="survey-topic-select-label"
+                    id="survey-topic-select"
+                    value={selectedSurveyTopic}
+                    label="Chọn chủ đề"
+                    onChange={(e) => {
+                        const newTopicId = e.target.value as number;
+                        setSelectedSurveyTopic(newTopicId);
+                        setFormData((prev: any) => ({ ...prev, surveyTopicId: newTopicId, surveySpecificTopicId: 0 }));
+                        setSelectedSurveySpecificTopic(0);
+                    }}
+                >
+                    <MenuItem value={0}>Chọn chủ đề</MenuItem>
+                    {SurveyTopic.map((topic) => (
+                        <MenuItem key={topic.id} value={topic.id}>
+                            {topic.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </div>
+        <div className="config-section">
+            <h3>CHỦ ĐỀ KHẢO SÁT CỤ THỂ</h3>
+            <FormControl fullWidth sx={{
+                '.MuiOutlinedInput-root': {
+                    height: '48px',
+                    borderRadius: '8px',
+                    border: '1px solid #D1D5DB',
+                    '& fieldset': { border: 'none' },
+                    '&:hover fieldset': { border: 'none' },
+                    '&.Mui-focused fieldset': { border: 'none' },
+                },
+                '.MuiInputLabel-root': {
+                    transform: 'translate(14px, 14px) scale(1)',
+                    '&.Mui-focused': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                    },
+                    '&.MuiInputLabel-shrink': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                    },
+                },
+                '.MuiSelect-select': {
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                },
+                '.MuiSelect-icon': {
+                    right: '14px',
+                    color: '#6B7280',
+                },
+            }} disabled={!selectedSurveyTopic}>
+                <Select
+                    labelId="survey-specific-topic-select-label"
+                    id="survey-specific-topic-select"
+                    value={selectedSurveySpecificTopic}
+                    label="Chọn chủ đề cụ thể"
+                    onChange={(e) => {
+                        const newSpecificTopicId = e.target.value as number;
+                        setSelectedSurveySpecificTopic(newSpecificTopicId);
+                        setFormData((prev: any) => ({ ...prev, surveySpecificTopicId: newSpecificTopicId }));
+                    }}
+                >
+                    <MenuItem value={0}>Chọn chủ đề cụ thể</MenuItem>
+                    {SurveySpecificTopic.filter(
+                        (topic) => topic.surveyTopicId === selectedSurveyTopic
+                    ).map((topic) => (
+                        <MenuItem key={topic.id} value={topic.id}>
+                            {topic.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </div>
+    </>
+}
