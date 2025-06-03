@@ -273,6 +273,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             type="text"
                             placeholder="Nhập câu hỏi tại đây"
                             className="question-title-input"
+                            style={{
+                                color: `${formData.configJsonString.titleColor}`,
+                            }}
                             value={questionedit?.content || ""}
                             onChange={(e) =>
                                 handleUpdateQuestion("content", e.target.value)
@@ -283,6 +286,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             rows={2}
                             className="question-description-input"
                             value={questionedit?.description || ""}
+                            style={{
+                                color: `${formData.configJsonString.contentColor}`,
+                            }}
                             onChange={(e) =>
                                 handleUpdateQuestion(
                                     "description",
