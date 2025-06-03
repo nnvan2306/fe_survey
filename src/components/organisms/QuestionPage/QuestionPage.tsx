@@ -27,6 +27,7 @@ import SingleInput from "../SingleInput/SingleInput";
 import Rating from "../Rating/Rating";
 import Ranking from "../Ranking/Ranking";
 import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
+import Overlay from "../overlay/Overlay";
 
 const questionDefault = {
     questionTypeId: 0,
@@ -50,6 +51,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
     const [showMedia, setShowMedia] = useState(false);
     const [carryForwardChoices, setCarryForwardChoices] = useState(false);
     const [orderCurrent, setOrderCurrent] = useState(1);
+    const [isOpenOverlay, setIsOpenOverlay] = useState(false);
 
     const questionedit = useMemo(() => {
         return (formData?.questions || []).find((item) => {
@@ -170,6 +172,59 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         setOrderCurrent(order);
     };
 
+    const handleDeleteQuestion = () => {
+        if (!orderCurrent) return;
+        const newQuestions = formData.questions
+            .filter((item) => item.order !== orderCurrent)
+            .map((item, index) => ({
+                ...item,
+                order: index + 1,
+            }));
+        setFormData((prev) => ({
+            ...prev,
+            questions: newQuestions,
+        }));
+    };
+
+    const handleSwapQuestion = (target: number) => {
+        const currentOrder = orderCurrent;
+        const targetOrder = target;
+
+        if (currentOrder === targetOrder || !currentOrder || !targetOrder) {
+            return; // Cannot swap with itself or invalid targets
+        }
+
+        const questions = [...formData.questions];
+        const currentIndex = questions.findIndex(
+            (item) => item.order === currentOrder
+        );
+        const targetIndex = questions.findIndex(
+            (item) => item.order === targetOrder
+        );
+
+        if (currentIndex === -1 || targetIndex === -1) {
+            return; // Current or target question not found
+        }
+
+        // Swap questions
+        const [targetQuestion] = questions.splice(targetIndex, 1);
+        questions.splice(currentIndex, 0, targetQuestion);
+
+        // Reassign orders based on new positions
+        const newQuestions = questions.map((item, index) => ({
+            ...item,
+            order: index + 1,
+        }));
+
+        setFormData((prev) => ({
+            ...prev,
+            questions: newQuestions,
+        }));
+
+        // Update current order to the target question's new order
+        setOrderCurrent(targetOrder);
+    };
+
     useEffect(() => {
         if (!formData?.questions?.length) {
             setFormData((prev) => ({
@@ -181,7 +236,16 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
 
     return (
         <div className="question-page flex flex-col h-full">
-            <div className="question-content flex flex-1 overflow-hidden">
+            <div className="question-content flex flex-1 overflow-hidden relative">
+                {isOpenOverlay ? (
+                    <Overlay
+                        onClose={() => setIsOpenOverlay(false)}
+                        onDelete={handleDeleteQuestion}
+                        onSwap={handleSwapQuestion}
+                        formData={formData}
+                        orderCurrent={orderCurrent}
+                    />
+                ) : null}
                 <div
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
@@ -347,6 +411,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             order={item.order}
                             orderCurrent={orderCurrent}
                             onChange={handleChangeQuestion}
+                            onOpenOverlay={() => setIsOpenOverlay(true)}
                         />
                     ))}
                     <div
@@ -368,10 +433,12 @@ const QuestionItem = ({
     order,
     orderCurrent,
     onChange,
+    onOpenOverlay,
 }: {
     order: number;
     orderCurrent: number;
     onChange: (order: number) => void;
+    onOpenOverlay: () => void;
 }) => {
     return (
         <div
@@ -380,7 +447,11 @@ const QuestionItem = ({
             }`}
             onClick={() => onChange(order)}
         >
-            <CheckCircleIcon fontSize="small" className="item-icon" />
+            <CheckCircleIcon
+                fontSize="large"
+                className="item-icon"
+                onClick={onOpenOverlay}
+            />
             <span className="item-text">{order}.</span>
         </div>
     );
