@@ -438,7 +438,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                         setSurveyStatusChecked(newCheckedStatus);
                                         setFormData((prev) => ({
                                             ...prev,
-                                            surveyStatusId: newCheckedStatus ? 1 : 2, // 1 for active, 2 for inactive
+                                            surveyStatusId: newCheckedStatus ? 1 : 2,
                                         }));
                                     }}
                                     aria-label="Trạng thái khảo sát"
