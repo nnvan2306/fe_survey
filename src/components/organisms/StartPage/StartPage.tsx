@@ -9,13 +9,13 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { SurveySpecificTopic, SurveyTopic } from "../../../data/surveyData";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
-import type { SurveyType } from "../../../types/survey";
+import type { PageProps, SurveyType } from "../../../types/survey";
 import ColorPickerModal from './Components/ColorPickerModal';
 import SecurityModal from './Components/SecurityModal';
 import "./styles.scss";
 
 const backgrounds = Array.from(
-    { length: 12 },
+    { length: 11 },
     (_, index) => `start${index + 1}`
 );
 
@@ -42,6 +42,7 @@ const mockSurveyData: SurveyType = {
     description: "Mô tả khảo sát mặc định",
     title: "Tiêu đề khảo sát mặc định",
     questions: [],
+    skipStartPage: false,
 };
 
 const fetchSurveyData = (): Promise<SurveyType> => {
@@ -61,17 +62,17 @@ const saveSurveyData = (data: SurveyType): Promise<void> => {
     });
 };
 
-type Props = {
-    formData: SurveyType;
-    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
-};
-
-const StartPage = ({ formData, setFormData }: Props) => {
+const StartPage = ({ formData, setFormData }: PageProps) => {
     const handleInputChange = (
         field: keyof SurveyType,
         value: string | boolean
     ) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleToggleSkipStartPage = (checked: boolean) => {
+        setSkipStartPage(checked);
+        handleInputChange("skipStartPage", checked);
     };
 
     const handleStartSurvey = () => {
@@ -120,10 +121,14 @@ const StartPage = ({ formData, setFormData }: Props) => {
                 if (initialData.configJsonString.brightness === undefined) {
                     initialData.configJsonString.brightness = 100; // Default brightness
                 }
+                if (initialData.skipStartPage === undefined) {
+                    initialData.skipStartPage = false;
+                }
             } else {
                 initialData = await fetchSurveyData();
             }
             setFormData(initialData);
+            setSkipStartPage(initialData.skipStartPage || false);
         };
 
         loadInitialData();
@@ -146,12 +151,6 @@ const StartPage = ({ formData, setFormData }: Props) => {
         } else if (formData.background.startsWith('#') || formData.background === 'color_gradient') {
             setBackgroundMode('color');
         }
-
-        // const initialConfig = handleSelectBackground(formData.background, formData.configJsonString);
-        // setTitleColor(initialConfig.colors.titleColor);
-        // setContentColor(initialConfig.colors.contentColor);
-        // setButtonBgColor(initialConfig.colors.buttonBackgroundColor);
-        // setButtonTextColor(initialConfig.colors.buttonContentColor);
 
     }, [formData, backgrounds]);
 
@@ -270,7 +269,7 @@ const StartPage = ({ formData, setFormData }: Props) => {
                                 <input
                                     type="checkbox"
                                     checked={skipStartPage}
-                                    onChange={(e) => setSkipStartPage(e.target.checked)}
+                                    onChange={(e) => handleToggleSkipStartPage(e.target.checked)}
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
@@ -387,16 +386,9 @@ const StartPage = ({ formData, setFormData }: Props) => {
                         </h3>
                         <div className="flex items-center justify-between mb-3">
                             <span className="text-gray-600">Bật</span>
-                            <label className="toggle-switch">
-                                <input
-                                    type="checkbox"
-                                    checked={audioSurvey}
-                                    onChange={(e) => setAudioSurvey(e.target.checked)}
-                                />
-                                <span className="toggle-slider"></span>
-                            </label>
+                            <button className="buy-now-button">Mua đi nè</button>
                         </div>
-                        <button className="buy-now-button">Mua đi nè</button>
+
                     </div>
                     <div className="config-section">
                         <div className="flex items-center mb-3">

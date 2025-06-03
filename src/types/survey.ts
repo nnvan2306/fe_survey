@@ -37,4 +37,10 @@ export type SurveyType = {
         brightness: number;
     };
     questions: QuestionType[];
+    skipStartPage: boolean;
 };
+
+export interface PageProps {
+    formData: SurveyType;
+    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
+}

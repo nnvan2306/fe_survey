@@ -34,6 +34,7 @@ const defaultValue = {
         brightness: 100,
     },
     questions: [],
+    skipStartPage: false,
 };
 const SurveyNew = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -43,31 +44,36 @@ const SurveyNew = () => {
         setActiveTab(tabValue);
     };
 
-    const tabs = [
-        {
-            label: "Trang Bắt Đầu",
-            value: 0,
-            component: (
-                <StartPage formData={formData} setFormData={setFormData} />
-            ),
-        },
-        {
-            label: "Bảng Hỏi",
-            value: 1,
-            component: (
-                <QuestionPage formData={formData} setFormData={setFormData} />
-            ),
-        },
-        { label: "Trang Kết Thúc", value: 2, component: <EndPage formData={formData} setFormData={setFormData} /> },
-        { label: "Hoàn Tất", value: 3, component: <CompletePage formData={formData} setFormData={setFormData} /> },
-        { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} /> },
-        {
-            label: "Báo cáo",
-            value: 5,
-            component: <ReportPage formData={formData} setFormData={setFormData} />,
-            disabled: true,
-        },
-    ];
+    const tabs: {
+        label: string;
+        value: number;
+        component: React.ReactNode;
+        disabled?: boolean;
+    }[] = [
+            {
+                label: "Trang Bắt Đầu",
+                value: 0,
+                component: (
+                    <StartPage formData={formData} setFormData={setFormData} />
+                ),
+            },
+            {
+                label: "Bảng Hỏi",
+                value: 1,
+                component: (
+                    <QuestionPage formData={formData} setFormData={setFormData} />
+                ),
+            },
+            { label: "Trang Kết Thúc", value: 2, component: <EndPage formData={formData} setFormData={setFormData} /> },
+            { label: "Hoàn Tất", value: 3, component: <CompletePage formData={formData} setFormData={setFormData} /> },
+            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} /> },
+            {
+                label: "Báo cáo",
+                value: 5,
+                component: <ReportPage formData={formData} setFormData={setFormData} />,
+                disabled: true,
+            },
+        ];
 
     const ActiveComponent = tabs[activeTab].component;
 

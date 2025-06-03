@@ -42,12 +42,12 @@ const backgroundConfigs: Record<string, Omit<BackgroundConfig, 'imagePath'> & { 
     start2: { imagePath: "/assets/start2.webp", colors: { ...defaultColors, buttonBackgroundColor: "#FCBC72" } },
     start3: { imagePath: "/assets/start3.webp", colors: { ...defaultColors, buttonBackgroundColor: "#BC73BC" } },
     start4: { imagePath: "/assets/start4.webp", colors: { ...defaultColors, buttonBackgroundColor: "#4EA295" } },
-    start11: { imagePath: "/assets/start11.webp", colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #F52828, #E84F4F)" } },
     start6: { imagePath: "/assets/start6.webp", colors: { ...defaultColors, buttonBackgroundColor: "#BC6235" } },
     start7: { imagePath: "/assets/start7.webp", colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #F27186, #F83D6E)" } },
     start8: { imagePath: "/assets/start8.webp", colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #19A0BB, #1CB3D1)" } },
     start9: { imagePath: "/assets/start9.webp", colors: { ...defaultColors, buttonBackgroundColor: "#027186" } },
     start10: { imagePath: "/assets/start10.webp", colors: { ...defaultColors, buttonBackgroundColor: "#6EAF99" } },
+    start11: { imagePath: "/assets/start11.webp", colors: { ...defaultColors, buttonBackgroundColor: "linear-gradient(to right, #F52828, #E84F4F)" } },
     start12: { imagePath: "/assets/start12.webp", colors: { ...defaultColors, buttonBackgroundColor: "#00BBC1" } },
     default_color: {
         imagePath: "",

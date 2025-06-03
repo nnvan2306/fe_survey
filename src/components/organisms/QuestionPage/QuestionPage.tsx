@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { useEffect, useState } from "react";
-import type { SurveyType } from "../../../types/survey";
+import type { PageProps } from "../../../types/survey";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
 import "./styles.scss";
 
@@ -27,12 +27,7 @@ const questionDefault = {
     options: [],
 };
 
-type Props = {
-    formData: SurveyType;
-    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
-};
-
-const QuestionPage = ({ formData, setFormData }: Props) => {
+const QuestionPage = ({ formData, setFormData }: PageProps) => {
     const [questionType, setQuestionType] = useState("");
     const [isRequired, setIsRequired] = useState(true);
     const [showLabel, setShowLabel] = useState(false);
