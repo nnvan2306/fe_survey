@@ -1,0 +1,37 @@
+.range-slider{
+    margin: 0;
+}
+
+.range-slider-item {
+    margin-bottom: 20px; 
+    border: 1px solid #ccc; 
+    padding: 15px; 
+    border-radius: 8px; 
+    background-color: #4b5563; 
+}
+
+.add-range-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: #1976d2; 
+    margin-top: 20px; 
+}
+
+.add-range-button:hover {
+    text-decoration: underline;
+}
+
+.single-slider{
+    margin: 0;
+    .MuiSlider-track {
+        background-color: #4b5563;
+    }
+    .MuiSlider-rail {
+        background-color: #4b5563; 
+    }
+    .MuiSlider-thumb {
+        background-color: #f59e0b; 
+    }
+}

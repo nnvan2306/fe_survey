@@ -2,6 +2,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import { useState } from "react";
 import { HEADER_HEIGHT } from "../../../constants";
+import useBlocker from "../../../hooks/useBlocker";
 import type { SurveyType } from "../../../types/survey";
 import CompletePage from "../../organisms/CompletePage/CompletePage";
 import EndPage from "../../organisms/EndPage/EndPage";
@@ -64,19 +65,20 @@ const SurveyNew = () => {
                     <QuestionPage formData={formData} setFormData={setFormData} />
                 ),
             },
-            { label: "Trang Kết Thúc", value: 2, component: <EndPage formData={formData} setFormData={setFormData} /> },
-            { label: "Hoàn Tất", value: 3, component: <CompletePage formData={formData} setFormData={setFormData} /> },
-            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} /> },
+            { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
+            { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
+            { label: "Chia Sẻ", value: 4, component: <SharePage /> },
             {
                 label: "Báo cáo",
                 value: 5,
-                component: <ReportPage formData={formData} setFormData={setFormData} />,
+                component: <ReportPage />,
                 disabled: true,
             },
         ];
 
     const ActiveComponent = tabs[activeTab].component;
 
+    useBlocker(true);
     return (
         <MainTemPlate>
             <div

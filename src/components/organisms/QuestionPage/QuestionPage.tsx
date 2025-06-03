@@ -10,60 +10,243 @@ import {
     Switch,
     Typography,
 } from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import { useEffect, useState } from "react";
-import type { PageProps } from "../../../types/survey";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 import FormSelectType from "../../molecules/form-select-type/FormSelectType";
+import MultipleChoice from "../MultipleChoice/MultipleChoice";
+import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
+import RangeSlider from "../RangeSlider/RangeSlider";
+import Ranking from "../Ranking/Ranking";
+import Rating from "../Rating/Rating";
+import SingleChoice from "../SingleChoice/SingleChoice";
+import SingleInput from "../SingleInput/SingleInput";
+import SingleSlider from "../SingleSlider/SingleSlider";
+import Overlay from "../overlay/Overlay";
 import "./styles.scss";
 
 const questionDefault = {
-    questionTypeId: 1,
+    questionTypeId: 0,
     content: "",
     description: "",
     timeLimit: 30,
     isVoiced: false,
-    order: 1,
+    order: 0,
     configJsonString: {},
     options: [],
 };
 
-const QuestionPage = ({ formData, setFormData }: PageProps) => {
-    const [questionType, setQuestionType] = useState("");
+type Props = {
+    formData: SurveyType;
+    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
+};
+
+const QuestionPage = ({ formData, setFormData }: Props) => {
     const [isRequired, setIsRequired] = useState(true);
     const [showLabel, setShowLabel] = useState(false);
     const [showMedia, setShowMedia] = useState(false);
     const [carryForwardChoices, setCarryForwardChoices] = useState(false);
+    const [orderCurrent, setOrderCurrent] = useState(1);
+    const [isOpenOverlay, setIsOpenOverlay] = useState(false);
 
-    const handleQuestionTypeChange = (event: SelectChangeEvent) => {
-        setQuestionType(event.target.value);
-    };
+    const questionedit = useMemo(() => {
+        return (formData?.questions || []).find((item) => {
+            return item?.order === orderCurrent;
+        });
+    }, [formData, orderCurrent]);
 
-    const handleAddQuestion = () => {
+    const handleUpdateQuestion = useCallback(
+        (
+            key: keyof QuestionType,
+            value:
+                | string
+                | number
+                | boolean
+                | OptionType[]
+                | Record<string, string | number>
+                | RangeSliderConfigJsonStringType
+                | Record<string, unknown>
+        ) => {
+            setFormData((prev) => ({
+                ...prev,
+                questions: prev.questions.map((item) => {
+                    if (
+                        questionedit?.order &&
+                        item.order === questionedit?.order
+                    ) {
+                        return {
+                            ...item,
+                            [key]: value,
+                        };
+                    }
+                    return item;
+                }),
+            }));
+        },
+        [questionedit?.order]
+    );
+
+    const handleRenderView = useCallback(
+        (id: number) => {
+            switch (id) {
+                case 1:
+                    return questionedit ? (
+                        <SingleChoice
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 2:
+                    return questionedit ? (
+                        <MultipleChoice
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 3:
+                    return questionedit ? (
+                        <SingleSlider
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 4:
+                    return questionedit ? (
+                        <RangeSlider
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 5:
+                    return questionedit ? (
+                        <SingleInput
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 6:
+                    return questionedit ? (
+                        <Rating
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+                case 7:
+                    return questionedit ? (
+                        <Ranking
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : null;
+
+                default:
+                    return (
+                        <FormSelectType
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    );
+            }
+        },
+        [handleUpdateQuestion, questionedit]
+    );
+
+    const handleAddQuestion = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
             questions: [
                 ...prev.questions,
                 {
                     ...questionDefault,
-                    questionTypeId:
-                        prev.questions[prev.questions.length - 1]
-                            .questionTypeId + 1,
+                    order: prev.questions[prev.questions.length - 1].order + 1,
                 },
             ],
         }));
+        setOrderCurrent(formData?.questions?.length + 1);
+    }, [formData?.questions?.length, setFormData]);
+
+    const handleChangeQuestion = (order: number) => {
+        setOrderCurrent(order);
+    };
+
+    const handleDeleteQuestion = () => {
+        if (!orderCurrent) return;
+        const newQuestions = formData.questions
+            .filter((item) => item.order !== orderCurrent)
+            .map((item, index) => ({
+                ...item,
+                order: index + 1,
+            }));
+        setFormData((prev) => ({
+            ...prev,
+            questions: newQuestions,
+        }));
+    };
+
+    const handleSwapQuestion = (target: number) => {
+        const currentOrder = orderCurrent;
+        const targetOrder = target;
+
+        if (currentOrder === targetOrder || !currentOrder || !targetOrder) {
+            return; // Cannot swap with itself or invalid targets
+        }
+
+        const questions = [...formData.questions];
+        const currentIndex = questions.findIndex(
+            (item) => item.order === currentOrder
+        );
+        const targetIndex = questions.findIndex(
+            (item) => item.order === targetOrder
+        );
+
+        if (currentIndex === -1 || targetIndex === -1) {
+            return; // Current or target question not found
+        }
+
+        // Swap questions
+        const [targetQuestion] = questions.splice(targetIndex, 1);
+        questions.splice(currentIndex, 0, targetQuestion);
+
+        // Reassign orders based on new positions
+        const newQuestions = questions.map((item, index) => ({
+            ...item,
+            order: index + 1,
+        }));
+
+        setFormData((prev) => ({
+            ...prev,
+            questions: newQuestions,
+        }));
+
+        // Update current order to the target question's new order
+        setOrderCurrent(targetOrder);
     };
 
     useEffect(() => {
         if (!formData?.questions?.length) {
-            setFormData((prev) => ({ ...prev, questions: [questionDefault] }));
+            setFormData((prev) => ({
+                ...prev,
+                questions: [{ ...questionDefault, order: 1 }],
+            }));
         }
-    }, []);
+    }, [formData?.questions?.length, setFormData]);
 
     console.log("formData:", formData);
 
     return (
         <div className="question-page flex flex-col h-full">
-            <div className="question-content flex flex-1 overflow-hidden">
+            <div className="question-content flex flex-1 overflow-hidden relative">
+                {isOpenOverlay ? (
+                    <Overlay
+                        onClose={() => setIsOpenOverlay(false)}
+                        onDelete={handleDeleteQuestion}
+                        onSwap={handleSwapQuestion}
+                        formData={formData}
+                        orderCurrent={orderCurrent}
+                    />
+                ) : null}
                 <div
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
@@ -90,14 +273,27 @@ const QuestionPage = ({ formData, setFormData }: PageProps) => {
                             type="text"
                             placeholder="Nhập câu hỏi tại đây"
                             className="question-title-input"
+                            value={questionedit?.content || ""}
+                            onChange={(e) =>
+                                handleUpdateQuestion("content", e.target.value)
+                            }
                         />
                         <textarea
                             placeholder="Nhập mô tả tại đây"
                             rows={2}
                             className="question-description-input"
+                            value={questionedit?.description || ""}
+                            onChange={(e) =>
+                                handleUpdateQuestion(
+                                    "description",
+                                    e.target.value
+                                )
+                            }
                         ></textarea>
                     </div>
-                    <FormSelectType />
+                    <div className="flex justify-center">
+                        {handleRenderView(questionedit?.questionTypeId || 0)}
+                    </div>
                 </div>
 
                 <div className="question-sidebar flex flex-col overflow-y-auto">
@@ -107,9 +303,9 @@ const QuestionPage = ({ formData, setFormData }: PageProps) => {
                         <FormControl fullWidth size="small">
                             <InputLabel>LOẠI CÂU HỎI</InputLabel>
                             <Select
-                                value={questionType}
+                                // value={questionType}
                                 label="LOẠI CÂU HỎI"
-                                onChange={handleQuestionTypeChange}
+                            // onChange={handleQuestionTypeChange}
                             >
                                 <MenuItem value="">Loại câu hỏi</MenuItem>
                                 <MenuItem value="multiple-choice">
@@ -225,8 +421,11 @@ const QuestionPage = ({ formData, setFormData }: PageProps) => {
                 <div className="footer-content flex">
                     {(formData?.questions || [])?.map((item) => (
                         <QuestionItem
-                            key={item.questionTypeId}
-                            index={item.questionTypeId}
+                            key={item.order}
+                            order={item.order}
+                            orderCurrent={orderCurrent}
+                            onChange={handleChangeQuestion}
+                            onOpenOverlay={() => setIsOpenOverlay(true)}
                         />
                     ))}
                     <div
@@ -244,11 +443,29 @@ const QuestionPage = ({ formData, setFormData }: PageProps) => {
 
 export default QuestionPage;
 
-const QuestionItem = ({ index }: { index: number }) => {
+const QuestionItem = ({
+    order,
+    orderCurrent,
+    onChange,
+    onOpenOverlay,
+}: {
+    order: number;
+    orderCurrent: number;
+    onChange: (order: number) => void;
+    onOpenOverlay: () => void;
+}) => {
     return (
-        <div className="question-item flex flex-col items-center justify-center">
-            <CheckCircleIcon fontSize="small" className="item-icon" />
-            <span className="item-text">{index}.</span>
+        <div
+            className={`question-item flex flex-col items-center justify-center ${order === orderCurrent && "question-active"
+                }`}
+            onClick={() => onChange(order)}
+        >
+            <CheckCircleIcon
+                fontSize="large"
+                className="item-icon"
+                onClick={onOpenOverlay}
+            />
+            <span className="item-text">{order}.</span>
         </div>
     );
 };

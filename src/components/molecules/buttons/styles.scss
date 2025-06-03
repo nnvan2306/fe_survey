@@ -1,0 +1,32 @@
+.button-add-answer{
+    width: 100%;
+    background-color: white;
+    border: 1px solid #000 !important;
+    color: black;
+    padding: 4px;
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 20px;
+
+    /* User removed hover state */
+    /*
+    &:hover {
+        background-color: #f0f0f0;
+    }
+    */
+
+}
+
+.add-icon-container {
+    background-color: black;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}

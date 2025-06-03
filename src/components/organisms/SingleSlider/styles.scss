@@ -1,0 +1,12 @@
+.single-slider{
+    margin: 0;
+    .MuiSlider-track {
+        background-color: #4b5563; /* Tailwind gray-600 */
+    }
+    .MuiSlider-rail {
+        background-color: #4b5563; /* Tailwind gray-600 */
+    }
+    .MuiSlider-thumb {
+        background-color: #f59e0b; /* Tailwind yellow-500 */
+    }
+}

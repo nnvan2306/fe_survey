@@ -1,0 +1,26 @@
+.overlay-button {
+    width: 200px;
+    padding: 12px 16px;
+    border-radius: 99px;
+    color: white;
+    font-weight: bold;
+    text-transform: none;
+    box-shadow: none;
+
+    &.sao-chep {
+        background: linear-gradient(to right, #56ab2f, #a8e063);
+    }
+
+    &.di-chuyen {
+        background: #667eea;
+    }
+
+    &.xoa-cau-hoi {
+        background: #c779d0;
+    }
+
+    &.bo-chon {
+        background: #bdc3c7;
+        color: #333;
+    }
+}
