@@ -600,6 +600,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 <div className="background-thumbnail">
                                     <div className="grid grid-cols-5 gap-4">
                                         {backgrounds.map((item, index) => {
+                                            const selectedConfig = handleSelectBackground(`start${index + 1}`);
                                             return (
                                                 <div
                                                     key={index}
@@ -608,13 +609,15 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                                         setFormData((prev) => ({
                                                             ...prev,
                                                             background: `/assets/start${index + 1}.webp`,
+                                                            configJsonString: {
+                                                                ...prev.configJsonString,
+                                                                titleColor: selectedConfig.colors.titleColor,
+                                                                contentColor: selectedConfig.colors.contentColor,
+                                                                buttonBackgroundColor: selectedConfig.colors.buttonBackgroundColor,
+                                                                buttonContentColor: selectedConfig.colors.buttonContentColor,
+                                                            },
                                                         }));
                                                         setBackgroundMode('image');
-                                                        const selectedConfig = handleSelectBackground(`start${index + 1}`);
-                                                        setTitleColor(selectedConfig.colors.titleColor);
-                                                        setContentColor(selectedConfig.colors.contentColor);
-                                                        setButtonBgColor(selectedConfig.colors.buttonBackgroundColor);
-                                                        setButtonTextColor(selectedConfig.colors.buttonContentColor);
                                                     }}
                                                 >
                                                     <img
