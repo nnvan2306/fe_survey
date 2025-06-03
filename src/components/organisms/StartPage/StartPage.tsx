@@ -1,7 +1,7 @@
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { FormControl, InputLabel, MenuItem, Select, Slider } from '@mui/material';
+import { FormControl, MenuItem, Select, Slider } from '@mui/material';
 import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { SurveySpecificTopic, SurveyTopic } from "../../../data/surveyData";
@@ -15,6 +15,24 @@ const backgrounds = Array.from(
     { length: 11 },
     (_, index) => `start${index + 1}`
 );
+
+const SurveySecurityMode = [
+    {
+        id: 1,
+        name: "Basic",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Random Time-limit cho câu hỏi"
+    },
+    {
+        id: 2,
+        name: "Advance",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn."
+    },
+    {
+        id: 3,
+        name: "Pro",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn. Tính năng set voice-answer cho câu hỏi"
+    }
+];
 
 const mockSurveyData: SurveyType = {
     id: 1,
@@ -84,10 +102,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
     };
 
     const [skipStartPage, setSkipStartPage] = useState(false);
-    const [audioSurvey, setAudioSurvey] = useState(false);
-    const [passwordProtection, setPasswordProtection] = useState(formData.securityModeId === 2);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
     const [brightness, setBrightness] = useState<number>(formData.configJsonString.brightness || 100);
     const [backgroundMode, setBackgroundMode] = useState<'image' | 'color'>('image');
     const [titleColor, setTitleColor] = useState<string>(formData.configJsonString.titleColor || '#FFFFFF');
@@ -101,6 +115,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
     const [selectedSurveyTopic, setSelectedSurveyTopic] = useState<number>(formData.surveyTopicId);
     const [selectedSurveySpecificTopic, setSelectedSurveySpecificTopic] = useState<number>(formData.surveySpecificTopicId);
     const [surveyStatusChecked, setSurveyStatusChecked] = useState<boolean>(formData.surveyStatusId === 1);
+    const [selectedSecurityMode, setSelectedSecurityMode] = useState<number>(formData.securityModeId);
 
     useEffect(() => {
         localStorage.setItem('surveyFormData', JSON.stringify(formData));
@@ -147,7 +162,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
             setFormData(initialData);
             setSkipStartPage(initialData.skipStartPage || false);
             setSurveyStatusChecked(initialData.surveyStatusId === 1);
-            setPasswordProtection(initialData.securityModeId === 2);
+            setSelectedSecurityMode(initialData.securityModeId);
             console.log("Initial formData loaded:", initialData.securityModeId, initialData.configJsonString.password);
         };
 
@@ -164,7 +179,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
         setSelectedSurveySpecificTopic(formData.surveySpecificTopicId);
         setBrightness(formData.configJsonString.brightness);
         setSurveyStatusChecked(formData.surveyStatusId === 1);
-        setPasswordProtection(formData.securityModeId === 2);
+        setSelectedSecurityMode(formData.securityModeId);
         console.log("Synchronized states with formData:", formData.securityModeId, formData.configJsonString.password);
 
         if (formData.background === 'custom' && formData.customBackgroundImageUrl) {
@@ -298,6 +313,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                     type="checkbox"
                                     checked={skipStartPage}
                                     onChange={(e) => handleToggleSkipStartPage(e.target.checked)}
+                                    aria-label="Bỏ qua trang bắt đầu"
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
@@ -333,7 +349,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 color: '#6B7280',
                             },
                         }}>
-                            <InputLabel id="survey-topic-select-label">Chọn chủ đề</InputLabel>
                             <Select
                                 labelId="survey-topic-select-label"
                                 id="survey-topic-select"
@@ -385,7 +400,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                 color: '#6B7280',
                             },
                         }} disabled={!selectedSurveyTopic}>
-                            <InputLabel id="survey-specific-topic-select-label">Chọn chủ đề cụ thể</InputLabel>
                             <Select
                                 labelId="survey-specific-topic-select-label"
                                 id="survey-specific-topic-select"
@@ -427,10 +441,14 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                             surveyStatusId: newCheckedStatus ? 1 : 2, // 1 for active, 2 for inactive
                                         }));
                                     }}
+                                    aria-label="Trạng thái khảo sát"
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
                         </div>
+                    </div>
+                    <div>
+                        <h3>CHẾ ĐỘ BẢO MẬT</h3>
                     </div>
                     <div className="config-section">
                         <h3 className="config-title">
@@ -440,7 +458,6 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             <span className="text-gray-600">Bật</span>
                             <button className="buy-now-button">Mua đi nè</button>
                         </div>
-
                     </div>
                     <div className="config-section">
                         <div className="flex items-center mb-3">
@@ -453,10 +470,10 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             <label className="toggle-switch">
                                 <input
                                     type="checkbox"
-                                    checked={passwordProtection}
+                                    checked={selectedSecurityMode === 2}
                                     onChange={(e) => {
                                         const isChecked = e.target.checked;
-                                        setPasswordProtection(isChecked);
+                                        setSelectedSecurityMode(isChecked ? 2 : 1);
                                         setFormData((prev) => ({
                                             ...prev,
                                             securityModeId: isChecked ? 2 : 1,
@@ -466,17 +483,67 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                                             },
                                         }));
                                     }}
+                                    aria-label="Đặt mật khẩu cho khảo sát"
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
                         </div>
-                        {passwordProtection && (
+                        {selectedSecurityMode === 2 && (
                             <button className="customize-button"
                                 onClick={handleCustomizePassword}>
                                 <SettingsIcon fontSize="small" />
                                 <span>Tùy chỉnh</span>
                             </button>
                         )}
+                    </div>
+                    <div>
+                        <h3>CHẾ ĐỘ BẢO MẬT</h3>
+                        <FormControl fullWidth sx={{
+                            '.MuiOutlinedInput-root': {
+                                height: '48px',
+                                borderRadius: '8px',
+                                border: '1px solid #D1D5DB',
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' },
+                            },
+                            '.MuiInputLabel-root': {
+                                transform: 'translate(14px, 14px) scale(1)',
+                                '&.Mui-focused': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                                '&.MuiInputLabel-shrink': {
+                                    transform: 'translate(14px, -9px) scale(0.75)',
+                                },
+                            },
+                            '.MuiSelect-select': {
+                                padding: '12px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                            },
+                            '.MuiSelect-icon': {
+                                right: '14px',
+                                color: '#6B7280',
+                            },
+                        }}>
+                            <Select
+                                labelId="security-mode-select-label"
+                                id="security-mode-select"
+                                value={selectedSecurityMode}
+                                label="Chọn chế độ bảo mật"
+                                onChange={(e) => {
+                                    const newSecurityModeId = e.target.value as number;
+                                    setSelectedSecurityMode(newSecurityModeId);
+                                    setFormData((prev) => ({ ...prev, securityModeId: newSecurityModeId }));
+                                }}
+                            >
+                                {SurveySecurityMode.map((mode) => (
+                                    <MenuItem key={mode.id} value={mode.id}>
+                                        {mode.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
                     {/* <div className="config-section">
                         <h3 className="config-title">NGÀY BẮT ĐẦU</h3>
@@ -534,6 +601,7 @@ const StartPage = ({ formData, setFormData }: PageProps) => {
                             accept="image/*"
                             className="hidden"
                             onChange={handleBackgroundUpload}
+                            aria-label="Tải lên hình nền"
                         />
                     </div>
                     {backgroundMode === 'image' && (
