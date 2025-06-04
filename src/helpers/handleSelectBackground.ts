@@ -72,7 +72,6 @@ export const handleSelectBackground = (background: string, configJsonString?: Co
             },
         };
     }
-    console.log("check background: ", background)
     const config = backgroundConfigs[background] || backgroundConfigs.start1;
 
     return {

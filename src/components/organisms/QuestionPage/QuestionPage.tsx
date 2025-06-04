@@ -233,8 +233,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         }
     }, [formData?.questions?.length, setFormData]);
 
-    console.log("formData:", formData);
-
     return (
         <div className="question-page flex flex-col h-full">
             <div className="question-content flex flex-1 overflow-hidden relative">
