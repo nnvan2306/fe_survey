@@ -1,8 +1,10 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
+import { useCreateQuestion } from "../../../services/ToDo/mutation.service";
 import type { SurveyType } from "../../../types/survey";
 import CompletePage from "../../organisms/CompletePage/CompletePage";
 import EndPage from "../../organisms/EndPage/EndPage";
@@ -58,7 +60,11 @@ const SurveyNew = () => {
                 label: "Trang Bắt Đầu",
                 value: 0,
                 component: (
-                    <StartPage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} />
+                    <StartPage
+                        formData={formData}
+                        setFormData={setFormData}
+                        handleTabClick={handleTabClick}
+                    />
                 ),
             },
             {
@@ -68,9 +74,27 @@ const SurveyNew = () => {
                     <QuestionPage formData={formData} setFormData={setFormData} />
                 ),
             },
-            { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
-            { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
-            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} /> },
+            {
+                label: "Trang Kết Thúc",
+                value: 2,
+                component: <EndPage formData={formData} />,
+            },
+            {
+                label: "Hoàn Tất",
+                value: 3,
+                component: <CompletePage formData={formData} />,
+            },
+            {
+                label: "Chia Sẻ",
+                value: 4,
+                component: (
+                    <SharePage
+                        formData={formData}
+                        handleTabClick={handleTabClick}
+                        setFormData={setFormData}
+                    />
+                ),
+            },
             {
                 label: "Báo cáo",
                 value: 5,
@@ -83,8 +107,15 @@ const SurveyNew = () => {
 
     useBlocker(true);
 
+    const { mutate } = useCreateQuestion({
+        mutationConfig: {
+            onSuccess: () => {
+                toast("Bạn đã lưu thành công thay đổi!");
+            },
+        },
+    });
+
     useEffect(() => {
-        console.log("formData changed:", formData);
         setHasChanges(true);
         setIsSaving(false);
         setSaveCountdown(0);
@@ -108,7 +139,7 @@ const SurveyNew = () => {
         }
 
         // Simulate API call
-        console.log("Saving data:", formData);
+        mutate(formData);
         setIsSaving(false);
     };
 
@@ -152,11 +183,12 @@ const SurveyNew = () => {
                             variant="contained"
                             className="btn-save"
                             sx={{
-                                ...(hasChanges && !isSaving && {
-                                    backgroundColor: '#cccccc',
-                                    color: '#000000',
-                                    '&:hover': {
-                                        backgroundColor: '#bbbbbb',
+                                ...(hasChanges &&
+                                    !isSaving && {
+                                    backgroundColor: "#cccccc",
+                                    color: "#000000",
+                                    "&:hover": {
+                                        backgroundColor: "#bbbbbb",
                                     },
                                 }),
                             }}
@@ -164,8 +196,8 @@ const SurveyNew = () => {
                             {isSaving
                                 ? `Đang lưu ... ${saveCountdown}`
                                 : hasChanges
-                                    ? 'Lưu thay đổi'
-                                    : 'Đã lưu'}
+                                    ? "Lưu thay đổi"
+                                    : "Đã lưu"}
                         </Button>
                         <Button variant="outlined">Tác vụ khác</Button>
                     </div>
