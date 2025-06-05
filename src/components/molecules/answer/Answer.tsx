@@ -1,10 +1,10 @@
-import "./styles.scss";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import SettingsIcon from "@mui/icons-material/Settings";
-import type { OptionType } from "../../../types/survey";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 import type { ChangeEvent } from "react";
+import type { OptionType } from "../../../types/survey";
+import "./styles.scss";
 
 type Props = {
     data: OptionType;
@@ -33,7 +33,7 @@ const Answer = ({ data, handleUpdateOption, handleDeleteOption }: Props) => {
             <IconButton size="small" onClick={handleDelete}>
                 <ClearIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" className="settings-button">
+            <IconButton size="small" className="settings-button !hidden">
                 <SettingsIcon fontSize="small" />
             </IconButton>
         </div>

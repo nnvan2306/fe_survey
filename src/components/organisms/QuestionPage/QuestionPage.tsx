@@ -3,6 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Button } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SurveyQuestionType } from "../../../constants/question";
 import type {
@@ -389,6 +390,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">
+                        <Button>Upload Image</Button>
                         <input
                             type="text"
                             placeholder="Nhập câu hỏi tại đây"
