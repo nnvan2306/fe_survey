@@ -23,7 +23,6 @@ export default function LogicComponent({
     ) => void;
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    console.log("check questions: ", questions);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);

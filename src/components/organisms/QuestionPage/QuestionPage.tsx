@@ -4,7 +4,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Button } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SurveyQuestionType } from "../../../constants/question";
 import type {
     OptionType,
@@ -87,6 +87,281 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
     );
 
     const rulesType = SurveyQuestionType.map((item) => {
+        if (item.id === 1) {
+            return {
+                type: item.id,
+                rules: [
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="required_answer"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Bắt buộc câu trả lời"
+                            />
+                        ),
+                    },
+                    {
+                        type: "badge",
+                        children: (
+                            <SwitchCustomize
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Gắn nhãn ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="image_end_question"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Hình ảnh/Video ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponent
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponentDisplay
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                ],
+            };
+        }
+
+        if (item.id === 2) {
+            return {
+                type: item.id,
+                rules: [
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="required_answer"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Bắt buộc câu trả lời"
+                            />
+                        ),
+                    },
+                    {
+                        type: "badge",
+                        children: (
+                            <SwitchCustomize
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Gắn nhãn ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="image_end_question"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Hình ảnh/Video ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="is_choose_muitiple"
+                                question={questionedit}
+                                isMinMax
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Chọn nhiều trả lời"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="is_auto_view_show"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label={
+                                    <div
+                                        style={{
+                                            marginTop: 10,
+                                        }}
+                                    >
+                                        <div>
+                                            Tự động chọn các câu trả lời đang
+                                            hiển thị và qua câu tiếp theo
+                                        </div>
+                                        <br />
+                                        <div
+                                            style={{
+                                                color: "#666",
+                                            }}
+                                        >
+                                            Bật tính năng này hệ thống sẽ tự
+                                            động chọn hết các câu trả lời đang
+                                            hiển thị và chuyển qua câu hỏi tiếp
+                                            theo nếu số lượng câu trả lời đang
+                                            hiển thị ít hơn hoặc bằng giá trịbạn
+                                            yêu cầu
+                                        </div>
+                                    </div>
+                                }
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="is_result_other"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Câu trả lời khác"
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponent
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponentDisplay
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                ],
+            };
+        }
+
+        if (item.id === 3) {
+            return {
+                type: item.id,
+                rules: [
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="required_answer"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Bắt buộc câu trả lời"
+                            />
+                        ),
+                    },
+                    {
+                        type: "badge",
+                        children: (
+                            <SwitchCustomize
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Gắn nhãn ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="image_end_question"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Hình ảnh/Video ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="is_auto_view_show"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label={
+                                    <div
+                                        style={{
+                                            marginTop: 10,
+                                        }}
+                                    >
+                                        <div>
+                                            Tự động chọn các câu trả lời đang
+                                            hiển thị và qua câu tiếp theo
+                                        </div>
+                                        <br />
+                                        <div
+                                            style={{
+                                                color: "#666",
+                                            }}
+                                        >
+                                            Bật tính năng này hệ thống sẽ tự
+                                            động chọn hết các câu trả lời đang
+                                            hiển thị và chuyển qua câu hỏi tiếp
+                                            theo nếu số lượng câu trả lời đang
+                                            hiển thị ít hơn hoặc bằng giá trịbạn
+                                            yêu cầu
+                                        </div>
+                                    </div>
+                                }
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponent
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                    {
+                        type: "jump_logic",
+                        children: (
+                            <LogicComponentDisplay
+                                questions={formData.questions}
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ),
+                    },
+                    {
+                        type: "rating_page",
+                        children:
+                            questionedit && handleUpdateQuestion ? (
+                                <RatingIcon
+                                    question={questionedit}
+                                    handleUpdateQuestion={handleUpdateQuestion}
+                                />
+                            ) : (
+                                <></>
+                            ),
+                    },
+                ],
+            };
+        }
+
         return {
             type: item.id,
             rules: [
@@ -121,60 +396,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     ),
                 },
                 {
-                    children: (
-                        <SwitchCustomize
-                            type="is_choose_muitiple"
-                            question={questionedit}
-                            isMinMax
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label="Chọn nhiều trả lời"
-                        />
-                    ),
-                },
-                {
-                    children: (
-                        <SwitchCustomize
-                            type="is_auto_view_show"
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label={
-                                <div
-                                    style={{
-                                        marginTop: 10,
-                                    }}
-                                >
-                                    <div>
-                                        Tự động chọn các câu trả lời đang hiển
-                                        thị và qua câu tiếp theo
-                                    </div>
-                                    <br />
-                                    <div
-                                        style={{
-                                            color: "#666",
-                                        }}
-                                    >
-                                        Bật tính năng này hệ thống sẽ tự động
-                                        chọn hết các câu trả lời đang hiển thị
-                                        và chuyển qua câu hỏi tiếp theo nếu số
-                                        lượng câu trả lời đang hiển thị ít hơn
-                                        hoặc bằng giá trịbạn yêu cầu
-                                    </div>
-                                </div>
-                            }
-                        />
-                    ),
-                },
-                {
-                    children: (
-                        <SwitchCustomize
-                            type="is_result_other"
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label="Câu trả lời khác"
-                        />
-                    ),
-                },
-                {
                     type: "jump_logic",
                     children: (
                         <LogicComponent
@@ -186,25 +407,17 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 },
                 {
                     type: "jump_logic",
-                    children: <LogicComponentDisplay />,
-                },
-                {
-                    type: "rating_page",
-                    children:
-                        questionedit && handleUpdateQuestion ? (
-                            <RatingIcon
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                            />
-                        ) : (
-                            <></>
-                        ),
+                    children: (
+                        <LogicComponentDisplay
+                            questions={formData.questions}
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ),
                 },
             ],
         };
     });
-
-    console.log("check jumlogic update: ", questionedit);
 
     const handleRenderView = useCallback(
         (id: number) => {
@@ -322,15 +535,22 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             return; // Current or target question not found
         }
 
-        // Swap questions
-        const [targetQuestion] = questions.splice(targetIndex, 1);
-        questions.splice(currentIndex, 0, targetQuestion);
+        // Swap the questions in the array copy
+        const newQuestions = [...questions];
+        [newQuestions[currentIndex], newQuestions[targetIndex]] = [
+            newQuestions[targetIndex],
+            newQuestions[currentIndex],
+        ];
 
-        // Reassign orders based on new positions
-        const newQuestions = questions.map((item, index) => ({
-            ...item,
-            order: index + 1,
-        }));
+        // Update the order property for the swapped questions
+        newQuestions[currentIndex] = {
+            ...newQuestions[currentIndex],
+            order: currentIndex + 1,
+        };
+        newQuestions[targetIndex] = {
+            ...newQuestions[targetIndex],
+            order: targetIndex + 1,
+        };
 
         setFormData((prev) => ({
             ...prev,
@@ -350,8 +570,31 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         }
     }, [formData?.questions?.length, setFormData]);
 
+    const handleUploadImageBase64 = (e: any) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result;
+                handleUpdateQuestion("image_header", base64String as string);
+            };
+            reader.onerror = (error) => {
+                console.error("Error reading file:", error);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const ref = useRef<null>(null);
+
     return (
         <div className="question-page flex flex-col h-full">
+            <input
+                type="file"
+                hidden
+                ref={ref}
+                onChange={handleUploadImageBase64}
+            />
             <div className="question-content flex flex-1 overflow-hidden relative">
                 {isOpenOverlay ? (
                     <Overlay
@@ -390,7 +633,25 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">
-                        <Button>Upload Image</Button>
+                        {questionedit?.image_header &&
+                        questionedit.configJsonString?.image_end_question ? (
+                            <img
+                                src={questionedit?.image_header}
+                                className="rounded-2xl "
+                                alt=""
+                            />
+                        ) : (
+                            ""
+                        )}
+                        <Button
+                            onClick={() => {
+                                if (ref.current) {
+                                    (ref.current as any).click();
+                                }
+                            }}
+                        >
+                            Upload Image
+                        </Button>
                         <input
                             type="text"
                             placeholder="Nhập câu hỏi tại đây"
@@ -429,8 +690,10 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                         handleUpdateQuestion={handleUpdateQuestion as any}
                         question={questionedit as QuestionType}
                         listComponent={
-                            rulesType.find((item) => item.type === 1)
-                                ?.rules as []
+                            rulesType.find(
+                                (item) =>
+                                    item.type === questionedit?.questionTypeId
+                            )?.rules as []
                         }
                     />
                 </div>

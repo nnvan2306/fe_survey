@@ -112,8 +112,9 @@ const Confirm = ({
     };
     return (
         <div className="overlay-content flex flex-col space-y-6 gap-4">
-            {formData?.questions?.length ? (
+            {formData?.questions?.length && isSwap ? (
                 <Select
+                    value={orderCurrent}
                     onChange={(e) => {
                         setValue(Number(e.target.value));
                     }}
