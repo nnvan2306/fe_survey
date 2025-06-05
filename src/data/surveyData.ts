@@ -42,4 +42,22 @@ export const SurveySpecificTopic = [
     { "id": 28, "name": "Nhận thức chính trị", "surveyTopicId": 10 },
     { "id": 29, "name": "Tham gia bầu cử", "surveyTopicId": 10 },
     { "id": 30, "name": "Luật pháp và quyền công dân", "surveyTopicId": 10 }
-]; 
+];
+
+export const SurveySecurityMode = [
+    {
+        id: 1,
+        name: "Basic",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Random Time-limit cho câu hỏi"
+    },
+    {
+        id: 2,
+        name: "Advance",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn."
+    },
+    {
+        id: 3,
+        name: "Pro",
+        description: "6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn. Tính năng set voice-answer cho câu hỏi"
+    }
+];
