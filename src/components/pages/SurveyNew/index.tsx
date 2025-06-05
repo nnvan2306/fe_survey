@@ -74,7 +74,11 @@ const SurveyNew = () => {
             value: 2,
             component: <EndPage formData={formData} />,
         },
-        { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
+        {
+            label: "Hoàn Tất",
+            value: 3,
+            component: <CompletePage formData={formData} />,
+        },
         { label: "Chia Sẻ", value: 4, component: <SharePage /> },
         {
             label: "Báo cáo",
