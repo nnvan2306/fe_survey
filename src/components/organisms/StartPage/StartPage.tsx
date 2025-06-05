@@ -228,15 +228,6 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
             <div
                 className="relative flex-1 flex items-center justify-center"
                 style={{
-                    ...(backgroundMode === 'image' && {
-                        backgroundImage: `url(${formData.background})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                        filter: `brightness(${brightness / 100})`,
-                        backgroundColor: 'transparent',
-                        overflowY: 'auto',
-                    }),
                     ...(backgroundMode === 'color' && {
                         ...(formData.background.startsWith('#') ? {
                             backgroundColor: formData.background,
@@ -248,6 +239,19 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     }),
                 }}
             >
+                {backgroundMode === 'image' && (
+                    <div
+                        className="absolute inset-0"
+                        style={{
+                            backgroundImage: `url(${formData.background})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            filter: `brightness(${brightness / 100})`,
+                            backgroundColor: 'transparent',
+                        }}
+                    ></div>
+                )}
                 <div className="relative z-10 flex flex-col items-center w-full max-w-2xl px-8">
                     <div className="startpage-content w-full text-center">
                         <input
