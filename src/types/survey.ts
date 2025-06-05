@@ -41,6 +41,7 @@ export type SurveyType = {
         buttonContentColor: string;
         password: string;
         brightness: number;
+        isResizableIframeEnabled?: boolean;
     };
     questions: QuestionType[];
     skipStartPage: boolean;

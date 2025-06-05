@@ -1,6 +1,6 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
 import type { SurveyType } from "../../../types/survey";
@@ -40,6 +40,9 @@ const defaultValue = {
 const SurveyNew = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [formData, setFormData] = useState<SurveyType>(defaultValue);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveCountdown, setSaveCountdown] = useState(0);
+    const [hasChanges, setHasChanges] = useState(false);
 
     const handleTabClick = (tabValue: number) => {
         setActiveTab(tabValue);
@@ -67,7 +70,7 @@ const SurveyNew = () => {
             },
             { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
             { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
-            { label: "Chia Sẻ", value: 4, component: <SharePage /> },
+            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} /> },
             {
                 label: "Báo cáo",
                 value: 5,
@@ -79,6 +82,36 @@ const SurveyNew = () => {
     const ActiveComponent = tabs[activeTab].component;
 
     useBlocker(true);
+
+    useEffect(() => {
+        console.log("formData changed:", formData);
+        setHasChanges(true);
+        setIsSaving(false);
+        setSaveCountdown(0);
+
+        const timer = setTimeout(() => {
+            handleSave();
+        }, 5000);
+
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData, activeTab]);
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        setHasChanges(false);
+        setSaveCountdown(5);
+
+        for (let i = 5; i > 0; i--) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            setSaveCountdown(i - 1);
+        }
+
+        // Simulate API call
+        console.log("Saving data:", formData);
+        setIsSaving(false);
+    };
+
     return (
         <MainTemPlate>
             <div
@@ -115,8 +148,24 @@ const SurveyNew = () => {
                         ))}
                     </div>
                     <div className="survey-actions">
-                        <Button variant="contained" className="btn-save">
-                            Đã lưu
+                        <Button
+                            variant="contained"
+                            className="btn-save"
+                            sx={{
+                                ...(hasChanges && !isSaving && {
+                                    backgroundColor: '#cccccc',
+                                    color: '#000000',
+                                    '&:hover': {
+                                        backgroundColor: '#bbbbbb',
+                                    },
+                                }),
+                            }}
+                        >
+                            {isSaving
+                                ? `Đang lưu ... ${saveCountdown}`
+                                : hasChanges
+                                    ? 'Lưu thay đổi'
+                                    : 'Đã lưu'}
                         </Button>
                         <Button variant="outlined">Tác vụ khác</Button>
                     </div>
