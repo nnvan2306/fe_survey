@@ -51,30 +51,42 @@ const SurveyNew = () => {
         component: React.ReactNode;
         disabled?: boolean;
     }[] = [
-            {
-                label: "Trang Bắt Đầu",
-                value: 0,
-                component: (
-                    <StartPage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} />
-                ),
-            },
-            {
-                label: "Bảng Hỏi",
-                value: 1,
-                component: (
-                    <QuestionPage formData={formData} setFormData={setFormData} />
-                ),
-            },
-            { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
-            { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
-            { label: "Chia Sẻ", value: 4, component: <SharePage /> },
-            {
-                label: "Báo cáo",
-                value: 5,
-                component: <ReportPage />,
-                disabled: true,
-            },
-        ];
+        {
+            label: "Trang Bắt Đầu",
+            value: 0,
+            component: (
+                <StartPage
+                    formData={formData}
+                    setFormData={setFormData}
+                    handleTabClick={handleTabClick}
+                />
+            ),
+        },
+        {
+            label: "Bảng Hỏi",
+            value: 1,
+            component: (
+                <QuestionPage formData={formData} setFormData={setFormData} />
+            ),
+        },
+        {
+            label: "Trang Kết Thúc",
+            value: 2,
+            component: <EndPage formData={formData} />,
+        },
+        {
+            label: "Hoàn Tất",
+            value: 3,
+            component: <CompletePage formData={formData} />,
+        },
+        { label: "Chia Sẻ", value: 4, component: <SharePage /> },
+        {
+            label: "Báo cáo",
+            value: 5,
+            component: <ReportPage />,
+            disabled: true,
+        },
+    ];
 
     const ActiveComponent = tabs[activeTab].component;
 
