@@ -55,7 +55,7 @@ const SurveyNew = () => {
                 label: "Trang Bắt Đầu",
                 value: 0,
                 component: (
-                    <StartPage formData={formData} setFormData={setFormData} />
+                    <StartPage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} />
                 ),
             },
             {
