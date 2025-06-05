@@ -60,14 +60,16 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
                             CHIA SẺ KHẢO SÁT CỦA BẠN
                         </h3>
                         <p className="text-center">Sao chép đường dẫn sau và gửi cho bạn bè của bạn hoặc đáp viên</p>
-                        <hr className="my-4 border-gray-300" />
-                        <div className="text-center">
-                            <p>Bạn phải hoàn tất khảo sát để nhận đường dẫn chia sẻ</p>
-                            <hr className="my-4 border-gray-300" />
-                            <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                Hoàn tất
-                            </button>
-                            <hr className="my-4 border-gray-300" />
+                        <div>
+                            <div className="text-center">
+                                <p>Bạn phải hoàn tất khảo sát để nhận đường dẫn chia sẻ</p>
+                                <hr className="my-4 border-gray-300" />
+                            </div>
+                            <div className="text-right">
+                                <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                    Hoàn tất
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
