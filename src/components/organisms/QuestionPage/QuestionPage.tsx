@@ -196,15 +196,16 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     children: <LogicComponentDisplay />,
                 },
                 {
-                    type: "rating",
-                    children: questionedit ? (
-                        <RatingIcon
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                        />
-                    ) : (
-                        <></>
-                    ),
+                    type: "rating_page",
+                    children:
+                        questionedit && handleUpdateQuestion ? (
+                            <RatingIcon
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                            />
+                        ) : (
+                            <></>
+                        ),
                 },
             ],
         };
