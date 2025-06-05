@@ -3,16 +3,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import FlashOnIcon from "@mui/icons-material/FlashOn";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    Switch,
-    Typography,
-} from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SurveyQuestionType } from "../../../constants/question";
 import type {
@@ -54,10 +44,6 @@ type Props = {
 };
 
 const QuestionPage = ({ formData, setFormData }: Props) => {
-    const [isRequired, setIsRequired] = useState(true);
-    const [showLabel, setShowLabel] = useState(false);
-    const [showMedia, setShowMedia] = useState(false);
-    const [carryForwardChoices, setCarryForwardChoices] = useState(false);
     const [orderCurrent, setOrderCurrent] = useState(1);
     const [isOpenOverlay, setIsOpenOverlay] = useState(false);
 
@@ -104,9 +90,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             type: item.id,
             rules: [
                 {
-                    type: "required_answer",
                     children: (
                         <SwitchCustomize
+                            type="required_answer"
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                             label="Bắt buộc câu trả lời"
@@ -124,9 +110,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     ),
                 },
                 {
-                    type: "image_end_question",
                     children: (
                         <SwitchCustomize
+                            type="image_end_question"
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                             label="Hình ảnh/Video ở đầu câu hỏi"
@@ -134,9 +120,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     ),
                 },
                 {
-                    type: "is_choose_muitiple",
                     children: (
                         <SwitchCustomize
+                            type="is_choose_muitiple"
                             question={questionedit}
                             isMinMax
                             handleUpdateQuestion={handleUpdateQuestion}
@@ -145,9 +131,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     ),
                 },
                 {
-                    type: "is_auto_view_show",
                     children: (
                         <SwitchCustomize
+                            type="is_auto_view_show"
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                             label={
@@ -178,9 +164,9 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     ),
                 },
                 {
-                    type: "is_result_other",
                     children: (
                         <SwitchCustomize
+                            type="is_result_other"
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                             label="Câu trả lời khác"
@@ -189,7 +175,13 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 },
                 {
                     type: "jump_logic",
-                    children: <LogicComponent />,
+                    children: (
+                        <LogicComponent
+                            questions={formData.questions}
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ),
                 },
                 {
                     type: "jump_logic",
@@ -209,6 +201,8 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             ],
         };
     });
+
+    console.log("check jumlogic update: ", questionedit);
 
     const handleRenderView = useCallback(
         (id: number) => {
@@ -344,135 +338,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         // Update current order to the target question's new order
         setOrderCurrent(targetOrder);
     };
-
-    function SideBarTest() {
-        return (
-            <>
-                <h4 className="sidebar-title">Cài đặt câu hỏi</h4>
-
-                <div className="sidebar-section flex flex-col">
-                    <FormControl fullWidth size="small">
-                        <InputLabel>LOẠI CÂU HỎI</InputLabel>
-                        <Select
-                            // value={questionType}
-                            label="LOẠI CÂU HỎI"
-                            // onChange={handleQuestionTypeChange}
-                        >
-                            <MenuItem value="">Loại câu hỏi</MenuItem>
-                            <MenuItem value="multiple-choice">
-                                Multiple Choice
-                            </MenuItem>
-                            <MenuItem value="picture-choice">
-                                Picture Choice
-                            </MenuItem>
-                        </Select>
-                    </FormControl>
-                </div>
-
-                <div className="sidebar-section flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <label className="section-label">
-                            BẮT BUỘC TRẢ LỜI
-                        </label>
-                        <Typography variant="body2" color="textSecondary">
-                            Bắt buộc
-                        </Typography>
-                    </div>
-                    <div className="section-control flex items-center">
-                        <FlashOnIcon
-                            fontSize="small"
-                            className="control-icon"
-                        />
-                        <Switch
-                            checked={isRequired}
-                            onChange={(e) => setIsRequired(e.target.checked)}
-                            color="primary"
-                        />
-                    </div>
-                </div>
-
-                <div className="sidebar-section flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <label className="section-label">
-                            GÁN NHÃN Ở ĐẦU CÂU HỎI
-                        </label>
-                        <Typography variant="body2" color="textSecondary">
-                            {showLabel ? "Bật" : "Tắt"}
-                        </Typography>
-                    </div>
-                    <div className="section-control flex items-center">
-                        <FlashOnIcon
-                            fontSize="small"
-                            className="control-icon"
-                        />
-                        <Switch
-                            checked={showLabel}
-                            onChange={(e) => setShowLabel(e.target.checked)}
-                            color="primary"
-                        />
-                    </div>
-                </div>
-
-                <div className="sidebar-section flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <label className="section-label">
-                            HÌNH ẢNH/VIDEO Ở ĐẦU CÂU HỎI
-                        </label>
-                        <Typography variant="body2" color="textSecondary">
-                            {showMedia ? "Bật" : "Tắt"}
-                        </Typography>
-                    </div>
-                    <div className="section-control flex items-center">
-                        <FlashOnIcon
-                            fontSize="small"
-                            className="control-icon"
-                        />
-                        <Switch
-                            checked={showMedia}
-                            onChange={(e) => setShowMedia(e.target.checked)}
-                            color="primary"
-                        />
-                    </div>
-                </div>
-
-                <div className="sidebar-section flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <label className="section-label">
-                            CARRY FORWARD CHOICES - LẤY KẾT QUẢ ĐƯỢC CHỌN Ở CÂU
-                            TRƯỚC{" "}
-                            <HelpOutlineIcon
-                                fontSize="small"
-                                className="help-icon"
-                            />
-                        </label>
-                        <Typography variant="body2" color="textSecondary">
-                            {carryForwardChoices ? "Bật" : "Tắt"}
-                        </Typography>
-                    </div>
-                    <div className="section-control flex items-center">
-                        <FlashOnIcon
-                            fontSize="small"
-                            className="control-icon"
-                        />
-                        <Switch
-                            checked={carryForwardChoices}
-                            onChange={(e) =>
-                                setCarryForwardChoices(e.target.checked)
-                            }
-                            color="primary"
-                        />
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    const data = [
-        {
-            questionType: 1,
-            listComponents: [SideBarTest],
-        },
-    ];
 
     useEffect(() => {
         if (!formData?.questions?.length) {
