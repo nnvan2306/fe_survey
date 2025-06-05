@@ -10,6 +10,7 @@ export type SlideType = {
     unit: string;
 };
 export type QuestionType = {
+    image_header?: string;
     questionTypeId: number;
     content: string;
     description: string;
