@@ -43,6 +43,43 @@ export default function SwitchCustomize({
         return question?.configJsonString[type] || false;
     }, [question, type]);
 
+    const valueMinMax = useMemo(() => {
+        if (type === "is_choose_muitiple") {
+            return (
+                question?.configJsonString?.valueMinMax || {
+                    min: 0,
+                    max: 0,
+                }
+            );
+        }
+    }, [question, type]);
+
+    const handleChangeInputMin = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const value = event.target.value;
+        handleUpdateQuestion("configJsonString", {
+            ...question.configJsonString,
+            valueMinMax: {
+                min: value,
+                max: question?.configJsonString?.valueMinMax?.max,
+            },
+        });
+    };
+
+    const handleChangeInputMax = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const value = event.target.value;
+        handleUpdateQuestion("configJsonString", {
+            ...question.configJsonString,
+            valueMinMax: {
+                max: value,
+                min: question?.configJsonString?.valueMinMax?.min,
+            },
+        });
+    };
+
     return (
         <div
             style={{
@@ -73,9 +110,10 @@ export default function SwitchCustomize({
 
                 <Switch checked={checked} onChange={handleChange} />
             </Box>
-            {isMinMax ? (
+            {isMinMax && checked ? (
                 <Box padding={"10px"} paddingLeft={"40px"}>
                     <input
+                        onChange={handleChangeInputMin}
                         placeholder="Chọn ít nhất câu trả lời"
                         style={{
                             height: 20,
@@ -88,6 +126,9 @@ export default function SwitchCustomize({
                             background: "#f5f5f5",
                             outline: "none",
                         }}
+                        type="number"
+                        min={"0"}
+                        value={valueMinMax.min}
                     />
                     <div
                         style={{
@@ -96,6 +137,9 @@ export default function SwitchCustomize({
                         }}
                     ></div>
                     <input
+                        onChange={handleChangeInputMax}
+                        type="number"
+                        min={"0"}
                         placeholder="Chọn nhiều nhất câu trả lời"
                         style={{
                             height: 20,
@@ -108,6 +152,7 @@ export default function SwitchCustomize({
                             background: "#f5f5f5",
                             outline: "none",
                         }}
+                        value={valueMinMax.max}
                     />
                 </Box>
             ) : (
