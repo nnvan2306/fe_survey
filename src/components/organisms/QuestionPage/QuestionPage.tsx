@@ -322,15 +322,22 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             return; // Current or target question not found
         }
 
-        // Swap questions
-        const [targetQuestion] = questions.splice(targetIndex, 1);
-        questions.splice(currentIndex, 0, targetQuestion);
+        // Swap the questions in the array copy
+        const newQuestions = [...questions];
+        [newQuestions[currentIndex], newQuestions[targetIndex]] = [
+            newQuestions[targetIndex],
+            newQuestions[currentIndex],
+        ];
 
-        // Reassign orders based on new positions
-        const newQuestions = questions.map((item, index) => ({
-            ...item,
-            order: index + 1,
-        }));
+        // Update the order property for the swapped questions
+        newQuestions[currentIndex] = {
+            ...newQuestions[currentIndex],
+            order: currentIndex + 1,
+        };
+        newQuestions[targetIndex] = {
+            ...newQuestions[targetIndex],
+            order: targetIndex + 1,
+        };
 
         setFormData((prev) => ({
             ...prev,
