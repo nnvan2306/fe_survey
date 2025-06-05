@@ -3,7 +3,7 @@ import { Button, MenuItem, Select } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowBack } from "@mui/icons-material";
 import type { SurveyType } from "../../../types/survey";
 
@@ -110,11 +110,14 @@ const Confirm = ({
             onDelete();
         }
     };
+    useEffect(() => {
+        setValue(orderCurrent);
+    }, [orderCurrent]);
     return (
         <div className="overlay-content flex flex-col space-y-6 gap-4">
             {formData?.questions?.length && isSwap ? (
                 <Select
-                    value={orderCurrent}
+                    value={value}
                     onChange={(e) => {
                         setValue(Number(e.target.value));
                     }}
@@ -131,7 +134,7 @@ const Confirm = ({
 
             <Button
                 variant="contained"
-                endIcon={<DeleteOutlineIcon />}
+                endIcon={isSwap ? undefined : <DeleteOutlineIcon />}
                 className="overlay-button bg-green-400"
                 onClick={handleVerify}
             >
