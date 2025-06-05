@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { GlobalProvider } from "./contexts/GlobalContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { routes } from "./routes/routes";
@@ -23,6 +24,7 @@ function App() {
             <GlobalProvider>
                 <RouterProvider router={router} />
             </GlobalProvider>
+            <ToastContainer />
         </Suspense>
     );
 }

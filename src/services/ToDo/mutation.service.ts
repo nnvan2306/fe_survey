@@ -6,7 +6,7 @@ import type { MutationConfig } from "../../libs/query";
 type PayLoadType = {};
 
 const createToDo = async (payload: PayLoadType) => {
-    const { data } = await api.post("/", payload);
+    const { data } = await api.post("/survey", payload);
     return data;
 };
 
@@ -14,7 +14,7 @@ type CreateToDoType = {
     mutationConfig?: MutationConfig<typeof createToDo>;
 };
 
-export const useCreateToDo = ({ mutationConfig }: CreateToDoType) => {
+export const useCreateQuestion = ({ mutationConfig }: CreateToDoType) => {
     return useMutation({
         ...mutationConfig,
         mutationFn: createToDo,
