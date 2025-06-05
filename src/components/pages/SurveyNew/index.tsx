@@ -60,11 +60,7 @@ const SurveyNew = () => {
                 label: "Trang Bắt Đầu",
                 value: 0,
                 component: (
-                    <StartPage
-                        formData={formData}
-                        setFormData={setFormData}
-                        handleTabClick={handleTabClick}
-                    />
+                    <StartPage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} />
                 ),
             },
             {
@@ -74,27 +70,9 @@ const SurveyNew = () => {
                     <QuestionPage formData={formData} setFormData={setFormData} />
                 ),
             },
-            {
-                label: "Trang Kết Thúc",
-                value: 2,
-                component: <EndPage formData={formData} />,
-            },
-            {
-                label: "Hoàn Tất",
-                value: 3,
-                component: <CompletePage formData={formData} />,
-            },
-            {
-                label: "Chia Sẻ",
-                value: 4,
-                component: (
-                    <SharePage
-                        formData={formData}
-                        handleTabClick={handleTabClick}
-                        setFormData={setFormData}
-                    />
-                ),
-            },
+            { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
+            { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
+            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} /> },
             {
                 label: "Báo cáo",
                 value: 5,

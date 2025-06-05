@@ -51,29 +51,67 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
                     }),
                 }}
             >
-                <div className="flex justify-center">
-                    <div className="bg-white p-5 rounded-lg w-[1200px]">
-                        <h3
-                            className="text-2xl font-semibold mb-4 text-center"
-                            style={{ color: formData.configJsonString.titleColor || '#ffffff' }}
+                <div className="flex flex-col items-center gap-8">
+                    <div className="bg-white p-8 rounded-lg  w-[1200px] shadow-lg">
+                        <h3 className="text-xl font-bold text-center text-gray-800 mb-4"
+                            style={{ color: formData.configJsonString.titleColor || '#000000' }}
                         >
                             CHIA SẺ KHẢO SÁT CỦA BẠN
                         </h3>
-                        <p className="text-center">Sao chép đường dẫn sau và gửi cho bạn bè của bạn hoặc đáp viên</p>
-                        <div>
-                            <div className="text-center">
-                                <p>Bạn phải hoàn tất khảo sát để nhận đường dẫn chia sẻ</p>
-                                <hr className="my-4 border-gray-300" />
-                            </div>
-                            <div className="text-right">
-                                <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        <div className="border-b-2 border-teal-400 w-20 mx-auto mb-6"></div>
+                        <p className="text-center text-gray-600 text-[15px] mb-8">
+                            Sao chép đường dẫn sau và gửi cho bạn bè của bạn hoặc đáp viên
+                        </p>
+
+                        <div className="border border-gray-300 rounded-lg p-4">
+                            <p className="text-gray-700 text-[14px] mb-4">
+                                Bạn phải hoàn tất khảo sát để nhận đường dẫn chia sẻ
+                            </p>
+                            <hr className="my-4 border-gray-300" />
+                            <div className="flex justify-end">
+                                <button className="px-6 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors duration-200">
                                     Hoàn tất
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                    <div className="bg-white p-8 rounded-lg w-[1200px] shadow-lg">
+                        <h3 className="text-xl font-bold text-center text-gray-800 mb-4">LÀM VIỆC NHÓM</h3>
+                        <div className="border-b-2 border-teal-400 w-20 mx-auto mb-6"></div>
+                        <p className="text-center text-gray-600 text-[15px] mb-8">
+                            Người được mời có quyền chỉnh sửa nội dung khảo sát, thiết lập các cài đặt và xem được báo cáo.
+                        </p>
+                        <div className="relative flex items-center border border-gray-300 rounded-lg pr-2">
+                            <input
+                                type="email"
+                                placeholder="Nhập email tại đây"
+                                className="w-full px-4 py-3 bg-transparent focus:outline-none focus:ring-0 focus:border-transparent"
+                            />
+                            <button type="button" className="bg-teal-400 hover:bg-teal-500 text-white p-3 rounded-md transition-colors" aria-label="Gửi email">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-lg w-[1200px] shadow-lg mt-8">
+                        <h3 className="text-xl font-bold text-gray-800 mb-4">SỬ DỤNG KHẢO SÁT NÀY CHO NHIỀU ĐỊA ĐIỂM/NHÂN VIÊN KHÁC NHAU</h3>
+                        <p className="text-gray-600 text-[15px] mb-8">
+                            Bạn không cần phải tốn công sức tạo nhiều khảo sát cùng một nội dung cho nhiều địa điểm/nhân viên. Tính năng này giúp bạn quản lý được các phản hồi đến từ từng địa điểm/nhân viên khác nhau. Hãy thiết lập mã số cho từng địa điểm/nhân viên theo mô tả bên dưới. <a href="#" className="text-blue-600 underline">Xem thêm hướng dẫn tại đây!</a>
+                        </p>
+                        <div className="flex items-center justify-end">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    aria-label="Kích hoạt tính năng sử dụng khảo sát cho nhiều địa điểm/nhân viên"
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div
                 className="startpage-options w-[420px] bg-white h-full overflow-y-auto shadow-lg p-8"
@@ -110,7 +148,6 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };
