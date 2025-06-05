@@ -34,6 +34,7 @@ import Sidebar from "../sidebar/Sidebar";
 import LogicComponent from "./components/ModalLogic";
 import LogicComponentDisplay from "./components/ModalLogicDisplay";
 import SwitchCustomize from "./components/SwitchCustomize";
+import RatingIcon from "./components/rating-icon/RatingIcon";
 import "./styles.scss";
 
 const questionDefault = {
@@ -194,11 +195,20 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     type: "jump_logic",
                     children: <LogicComponentDisplay />,
                 },
+                {
+                    type: "rating",
+                    children: questionedit ? (
+                        <RatingIcon
+                            question={questionedit}
+                            handleUpdateQuestion={handleUpdateQuestion}
+                        />
+                    ) : (
+                        <></>
+                    ),
+                },
             ],
         };
     });
-
-    console.log("check questionedit: ", questionedit);
 
     const handleRenderView = useCallback(
         (id: number) => {
