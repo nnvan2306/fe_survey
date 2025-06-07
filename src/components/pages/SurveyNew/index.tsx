@@ -1,10 +1,10 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
-import { useCreateQuestion } from "../../../services/ToDo/mutation.service";
+import { useUpdateSurvey } from "../../../services/survey/update";
 import type { SurveyType } from "../../../types/survey";
 import CompletePage from "../../organisms/CompletePage/CompletePage";
 import EndPage from "../../organisms/EndPage/EndPage";
@@ -13,10 +13,14 @@ import ReportPage from "../../organisms/ReportPage/ReportPage";
 import SharePage from "../../organisms/SharePage/SharePage";
 import StartPage from "../../organisms/StartPage/StartPage";
 import MainTemPlate from "../../templates/MainTemPlate";
+import isEqual from "lodash/isEqual";
+
 import "./styles.scss";
+import { useParams } from "react-router-dom";
+import { useGetSurvey } from "../../../services/survey/get";
 
 const defaultValue = {
-    id: 1,
+    id: 999,
     requesterId: 10,
     title: "",
     description: "",
@@ -39,23 +43,25 @@ const defaultValue = {
     questions: [],
     skipStartPage: false,
 };
+
 const SurveyNew = () => {
+    const { id } = useParams();
     const [activeTab, setActiveTab] = useState(0);
     const [formData, setFormData] = useState<SurveyType>(defaultValue);
     const [isSaving, setIsSaving] = useState(false);
     const [saveCountdown, setSaveCountdown] = useState(0);
     const [hasChanges, setHasChanges] = useState(false);
+    const latestDataRef = useRef(formData);
+    const timeoutRef = useRef<number | null>(null);
+    const countdownRef = useRef<number | null>(null);
+
+    const { data } = useGetSurvey({ id: Number(id) || 0 });
 
     const handleTabClick = (tabValue: number) => {
         setActiveTab(tabValue);
     };
 
-    const tabs: {
-        label: string;
-        value: number;
-        component: React.ReactNode;
-        disabled?: boolean;
-    }[] = [
+    const tabs = [
         {
             label: "Trang Bắt Đầu",
             value: 0,
@@ -105,43 +111,58 @@ const SurveyNew = () => {
 
     const ActiveComponent = tabs[activeTab].component;
 
-    useBlocker(true);
-
-    const { mutate } = useCreateQuestion({
+    const { mutate } = useUpdateSurvey({
         mutationConfig: {
-            onSuccess: () => {
-                toast("Bạn đã lưu thành công thay đổi!");
+            onSuccess(newData) {
+                setFormData(newData);
+                latestDataRef.current = newData;
+                toast("Success");
             },
         },
     });
 
-    useEffect(() => {
-        setHasChanges(true);
-        setIsSaving(false);
-        setSaveCountdown(0);
-
-        const timer = setTimeout(() => {
-            handleSave();
-        }, 5000);
-
-        return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formData, activeTab]);
-
-    const handleSave = async () => {
+    const handleSave = () => {
         setIsSaving(true);
         setHasChanges(false);
-        setSaveCountdown(5);
+        let seconds = 5;
+        setSaveCountdown(seconds);
 
-        for (let i = 5; i > 0; i--) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setSaveCountdown(i - 1);
-        }
+        countdownRef.current = setInterval(() => {
+            seconds--;
+            setSaveCountdown(seconds);
+            if (seconds <= 0 && countdownRef.current) {
+                clearInterval(countdownRef.current);
+            }
+        }, 1000);
 
-        // Simulate API call
-        mutate(formData);
-        setIsSaving(false);
+        timeoutRef.current = setTimeout(() => {
+            mutate({ ...latestDataRef.current, type: "update" });
+            setIsSaving(false);
+            timeoutRef.current = null;
+            countdownRef.current = null;
+        }, 5000);
     };
+
+    useEffect(() => {
+        if (!isEqual(latestDataRef.current, formData)) {
+            latestDataRef.current = formData;
+            setHasChanges(true);
+            console.log("run");
+            if (!timeoutRef.current) {
+                handleSave();
+            }
+        }
+    }, [formData]);
+
+    useEffect(() => {
+        if (!id) {
+            mutate(defaultValue);
+        } else {
+            // setFormData(data?.data);
+        }
+    }, [id, data]);
+
+    useBlocker(true);
 
     return (
         <MainTemPlate>

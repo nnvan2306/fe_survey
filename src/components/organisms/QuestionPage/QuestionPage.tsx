@@ -341,7 +341,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
 
     const handleDeleteQuestion = () => {
         if (!orderCurrent) return;
-        const newQuestions = formData.questions
+        const newQuestions = formData?.questions
             .filter((item) => item.order !== orderCurrent)
             .map((item, index) => ({
                 ...item,
@@ -446,26 +446,26 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 <div
                     className="question-main flex-1 flex flex-col overflow-y-auto relative"
                     style={{
-                        ...(formData.background.startsWith("/") && {
-                            backgroundImage: `url(${formData.background})`,
+                        ...(formData?.background?.startsWith("/") && {
+                            backgroundImage: `url(${formData?.background})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
                             filter: `brightness(${
-                                formData.configJsonString.brightness / 100
+                                formData?.configJsonString.brightness / 100
                             })`,
                             backgroundColor: "transparent",
                         }),
-                        ...(formData.background === "color_gradient" && {
-                            background: `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`,
+                        ...(formData?.background === "color_gradient" && {
+                            background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
                             filter: `brightness(${
-                                formData.configJsonString.brightness / 100
+                                formData?.configJsonString.brightness / 100
                             })`,
                         }),
-                        ...(formData.background.startsWith("#") && {
-                            backgroundColor: formData.background,
+                        ...(formData?.background?.startsWith("#") && {
+                            backgroundColor: formData?.background,
                             filter: `brightness(${
-                                formData.configJsonString.brightness / 100
+                                formData?.configJsonString.brightness / 100
                             })`,
                         }),
                     }}
@@ -495,7 +495,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             placeholder="Nhập câu hỏi tại đây"
                             className="question-title-input"
                             style={{
-                                color: `${formData.configJsonString.titleColor}`,
+                                color: `${formData?.configJsonString?.titleColor}`,
                             }}
                             value={questionedit?.content || ""}
                             onChange={(e) =>
@@ -508,7 +508,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             className="question-description-input"
                             value={questionedit?.description || ""}
                             style={{
-                                color: `${formData.configJsonString.contentColor}`,
+                                color: `${formData?.configJsonString?.contentColor}`,
                             }}
                             onChange={(e) =>
                                 handleUpdateQuestion(

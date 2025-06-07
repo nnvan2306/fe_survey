@@ -1,4 +1,4 @@
-import { Home, MySurvey, SurveyNew } from "./index";
+import { Home, MySurvey, SurveyEdit, SurveyNew } from "./index";
 
 export const routes = [
     // {
@@ -23,6 +23,12 @@ export const routes = [
         name: "MySurvey",
         path: "/survey/manage",
         element: <MySurvey />,
+        requiresAuth: false,
+    },
+    {
+        name: "SurveyEdit",
+        path: "/survey/update/:id",
+        element: <SurveyEdit />,
         requiresAuth: false,
     },
 ] as const;
