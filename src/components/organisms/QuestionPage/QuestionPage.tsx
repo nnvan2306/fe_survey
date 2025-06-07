@@ -121,26 +121,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             />
                         ),
                     },
-                    {
-                        type: "jump_logic",
-                        children: (
-                            <LogicComponent
-                                questions={formData.questions}
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                            />
-                        ),
-                    },
-                    {
-                        type: "jump_logic",
-                        children: (
-                            <LogicComponentDisplay
-                                questions={formData.questions}
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                            />
-                        ),
-                    },
                 ],
             };
         }
@@ -234,26 +214,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             />
                         ),
                     },
-                    {
-                        type: "jump_logic",
-                        children: (
-                            <LogicComponent
-                                questions={formData.questions}
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                            />
-                        ),
-                    },
-                    {
-                        type: "jump_logic",
-                        children: (
-                            <LogicComponentDisplay
-                                questions={formData.questions}
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                            />
-                        ),
-                    },
                 ],
             };
         }
@@ -326,23 +286,75 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             />
                         ),
                     },
+                ],
+            };
+        }
+
+        if (item.id === 6) {
+            return {
+                type: item.id,
+                rules: [
                     {
-                        type: "jump_logic",
                         children: (
-                            <LogicComponent
-                                questions={formData.questions}
+                            <SwitchCustomize
+                                type="required_answer"
                                 question={questionedit}
                                 handleUpdateQuestion={handleUpdateQuestion}
+                                label="Bắt buộc câu trả lời"
                             />
                         ),
                     },
                     {
-                        type: "jump_logic",
+                        type: "badge",
                         children: (
-                            <LogicComponentDisplay
-                                questions={formData.questions}
+                            <SwitchCustomize
                                 question={questionedit}
                                 handleUpdateQuestion={handleUpdateQuestion}
+                                label="Gắn nhãn ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="image_end_question"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label="Hình ảnh/Video ở đầu câu hỏi"
+                            />
+                        ),
+                    },
+                    {
+                        children: (
+                            <SwitchCustomize
+                                type="is_auto_view_show"
+                                question={questionedit}
+                                handleUpdateQuestion={handleUpdateQuestion}
+                                label={
+                                    <div
+                                        style={{
+                                            marginTop: 10,
+                                        }}
+                                    >
+                                        <div>
+                                            Tự động chọn các câu trả lời đang
+                                            hiển thị và qua câu tiếp theo
+                                        </div>
+                                        <br />
+                                        <div
+                                            style={{
+                                                color: "#666",
+                                            }}
+                                        >
+                                            Bật tính năng này hệ thống sẽ tự
+                                            động chọn hết các câu trả lời đang
+                                            hiển thị và chuyển qua câu hỏi tiếp
+                                            theo nếu số lượng câu trả lời đang
+                                            hiển thị ít hơn hoặc bằng giá trịbạn
+                                            yêu cầu
+                                        </div>
+                                    </div>
+                                }
                             />
                         ),
                     },
@@ -392,26 +404,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                             label="Hình ảnh/Video ở đầu câu hỏi"
-                        />
-                    ),
-                },
-                {
-                    type: "jump_logic",
-                    children: (
-                        <LogicComponent
-                            questions={formData.questions}
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                        />
-                    ),
-                },
-                {
-                    type: "jump_logic",
-                    children: (
-                        <LogicComponentDisplay
-                            questions={formData.questions}
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
                         />
                     ),
                 },
@@ -687,6 +679,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
 
                 <div className="question-sidebar flex flex-col overflow-y-auto">
                     <Sidebar
+                        formData={formData}
                         handleUpdateQuestion={handleUpdateQuestion as any}
                         question={questionedit as QuestionType}
                         listComponent={
