@@ -101,7 +101,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             <SwitchCustomize
                                 type="is_choose_muitiple"
                                 question={questionedit}
-                                isMinMax
+                                // isMinMax
                                 handleUpdateQuestion={handleUpdateQuestion}
                                 label="Chọn nhiều trả lời"
                             />
