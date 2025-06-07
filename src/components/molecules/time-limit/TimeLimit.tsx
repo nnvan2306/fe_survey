@@ -42,13 +42,8 @@ const TimeLimit = ({ question, handleUpdateQuestion }: Props) => {
         }
     }, [question?.order]);
     return (
-        <div className="w-full">
+        <div className="w-full mb-2">
             <div>
-                {/* <SwitchCustomize
-                    question={question}
-                    handleUpdateQuestion={handleUpdateQuestion}
-                    label="Giới hạn thời gian câu hỏi này"
-                /> */}
                 <Box
                     sx={{
                         display: "flex",
@@ -64,7 +59,7 @@ const TimeLimit = ({ question, handleUpdateQuestion }: Props) => {
                         sx={{
                             fontWeight: 600,
                             color: "#000",
-                            fontSize: "12px",
+                            fontSize: "14px",
                         }}
                     >
                         Giới hạn thời gian câu hỏi này

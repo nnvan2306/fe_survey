@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Input, MenuItem, Select } from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 import type {
     OptionType,
     QuestionType,
@@ -52,6 +52,7 @@ const Sidebar = ({
                 value={question?.questionTypeId || 0}
                 onChange={(e) => handleChangeType(e.target.value)}
                 label="Chọn loại câu hỏi"
+                className="mb-2"
             >
                 {SurveyQuestionType?.map((item) => {
                     return (
