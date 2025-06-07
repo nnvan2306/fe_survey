@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MenuItem, Select } from "@mui/material";
+import { Input, MenuItem, Select } from "@mui/material";
 import type {
     OptionType,
     QuestionType,
@@ -11,6 +11,7 @@ import LogicComponentDisplay from "../QuestionPage/components/ModalLogicDisplay"
 import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
 import { useMemo } from "react";
 import SwitchCustomize from "../QuestionPage/components/SwitchCustomize";
+import TimeLimit from "../../molecules/time-limit/TimeLimit";
 
 const Sidebar = ({
     question,
@@ -96,6 +97,11 @@ const Sidebar = ({
                     />
                 </>
             ) : null}
+
+            <TimeLimit
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+            />
         </>
     );
 };

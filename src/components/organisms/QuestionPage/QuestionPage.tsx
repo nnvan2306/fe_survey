@@ -30,7 +30,7 @@ const questionDefault = {
     questionTypeId: 0,
     content: "",
     description: "",
-    timeLimit: 30,
+    timeLimit: 0,
     isVoiced: false,
     order: 0,
     configJsonString: {},
