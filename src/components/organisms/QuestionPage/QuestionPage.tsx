@@ -88,38 +88,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         if (item.id === 1) {
             return {
                 type: item.id,
-                rules: [
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="required_answer"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Bắt buộc câu trả lời"
-                            />
-                        ),
-                    },
-                    {
-                        type: "badge",
-                        children: (
-                            <SwitchCustomize
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Gắn nhãn ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="image_end_question"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Hình ảnh/Video ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                ],
+                rules: [],
             };
         }
 
@@ -127,36 +96,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             return {
                 type: item.id,
                 rules: [
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="required_answer"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Bắt buộc câu trả lời"
-                            />
-                        ),
-                    },
-                    {
-                        type: "badge",
-                        children: (
-                            <SwitchCustomize
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Gắn nhãn ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="image_end_question"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Hình ảnh/Video ở đầu câu hỏi"
-                            />
-                        ),
-                    },
                     {
                         children: (
                             <SwitchCustomize
@@ -223,36 +162,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     {
                         children: (
                             <SwitchCustomize
-                                type="required_answer"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Bắt buộc câu trả lời"
-                            />
-                        ),
-                    },
-                    {
-                        type: "badge",
-                        children: (
-                            <SwitchCustomize
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Gắn nhãn ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="image_end_question"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Hình ảnh/Video ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                    {
-                        children: (
-                            <SwitchCustomize
                                 type="is_auto_view_show"
                                 question={questionedit}
                                 handleUpdateQuestion={handleUpdateQuestion}
@@ -292,36 +201,6 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             return {
                 type: item.id,
                 rules: [
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="required_answer"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Bắt buộc câu trả lời"
-                            />
-                        ),
-                    },
-                    {
-                        type: "badge",
-                        children: (
-                            <SwitchCustomize
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Gắn nhãn ở đầu câu hỏi"
-                            />
-                        ),
-                    },
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="image_end_question"
-                                question={questionedit}
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Hình ảnh/Video ở đầu câu hỏi"
-                            />
-                        ),
-                    },
                     {
                         children: (
                             <SwitchCustomize
@@ -374,38 +253,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
 
         return {
             type: item.id,
-            rules: [
-                {
-                    children: (
-                        <SwitchCustomize
-                            type="required_answer"
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label="Bắt buộc câu trả lời"
-                        />
-                    ),
-                },
-                {
-                    type: "badge",
-                    children: (
-                        <SwitchCustomize
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label="Gắn nhãn ở đầu câu hỏi"
-                        />
-                    ),
-                },
-                {
-                    children: (
-                        <SwitchCustomize
-                            type="image_end_question"
-                            question={questionedit}
-                            handleUpdateQuestion={handleUpdateQuestion}
-                            label="Hình ảnh/Video ở đầu câu hỏi"
-                        />
-                    ),
-                },
-            ],
+            rules: [],
         };
     });
 

@@ -10,6 +10,7 @@ import LogicComponent from "../QuestionPage/components/ModalLogic";
 import LogicComponentDisplay from "../QuestionPage/components/ModalLogicDisplay";
 import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
 import { useMemo } from "react";
+import SwitchCustomize from "../QuestionPage/components/SwitchCustomize";
 
 const Sidebar = ({
     question,
@@ -34,6 +35,10 @@ const Sidebar = ({
 }) => {
     const handleChangeType = (type: number) => {
         handleUpdateQuestion("questionTypeId", type);
+        handleUpdateQuestion("configJsonString", {});
+        if (question?.options?.length) {
+            handleUpdateQuestion("options", []);
+        }
     };
 
     const isBasic = useMemo(() => formData.securityModeId === 1, [formData]);
@@ -55,6 +60,23 @@ const Sidebar = ({
                     );
                 })}
             </Select>
+            <SwitchCustomize
+                type="required_answer"
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+                label="Bắt buộc câu trả lời"
+            />
+            <SwitchCustomize
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+                label="Gắn nhãn ở đầu câu hỏi"
+            />
+            <SwitchCustomize
+                type="image_end_question"
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+                label="Hình ảnh/Video ở đầu câu hỏi"
+            />
             {listComponent &&
                 listComponent.map((Item: any) => {
                     return Item.children;
