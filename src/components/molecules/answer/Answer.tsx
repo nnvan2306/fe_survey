@@ -10,8 +10,14 @@ type Props = {
     data: OptionType;
     handleUpdateOption: (updatedOption: OptionType) => void;
     handleDeleteOption: (orderToDelete: number) => void;
+    isDisableClose: boolean;
 };
-const Answer = ({ data, handleUpdateOption, handleDeleteOption }: Props) => {
+const Answer = ({
+    data,
+    handleUpdateOption,
+    handleDeleteOption,
+    isDisableClose,
+}: Props) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         handleUpdateOption({ ...data, content: event.target.value });
     };
@@ -30,7 +36,13 @@ const Answer = ({ data, handleUpdateOption, handleDeleteOption }: Props) => {
                 placeholder="Nhập câu trả lời tại đây"
                 onChange={handleChange}
             />
-            <IconButton size="small" onClick={handleDelete}>
+            <IconButton
+                size="small"
+                onClick={handleDelete}
+                style={{
+                    display: isDisableClose ? "none" : "block",
+                }}
+            >
                 <ClearIcon fontSize="small" />
             </IconButton>
             <IconButton size="small" className="settings-button !hidden">

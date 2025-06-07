@@ -18,12 +18,6 @@ type Props = {
     ) => void;
 };
 const SingleChoice = ({ question, handleUpdateQuestion }: Props) => {
-    useEffect(() => {
-        if (!question?.options?.length) {
-            handleUpdateQuestion("options", [{ ...answerDefault, order: 1 }]);
-        }
-    }, [question]);
-
     const handleUpdateOption = (updatedOption: OptionType) => {
         const updatedOptions = question.options.map((option) =>
             option.order === updatedOption.order ? updatedOption : option
@@ -48,12 +42,21 @@ const SingleChoice = ({ question, handleUpdateQuestion }: Props) => {
         handleUpdateQuestion("options", updatedOptions);
     };
 
+    useEffect(() => {
+        if (!question?.options?.length) {
+            handleUpdateQuestion("options", [{ ...answerDefault, order: 1 }]);
+        }
+    }, [question]);
+
     return (
         <div className="single-choice flex flex-col gap-2">
             {question?.options?.length
-                ? question.options.map((item) => {
+                ? question.options.map((item, index) => {
                       return (
                           <Answer
+                              isDisableClose={
+                                  index === 0 && question?.options?.length === 1
+                              }
                               data={item}
                               key={item.order}
                               handleUpdateOption={handleUpdateOption}
