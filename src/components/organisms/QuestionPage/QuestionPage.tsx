@@ -22,8 +22,6 @@ import SingleInput from "../SingleInput/SingleInput";
 import SingleSlider from "../SingleSlider/SingleSlider";
 import Overlay from "../overlay/Overlay";
 import Sidebar from "../sidebar/Sidebar";
-import LogicComponent from "./components/ModalLogic";
-import LogicComponentDisplay from "./components/ModalLogicDisplay";
 import SwitchCustomize from "./components/SwitchCustomize";
 import RatingIcon from "./components/rating-icon/RatingIcon";
 import "./styles.scss";

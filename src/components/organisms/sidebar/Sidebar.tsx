@@ -9,6 +9,7 @@ import { SurveyQuestionType } from "../../../constants/question";
 import LogicComponent from "../QuestionPage/components/ModalLogic";
 import LogicComponentDisplay from "../QuestionPage/components/ModalLogicDisplay";
 import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
+import { useMemo } from "react";
 
 const Sidebar = ({
     question,
@@ -34,6 +35,10 @@ const Sidebar = ({
     const handleChangeType = (type: number) => {
         handleUpdateQuestion("questionTypeId", type);
     };
+
+    const isBasic = useMemo(() => formData.securityModeId === 1, [formData]);
+    // const isAdvance = useMemo(() => formData?.securityModeId === 2, [formData]);
+    // const isPro = useMemo(() => formData?.securityModeId === 3, [formData]);
     return (
         <>
             <p>Chọn loại câu hỏi</p>
@@ -54,16 +59,21 @@ const Sidebar = ({
                 listComponent.map((Item: any) => {
                     return Item.children;
                 })}
-            <LogicComponent
-                questions={formData?.questions || []}
-                question={question}
-                handleUpdateQuestion={handleUpdateQuestion}
-            />
-            <LogicComponentDisplay
-                questions={formData?.questions || []}
-                question={question}
-                handleUpdateQuestion={handleUpdateQuestion}
-            />
+
+            {!isBasic ? (
+                <>
+                    <LogicComponent
+                        questions={formData?.questions || []}
+                        question={question}
+                        handleUpdateQuestion={handleUpdateQuestion}
+                    />
+                    <LogicComponentDisplay
+                        questions={formData?.questions || []}
+                        question={question}
+                        handleUpdateQuestion={handleUpdateQuestion}
+                    />
+                </>
+            ) : null}
         </>
     );
 };
