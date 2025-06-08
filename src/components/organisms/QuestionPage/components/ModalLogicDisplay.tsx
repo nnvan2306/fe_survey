@@ -46,12 +46,6 @@ export default function LogicComponentDisplay({
                         ×
                     </button>
                 </div>
-                <p style={styles.description}>
-                    Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn, hệ
-                    thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
-                    <strong>2</strong>. Bạn không cần phải đặt điều kiện để nhảy
-                    đến câu này.
-                </p>
                 <button style={styles.addButton} onClick={handleOpenModal}>
                     Thêm logic
                 </button>
@@ -290,7 +284,14 @@ function ModalLogic({
                         ×
                     </button>
                 </div>
-
+                <div className="px-5">
+                    <p style={styles.description}>
+                        Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn,
+                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
+                        <strong>2</strong>. Bạn không cần phải đặt điều kiện để
+                        nhảy đến câu này.
+                    </p>
+                </div>
                 <div style={styles.conditionContainer}>
                     {conditions.map((condition, index) => (
                         <div key={condition.id} style={styles.conditionRow}>
