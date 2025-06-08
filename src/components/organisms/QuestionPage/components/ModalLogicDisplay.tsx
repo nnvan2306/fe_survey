@@ -3,6 +3,35 @@ import { useState } from "react";
 import type { OptionType, QuestionType } from "../../../../types/survey";
 import type { RangeSliderConfigJsonStringType } from "../../RangeSlider/RangeSlider";
 
+type DisplayLogicType = {
+    conditions: {
+        questionOrder: number;
+        conjunction: string | null;
+        operator: string;
+        optionOrder?: number;
+        compareValue?: number;
+    }[];
+    targetQuestionOrder: number | "end";
+};
+
+type ConfigJsonStringType = {
+    displayLogics?: DisplayLogicType[];
+    backgroundGradient1Color?: string;
+    backgroundGradient2Color?: string;
+    titleColor?: string;
+    contentColor?: string;
+    buttonBackgroundColor?: string;
+    buttonContentColor?: string;
+    password?: string;
+    brightness?: number;
+    isResizableIframeEnabled?: boolean;
+};
+
+type OperatorType = {
+    value: string;
+    label: string;
+};
+
 export default function LogicComponentDisplay({
     handleUpdateQuestion,
     question,
@@ -63,38 +92,6 @@ export default function LogicComponentDisplay({
     );
 }
 
-// Mapping questionTypeId to question types
-const getQuestionType = (questionTypeId: number) => {
-    switch (questionTypeId) {
-        case 0: // Text/Input
-            return "text";
-        case 1: // Single Choice
-            return "single_choice";
-        case 2: // Multiple Choice
-            return "multiple_choice";
-        case 3: // Rating/Scale
-            return "rating";
-        case 4: // Number
-            return "number";
-        case 5: // Date
-            return "date";
-        default:
-            return "text";
-    }
-};
-
-type DisplayLogicType = {
-    conditions: {
-        id: number;
-        questionOrder: string;
-        conjunction: string | null;
-        operator: string;
-        optionOrder: string;
-        compareValue: string;
-    }[];
-    targetQuestionOrder: string;
-};
-
 function ModalLogic({
     onClose,
     questionsData,
@@ -116,229 +113,146 @@ function ModalLogic({
             | Record<string, unknown>
     ) => void;
 }) {
-    const [displayLogics, setDisplayLogics] = useState<DisplayLogicType[]>([
-        {
-            conditions: [
-                {
-                    id: 1,
-                    questionOrder: "",
-                    conjunction: null,
-                    operator: "Chọn",
-                    optionOrder: "",
-                    compareValue: "",
-                },
-            ],
-            targetQuestionOrder: "end",
-        },
-    ]);
-
-    const getAvailableOperators = (questionOrder: string) => {
-        if (!questionOrder) return ["Chọn"];
-
-        const question = questionsData.find(
-            (q: QuestionType) => q.order.toString() === questionOrder
-        );
-        if (!question) return ["Chọn"];
-
-        const questionType = getQuestionType(question.questionTypeId);
-        const baseOperators = ["Chọn", "Không Chọn"];
-
-        if (questionType === "number" || questionType === "rating") {
-            return [...baseOperators, "=", "≠", ">", "≥", "<", "≤"];
-        }
-
-        return baseOperators;
-    };
-
-    const getQuestionOptions = (questionOrder: string) => {
-        if (!questionOrder) return [];
-
-        const question = questionsData.find(
-            (q: QuestionType) => q.order.toString() === questionOrder
-        );
-        if (!question || !question.options) return [];
-
-        return question.options.map((option: OptionType, index: number) => ({
-            label: option.content || `Option ${index + 1}`,
-            value: (index + 1).toString(),
-        }));
-    };
-
-    const isComparisonOperator = (operator: string) => {
-        return ["=", "≠", ">", "≥", "<", "≤"].includes(operator);
-    };
-
-    const isOptionOperator = (operator: string) => {
-        return ["Chọn", "Không Chọn"].includes(operator);
-    };
+    const configJson = question?.configJsonString as ConfigJsonStringType;
+    const displayLogics = (configJson?.displayLogics ||
+        []) as DisplayLogicType[];
 
     const handleAddLogic = () => {
         const newLogic: DisplayLogicType = {
-            conditions: [
-                {
-                    id: Date.now(),
-                    questionOrder: "",
-                    conjunction: null,
-                    operator: "Chọn",
-                    optionOrder: "",
-                    compareValue: "",
-                },
-            ],
+            conditions: [],
             targetQuestionOrder: "end",
         };
-        setDisplayLogics([...displayLogics, newLogic]);
+        handleUpdateQuestion("configJsonString", {
+            ...configJson,
+            displayLogics: [...displayLogics, newLogic],
+        });
     };
 
     const handleDeleteLogic = (logicIndex: number) => {
-        if (displayLogics.length > 1) {
-            setDisplayLogics(
-                displayLogics.filter((_, index) => index !== logicIndex)
-            );
-        }
+        const newLogics = displayLogics.filter(
+            (_, index) => index !== logicIndex
+        );
+        handleUpdateQuestion("configJsonString", {
+            ...configJson,
+            displayLogics: newLogics,
+        });
     };
 
     const handleAddCondition = (logicIndex: number) => {
         const logic = displayLogics[logicIndex];
         const newCondition = {
-            id: Date.now(),
-            questionOrder: "",
-            conjunction: "Và",
-            operator: "Chọn",
-            optionOrder: "",
-            compareValue: "",
+            questionOrder: 0,
+            conjunction: logic.conditions.length > 0 ? "AND" : null,
+            operator: "",
+            optionOrder: 0,
+            compareValue: 0,
         };
         const newLogics = [...displayLogics];
         newLogics[logicIndex] = {
             ...logic,
             conditions: [...logic.conditions, newCondition],
         };
-        setDisplayLogics(newLogics);
+        handleUpdateQuestion("configJsonString", {
+            ...configJson,
+            displayLogics: newLogics,
+        });
     };
 
-    const handleDeleteCondition = (logicIndex: number, conditionId: number) => {
-        const logic = displayLogics[logicIndex];
-        if (logic.conditions.length > 1) {
-            const newLogics = [...displayLogics];
-            newLogics[logicIndex] = {
-                ...logic,
-                conditions: logic.conditions.filter(
-                    (condition) => condition.id !== conditionId
-                ),
-            };
-            setDisplayLogics(newLogics);
-        }
-    };
-
-    const handleConditionChange = (
+    const handleDeleteCondition = (
         logicIndex: number,
-        conditionId: number,
-        field: string,
-        value: string
+        conditionIndex: number
     ) => {
         const logic = displayLogics[logicIndex];
+        const newConditions = logic.conditions.filter(
+            (_, index) => index !== conditionIndex
+        );
         const newLogics = [...displayLogics];
         newLogics[logicIndex] = {
             ...logic,
-            conditions: logic.conditions.map((condition) => {
-                if (condition.id !== conditionId) return condition;
-
-                const updatedCondition = { ...condition, [field]: value };
-
-                if (field === "questionOrder") {
-                    updatedCondition.operator = "Chọn";
-                    updatedCondition.optionOrder = "";
-                    updatedCondition.compareValue = "";
-                }
-
-                if (field === "operator") {
-                    updatedCondition.optionOrder = "";
-                    updatedCondition.compareValue = "";
-                }
-
-                return updatedCondition;
-            }),
+            conditions: newConditions,
         };
-        setDisplayLogics(newLogics);
+        handleUpdateQuestion("configJsonString", {
+            ...configJson,
+            displayLogics: newLogics,
+        });
     };
 
-    const handleTargetQuestionChange = (logicIndex: number, value: string) => {
+    const handleUpdateCondition = (
+        logicIndex: number,
+        conditionIndex: number,
+        key: string,
+        value: string | number
+    ) => {
+        const logic = displayLogics[logicIndex];
+        const condition = logic.conditions[conditionIndex];
+        const newCondition = { ...condition, [key]: value };
+        const newConditions = [...logic.conditions];
+        newConditions[conditionIndex] = newCondition;
         const newLogics = [...displayLogics];
         newLogics[logicIndex] = {
-            ...newLogics[logicIndex],
-            targetQuestionOrder: value,
+            ...logic,
+            conditions: newConditions,
         };
-        setDisplayLogics(newLogics);
-    };
-
-    const isConditionValid = (condition: any) => {
-        if (!condition.questionOrder || !condition.operator) {
-            return false;
-        }
-
-        if (isOptionOperator(condition.operator)) {
-            return condition.optionOrder !== "";
-        }
-
-        if (isComparisonOperator(condition.operator)) {
-            return (
-                condition.compareValue !== "" &&
-                !isNaN(Number(condition.compareValue))
-            );
-        }
-
-        return true;
-    };
-
-    const canSave = () => {
-        return displayLogics.every(
-            (logic) =>
-                logic.conditions.every(isConditionValid) &&
-                (logic.targetQuestionOrder === "end" ||
-                    logic.targetQuestionOrder !== "")
-        );
-    };
-
-    const handleSave = () => {
-        if (!canSave()) return;
-
-        const output = {
-            displayLogics: displayLogics.map((logic) => ({
-                conditions: logic.conditions.map((condition) => {
-                    const baseCondition = {
-                        questionOrder: parseInt(condition.questionOrder),
-                        conjunction: condition.conjunction,
-                        operator: condition.operator,
-                    };
-
-                    if (isOptionOperator(condition.operator)) {
-                        return {
-                            ...baseCondition,
-                            optionOrder: parseInt(condition.optionOrder),
-                        };
-                    }
-
-                    if (isComparisonOperator(condition.operator)) {
-                        return {
-                            ...baseCondition,
-                            compareValue: parseInt(condition.compareValue),
-                        };
-                    }
-
-                    return baseCondition;
-                }),
-                targetQuestionOrder:
-                    logic.targetQuestionOrder === "end"
-                        ? "end"
-                        : parseInt(logic.targetQuestionOrder),
-            })),
-        };
-
         handleUpdateQuestion("configJsonString", {
-            ...question.configJsonString,
-            ...output,
+            ...configJson,
+            displayLogics: newLogics,
+        });
+    };
+
+    const handleSaveLogic = () => {
+        const isValid = displayLogics.every((logic) => {
+            if (!logic.targetQuestionOrder) {
+                return false;
+            }
+            return logic.conditions.every((condition) => {
+                if (!condition.questionOrder || !condition.operator) {
+                    return false;
+                }
+                if (["Chọn", "Không Chọn"].includes(condition.operator)) {
+                    return condition.optionOrder !== 0;
+                }
+                if (
+                    ["=", "≠", ">", "≥", "<", "≤"].includes(condition.operator)
+                ) {
+                    return condition.compareValue !== 0;
+                }
+                return true;
+            });
         });
 
+        if (!isValid) {
+            alert("Vui lòng điền đầy đủ thông tin cho tất cả điều kiện");
+            return;
+        }
+
         onClose();
+    };
+
+    const getOperatorsForQuestion = (
+        questionTypeId: number
+    ): OperatorType[] => {
+        switch (questionTypeId) {
+            case 1:
+                return [
+                    { value: "Chọn", label: "Chọn" },
+                    { value: "Không Chọn", label: "Không Chọn" },
+                ];
+            case 2:
+                return [
+                    { value: "Chọn", label: "Chọn" },
+                    { value: "Không Chọn", label: "Không Chọn" },
+                ];
+            case 6:
+                return [
+                    { value: "=", label: "=" },
+                    { value: ">", label: ">" },
+                    { value: "≥", label: "≥" },
+                    { value: "<", label: "<" },
+                    { value: "≤", label: "≤" },
+                ];
+            default:
+                return [];
+        }
     };
 
     return (
@@ -349,9 +263,8 @@ function ModalLogic({
                         Display Logic - Điều kiện hiện câu hỏi
                     </h2>
                     <p className="text-sm text-gray-600">
-                        Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn,
-                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo. Bạn
-                        không cần phải đặt điều kiện để nhảy đến câu này.
+                        Thêm điều kiện để hiển thị câu hỏi này dựa trên câu trả
+                        lời của các câu hỏi khác
                     </p>
                 </div>
 
@@ -391,46 +304,45 @@ function ModalLogic({
                                 {logic.conditions.map(
                                     (condition, conditionIndex) => (
                                         <div
-                                            key={condition.id}
+                                            key={conditionIndex}
                                             className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
                                         >
-                                            {conditionIndex === 0 ? (
-                                                <span className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded font-medium">
-                                                    NẾU
-                                                </span>
-                                            ) : (
+                                            {conditionIndex > 0 && (
                                                 <select
                                                     value={
                                                         condition.conjunction ||
-                                                        "Và"
+                                                        "AND"
                                                     }
                                                     onChange={(e) =>
-                                                        handleConditionChange(
+                                                        handleUpdateCondition(
                                                             logicIndex,
-                                                            condition.id,
+                                                            conditionIndex,
                                                             "conjunction",
                                                             e.target.value
                                                         )
                                                     }
                                                     className="w-20 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                                 >
-                                                    <option value="Và">
+                                                    <option value="AND">
                                                         Và
                                                     </option>
-                                                    <option value="Hoặc">
+                                                    <option value="OR">
                                                         Hoặc
                                                     </option>
                                                 </select>
                                             )}
 
                                             <select
-                                                value={condition.questionOrder}
+                                                value={
+                                                    condition.questionOrder?.toString() ||
+                                                    ""
+                                                }
                                                 onChange={(e) =>
-                                                    handleConditionChange(
+                                                    handleUpdateCondition(
                                                         logicIndex,
-                                                        condition.id,
+                                                        conditionIndex,
                                                         "questionOrder",
-                                                        e.target.value
+                                                        parseInt(e.target.value)
                                                     )
                                                 }
                                                 className="flex-1 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
@@ -439,148 +351,176 @@ function ModalLogic({
                                                     Chọn câu hỏi
                                                 </option>
                                                 {questionsData
-                                                    .filter((q: QuestionType) =>
-                                                        [1, 2, 6].includes(
-                                                            q.questionTypeId
-                                                        )
+                                                    ?.filter(
+                                                        (item) =>
+                                                            item.questionTypeId ===
+                                                            1 ||
+                                                            item.questionTypeId ===
+                                                            2 ||
+                                                            item.questionTypeId ===
+                                                            6
                                                     )
-                                                    .map((q: QuestionType) => (
+                                                    ?.map((q) => (
                                                         <option
                                                             key={q.order}
-                                                            value={q.order}
+                                                            value={q.order.toString()}
                                                         >
-                                                            Câu {q.order}
-                                                            {q.content
-                                                                ? `: ${q.content.substring(
-                                                                      0,
-                                                                      50
-                                                                  )}${
-                                                                      q.content
-                                                                          .length >
-                                                                      50
-                                                                          ? "..."
-                                                                          : ""
-                                                                  }`
-                                                                : ` (Question Type ${q.questionTypeId})`}
+                                                            {q.order} .
+                                                            {q.content &&
+                                                                ` ${q.content.substring(
+                                                                    0,
+                                                                    50
+                                                                )}${q.content
+                                                                    .length >
+                                                                    50
+                                                                    ? "..."
+                                                                    : ""
+                                                                }`}
                                                         </option>
                                                     ))}
                                             </select>
 
                                             <select
-                                                value={condition.operator}
+                                                value={condition.operator || ""}
                                                 onChange={(e) =>
-                                                    handleConditionChange(
+                                                    handleUpdateCondition(
                                                         logicIndex,
-                                                        condition.id,
+                                                        conditionIndex,
                                                         "operator",
                                                         e.target.value
                                                     )
                                                 }
+                                                className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                                 disabled={
                                                     !condition.questionOrder
                                                 }
-                                                className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                             >
-                                                {getAvailableOperators(
-                                                    condition.questionOrder
-                                                ).map((op) => (
-                                                    <option key={op} value={op}>
-                                                        {op}
-                                                    </option>
-                                                ))}
+                                                <option value="">
+                                                    Chọn điều kiện
+                                                </option>
+                                                {condition.questionOrder &&
+                                                    getOperatorsForQuestion(
+                                                        questionsData.find(
+                                                            (q) =>
+                                                                q.order ===
+                                                                condition.questionOrder
+                                                        )?.questionTypeId || 0
+                                                    ).map((op) => (
+                                                        <option
+                                                            key={op.value}
+                                                            value={op.value}
+                                                        >
+                                                            {op.label}
+                                                        </option>
+                                                    ))}
                                             </select>
 
-                                            {isOptionOperator(
-                                                condition.operator
-                                            ) &&
-                                                condition.questionOrder && (
+                                            {["Chọn", "Không Chọn"].includes(
+                                                condition.operator || ""
+                                            ) && (
                                                     <select
                                                         value={
-                                                            condition.optionOrder
+                                                            condition.optionOrder?.toString() ||
+                                                            ""
                                                         }
                                                         onChange={(e) =>
-                                                            handleConditionChange(
+                                                            handleUpdateCondition(
                                                                 logicIndex,
-                                                                condition.id,
+                                                                conditionIndex,
                                                                 "optionOrder",
-                                                                e.target.value
+                                                                parseInt(
+                                                                    e.target.value
+                                                                )
                                                             )
                                                         }
                                                         className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                        disabled={
+                                                            !condition.operator
+                                                        }
                                                     >
                                                         <option value="">
-                                                            Chọn tùy chọn
+                                                            Chọn đáp án
                                                         </option>
-                                                        {getQuestionOptions(
-                                                            condition.questionOrder
-                                                        ).map((option) => (
-                                                            <option
-                                                                key={
-                                                                    option.value
-                                                                }
-                                                                value={
-                                                                    option.value
-                                                                }
-                                                            >
-                                                                {option.label}
-                                                            </option>
-                                                        ))}
+                                                        {condition.questionOrder &&
+                                                            questionsData
+                                                                .find(
+                                                                    (q) =>
+                                                                        q.order ===
+                                                                        condition.questionOrder
+                                                                )
+                                                                ?.options?.map(
+                                                                    (opt) => (
+                                                                        <option
+                                                                            key={
+                                                                                opt.order
+                                                                            }
+                                                                            value={opt.order.toString()}
+                                                                        >
+                                                                            {
+                                                                                opt.content
+                                                                            }
+                                                                        </option>
+                                                                    )
+                                                                )}
                                                     </select>
                                                 )}
 
-                                            {isComparisonOperator(
-                                                condition.operator
+                                            {[
+                                                "=",
+                                                // "≠",
+                                                ">",
+                                                "≥",
+                                                "<",
+                                                "≤",
+                                            ].includes(
+                                                condition.operator || ""
                                             ) && (
-                                                <input
-                                                    type="number"
-                                                    value={
-                                                        condition.compareValue
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleConditionChange(
-                                                            logicIndex,
-                                                            condition.id,
-                                                            "compareValue",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="Nhập giá trị"
-                                                    className="w-32 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                                />
-                                            )}
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            condition.compareValue ||
+                                                            ""
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleUpdateCondition(
+                                                                logicIndex,
+                                                                conditionIndex,
+                                                                "compareValue",
+                                                                parseInt(
+                                                                    e.target.value
+                                                                )
+                                                            )
+                                                        }
+                                                        className="w-32 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                        placeholder="Nhập giá trị"
+                                                        disabled={
+                                                            !condition.operator
+                                                        }
+                                                    />
+                                                )}
 
-                                            {logic.conditions.length > 1 && (
-                                                <button
-                                                    onClick={() =>
-                                                        handleDeleteCondition(
-                                                            logicIndex,
-                                                            condition.id
-                                                        )
-                                                    }
-                                                    className="p-1.5 text-red-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
+                                            <button
+                                                onClick={() =>
+                                                    handleDeleteCondition(
+                                                        logicIndex,
+                                                        conditionIndex
+                                                    )
+                                                }
+                                                className="p-1.5 text-red-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-5 w-5"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
                                                 >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-5 w-5"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            )}
-
-                                            <div
-                                                className={`w-2 h-2 rounded-full ${
-                                                    isConditionValid(condition)
-                                                        ? "bg-green-500"
-                                                        : "bg-red-500"
-                                                }`}
-                                            />
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
                                         </div>
                                     )
                                 )}
@@ -595,26 +535,59 @@ function ModalLogic({
                                         Hiện
                                     </button>
                                     <select
-                                        value={logic.targetQuestionOrder}
-                                        onChange={(e) =>
-                                            handleTargetQuestionChange(
-                                                logicIndex,
-                                                e.target.value
-                                            )
+                                        value={
+                                            logic.targetQuestionOrder === "end"
+                                                ? "end"
+                                                : logic.targetQuestionOrder.toString()
                                         }
+                                        onChange={(e) => {
+                                            const updatedLogic: DisplayLogicType =
+                                            {
+                                                ...logic,
+                                                targetQuestionOrder:
+                                                    e.target.value === "end"
+                                                        ? "end"
+                                                        : parseInt(
+                                                            e.target.value
+                                                        ),
+                                            };
+                                            const newLogics = [
+                                                ...displayLogics,
+                                            ];
+                                            newLogics[logicIndex] =
+                                                updatedLogic;
+                                            handleUpdateQuestion(
+                                                "configJsonString",
+                                                {
+                                                    ...configJson,
+                                                    displayLogics: newLogics,
+                                                }
+                                            );
+                                        }}
                                         className="flex-1 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     >
-                                        <option value="end">Kết thúc</option>
-                                        {questionsData.map(
-                                            (q: QuestionType) => (
-                                                <option
-                                                    key={q.order}
-                                                    value={q.order}
-                                                >
-                                                    Câu {q.order}
-                                                </option>
-                                            )
-                                        )}
+                                        <option value="">
+                                            Chọn câu hỏi đích
+                                        </option>
+                                        {questionsData.map((q) => (
+                                            <option
+                                                key={q.order}
+                                                value={q.order.toString()}
+                                            >
+                                                Câu hỏi {q.order}
+                                                {q.content &&
+                                                    ` - ${q.content.substring(
+                                                        0,
+                                                        50
+                                                    )}${q.content.length > 50
+                                                        ? "..."
+                                                        : ""
+                                                    }`}
+                                            </option>
+                                        ))}
+                                        <option value="end">
+                                            Kết thúc khảo sát
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -637,15 +610,10 @@ function ModalLogic({
                         Hủy
                     </button>
                     <button
-                        onClick={handleSave}
-                        disabled={!canSave()}
-                        className={`px-4 py-2 text-white rounded focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                            canSave()
-                                ? "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
-                                : "bg-gray-400 cursor-not-allowed"
-                        }`}
+                        onClick={handleSaveLogic}
+                        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
-                        Lưu Logic
+                        Lưu
                     </button>
                 </div>
             </div>
@@ -692,16 +660,6 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
     },
-    description: {
-        backgroundColor: "#f8f9fa",
-        padding: "15px",
-        borderRadius: "6px",
-        fontSize: "14px",
-        color: "#666",
-        marginBottom: "20px",
-        lineHeight: "1.5",
-        border: "1px solid #e9ecef",
-    },
     addButton: {
         backgroundColor: "#1890ff",
         color: "#fff",
@@ -713,202 +671,5 @@ const styles = {
         fontWeight: "500",
         width: "100%",
         transition: "background-color 0.3s",
-    },
-    modalOverlay: {
-        position: "fixed" as const,
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-    },
-    modalContent: {
-        backgroundColor: "#f8f9fa",
-        borderRadius: "12px",
-        padding: "0",
-        maxWidth: "800px",
-        width: "90%",
-        maxHeight: "85vh",
-        overflow: "auto",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-    },
-    modalHeader: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px 24px",
-        borderBottom: "1px solid #e9ecef",
-        backgroundColor: "#fff",
-        borderRadius: "12px 12px 0 0",
-    },
-    modalTitle: {
-        margin: 0,
-        fontSize: "16px",
-        color: "#495057",
-        fontWeight: "600",
-    },
-    conditionContainer: {
-        padding: "24px",
-    },
-    conditionRow: {
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        marginBottom: "16px",
-        padding: "16px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        border: "1px solid #dee2e6",
-        position: "relative" as const,
-    },
-    operatorContainer: {
-        minWidth: "80px",
-        display: "flex",
-        alignItems: "center",
-    },
-    operatorLabel: {
-        fontSize: "14px",
-        fontWeight: "600",
-        color: "#495057",
-        padding: "8px 12px",
-        backgroundColor: "#e9ecef",
-        borderRadius: "6px",
-    },
-    conjunctionDropdown: {
-        padding: "8px 12px",
-        borderRadius: "6px",
-        border: "1px solid #ced4da",
-        fontSize: "14px",
-        backgroundColor: "#fff",
-        color: "#495057",
-        fontWeight: "500",
-        minWidth: "70px",
-        cursor: "pointer",
-    },
-    dropdown: {
-        padding: "10px 12px",
-        borderRadius: "6px",
-        border: "1px solid #ced4da",
-        fontSize: "14px",
-        backgroundColor: "#fff",
-        color: "#495057",
-        flex: 1,
-        minWidth: "140px",
-        cursor: "pointer",
-        transition: "border-color 0.2s",
-    },
-    numberInput: {
-        padding: "10px 12px",
-        borderRadius: "6px",
-        border: "1px solid #ced4da",
-        fontSize: "14px",
-        backgroundColor: "#fff",
-        color: "#495057",
-        width: "120px",
-        textAlign: "center" as const,
-    },
-    deleteButton: {
-        backgroundColor: "#dc3545",
-        color: "#fff",
-        border: "none",
-        borderRadius: "6px",
-        width: "32px",
-        height: "32px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        fontSize: "18px",
-        fontWeight: "bold",
-        transition: "background-color 0.2s",
-        flexShrink: 0,
-    },
-    validationIndicator: {
-        width: "8px",
-        height: "8px",
-        borderRadius: "50%",
-        position: "absolute" as const,
-        top: "8px",
-        right: "8px",
-    },
-    addLogicContainer: {
-        display: "flex",
-        justifyContent: "center",
-        margin: "20px 0",
-    },
-    addConditionButton: {
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "#fff",
-        border: "none",
-        borderRadius: "8px",
-        padding: "12px 24px",
-        fontSize: "14px",
-        fontWeight: "600",
-        cursor: "pointer",
-        transition: "transform 0.2s, box-shadow 0.2s",
-        boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
-    },
-    jumpToContainer: {
-        padding: "24px",
-        borderTop: "1px solid #dee2e6",
-        backgroundColor: "#fff",
-    },
-    jumpToRow: {
-        display: "flex",
-        alignItems: "center",
-        gap: "16px",
-    },
-    jumpToLabel: {
-        fontSize: "14px",
-        fontWeight: "600",
-        color: "#495057",
-        minWidth: "40px",
-    },
-    jumpToActionContainer: {
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-    },
-    jumpToButton: {
-        backgroundColor: "#28a745",
-        color: "#fff",
-        border: "none",
-        borderRadius: "6px",
-        padding: "8px 16px",
-        fontSize: "14px",
-        fontWeight: "500",
-        cursor: "pointer",
-    },
-    targetDropdown: {
-        padding: "8px 12px",
-        borderRadius: "6px",
-        border: "1px solid #ced4da",
-        fontSize: "14px",
-        backgroundColor: "#fff",
-        color: "#495057",
-        minWidth: "120px",
-        cursor: "pointer",
-    },
-    actionContainer: {
-        padding: "24px",
-        borderTop: "1px solid #dee2e6",
-        backgroundColor: "#fff",
-        borderRadius: "0 0 12px 12px",
-    },
-    saveButton: {
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "#fff",
-        border: "none",
-        borderRadius: "8px",
-        padding: "12px 24px",
-        fontSize: "16px",
-        fontWeight: "600",
-        width: "100%",
-        transition: "transform 0.2s, box-shadow 0.2s",
-        boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
     },
 };

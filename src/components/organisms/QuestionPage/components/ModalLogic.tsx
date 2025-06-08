@@ -73,7 +73,11 @@ export default function LogicComponent({
                         ×
                     </button>
                 </div>
-                <button style={styles.addButton} onClick={handleOpenModal}>
+                <button
+                    style={styles.addButton}
+                    onClick={handleOpenModal}
+                    className="w-full"
+                >
                     Thêm logic
                 </button>
             </div>
@@ -205,9 +209,7 @@ function ModalLogic({
                 if (["Chọn", "Không Chọn"].includes(condition.operator)) {
                     return condition.optionOrder !== 0;
                 }
-                if (
-                    ["=", "≠", ">", "≥", "<", "≤"].includes(condition.operator)
-                ) {
+                if (["=", ">", "≥", "<", "≤"].includes(condition.operator)) {
                     return condition.compareValue !== 0;
                 }
                 return true;
@@ -226,42 +228,23 @@ function ModalLogic({
         questionTypeId: number
     ): OperatorType[] => {
         switch (questionTypeId) {
-            case 1: // Single Choice
+            case 1:
                 return [
                     { value: "Chọn", label: "Chọn" },
                     { value: "Không Chọn", label: "Không Chọn" },
                 ];
-            case 2: // Multiple Choice
+            case 2:
                 return [
                     { value: "Chọn", label: "Chọn" },
                     { value: "Không Chọn", label: "Không Chọn" },
                 ];
-            case 3: // Text
+            case 6:
                 return [
-                    { value: "=", label: "Bằng" },
-                    { value: "≠", label: "Không bằng" },
-                    { value: ">", label: "Lớn hơn" },
-                    { value: "≥", label: "Lớn hơn hoặc bằng" },
-                    { value: "<", label: "Nhỏ hơn" },
-                    { value: "≤", label: "Nhỏ hơn hoặc bằng" },
-                ];
-            case 4: // Number
-                return [
-                    { value: "=", label: "Bằng" },
-                    { value: "≠", label: "Không bằng" },
-                    { value: ">", label: "Lớn hơn" },
-                    { value: "≥", label: "Lớn hơn hoặc bằng" },
-                    { value: "<", label: "Nhỏ hơn" },
-                    { value: "≤", label: "Nhỏ hơn hoặc bằng" },
-                ];
-            case 5: // Range Slider
-                return [
-                    { value: "=", label: "Bằng" },
-                    { value: "≠", label: "Không bằng" },
-                    { value: ">", label: "Lớn hơn" },
-                    { value: "≥", label: "Lớn hơn hoặc bằng" },
-                    { value: "<", label: "Nhỏ hơn" },
-                    { value: "≤", label: "Nhỏ hơn hoặc bằng" },
+                    { value: "=", label: "=" },
+                    { value: ">", label: ">" },
+                    { value: "≥", label: "≥" },
+                    { value: "<", label: "<" },
+                    { value: "≤", label: "≤" },
                 ];
             default:
                 return [];
@@ -363,24 +346,35 @@ function ModalLogic({
                                                 <option value="">
                                                     Chọn câu hỏi
                                                 </option>
-                                                {questions.map((q) => (
-                                                    <option
-                                                        key={q.order}
-                                                        value={q.order.toString()}
-                                                    >
-                                                        Câu hỏi {q.order}
-                                                        {q.content &&
-                                                            ` - ${q.content.substring(
-                                                                0,
-                                                                50
-                                                            )}${
-                                                                q.content
-                                                                    .length > 50
-                                                                    ? "..."
-                                                                    : ""
-                                                            }`}
-                                                    </option>
-                                                ))}
+                                                {questions
+                                                    ?.filter(
+                                                        (item) =>
+                                                            item.questionTypeId ===
+                                                                1 ||
+                                                            item.questionTypeId ===
+                                                                2 ||
+                                                            item.questionTypeId ===
+                                                                6
+                                                    )
+                                                    ?.map((q) => (
+                                                        <option
+                                                            key={q.order}
+                                                            value={q.order.toString()}
+                                                        >
+                                                            {q.order}.
+                                                            {q.content &&
+                                                                ` ${q.content.substring(
+                                                                    0,
+                                                                    50
+                                                                )}${
+                                                                    q.content
+                                                                        .length >
+                                                                    50
+                                                                        ? "..."
+                                                                        : ""
+                                                                }`}
+                                                        </option>
+                                                    ))}
                                             </select>
 
                                             <select
