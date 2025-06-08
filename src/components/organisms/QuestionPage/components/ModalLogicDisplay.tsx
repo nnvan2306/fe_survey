@@ -256,7 +256,7 @@ function ModalLogic({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div style={styles.modalOverlay}>
             <div className="bg-white rounded-lg w-[90%] max-w-3xl max-h-[90vh] flex flex-col">
                 <div className="p-6 border-b border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -354,11 +354,11 @@ function ModalLogic({
                                                     ?.filter(
                                                         (item) =>
                                                             item.questionTypeId ===
-                                                            1 ||
+                                                                1 ||
                                                             item.questionTypeId ===
-                                                            2 ||
+                                                                2 ||
                                                             item.questionTypeId ===
-                                                            6
+                                                                6
                                                     )
                                                     ?.map((q) => (
                                                         <option
@@ -370,11 +370,12 @@ function ModalLogic({
                                                                 ` ${q.content.substring(
                                                                     0,
                                                                     50
-                                                                )}${q.content
-                                                                    .length >
+                                                                )}${
+                                                                    q.content
+                                                                        .length >
                                                                     50
-                                                                    ? "..."
-                                                                    : ""
+                                                                        ? "..."
+                                                                        : ""
                                                                 }`}
                                                         </option>
                                                     ))}
@@ -418,52 +419,52 @@ function ModalLogic({
                                             {["Chọn", "Không Chọn"].includes(
                                                 condition.operator || ""
                                             ) && (
-                                                    <select
-                                                        value={
-                                                            condition.optionOrder?.toString() ||
-                                                            ""
-                                                        }
-                                                        onChange={(e) =>
-                                                            handleUpdateCondition(
-                                                                logicIndex,
-                                                                conditionIndex,
-                                                                "optionOrder",
-                                                                parseInt(
-                                                                    e.target.value
-                                                                )
+                                                <select
+                                                    value={
+                                                        condition.optionOrder?.toString() ||
+                                                        ""
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleUpdateCondition(
+                                                            logicIndex,
+                                                            conditionIndex,
+                                                            "optionOrder",
+                                                            parseInt(
+                                                                e.target.value
                                                             )
-                                                        }
-                                                        className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                                        disabled={
-                                                            !condition.operator
-                                                        }
-                                                    >
-                                                        <option value="">
-                                                            Chọn đáp án
-                                                        </option>
-                                                        {condition.questionOrder &&
-                                                            questionsData
-                                                                .find(
-                                                                    (q) =>
-                                                                        q.order ===
-                                                                        condition.questionOrder
+                                                        )
+                                                    }
+                                                    className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                    disabled={
+                                                        !condition.operator
+                                                    }
+                                                >
+                                                    <option value="">
+                                                        Chọn đáp án
+                                                    </option>
+                                                    {condition.questionOrder &&
+                                                        questionsData
+                                                            .find(
+                                                                (q) =>
+                                                                    q.order ===
+                                                                    condition.questionOrder
+                                                            )
+                                                            ?.options?.map(
+                                                                (opt) => (
+                                                                    <option
+                                                                        key={
+                                                                            opt.order
+                                                                        }
+                                                                        value={opt.order.toString()}
+                                                                    >
+                                                                        {
+                                                                            opt.content
+                                                                        }
+                                                                    </option>
                                                                 )
-                                                                ?.options?.map(
-                                                                    (opt) => (
-                                                                        <option
-                                                                            key={
-                                                                                opt.order
-                                                                            }
-                                                                            value={opt.order.toString()}
-                                                                        >
-                                                                            {
-                                                                                opt.content
-                                                                            }
-                                                                        </option>
-                                                                    )
-                                                                )}
-                                                    </select>
-                                                )}
+                                                            )}
+                                                </select>
+                                            )}
 
                                             {[
                                                 "=",
@@ -475,29 +476,29 @@ function ModalLogic({
                                             ].includes(
                                                 condition.operator || ""
                                             ) && (
-                                                    <input
-                                                        type="number"
-                                                        value={
-                                                            condition.compareValue ||
-                                                            ""
-                                                        }
-                                                        onChange={(e) =>
-                                                            handleUpdateCondition(
-                                                                logicIndex,
-                                                                conditionIndex,
-                                                                "compareValue",
-                                                                parseInt(
-                                                                    e.target.value
-                                                                )
+                                                <input
+                                                    type="number"
+                                                    value={
+                                                        condition.compareValue ||
+                                                        ""
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleUpdateCondition(
+                                                            logicIndex,
+                                                            conditionIndex,
+                                                            "compareValue",
+                                                            parseInt(
+                                                                e.target.value
                                                             )
-                                                        }
-                                                        className="w-32 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                                        placeholder="Nhập giá trị"
-                                                        disabled={
-                                                            !condition.operator
-                                                        }
-                                                    />
-                                                )}
+                                                        )
+                                                    }
+                                                    className="w-32 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                    placeholder="Nhập giá trị"
+                                                    disabled={
+                                                        !condition.operator
+                                                    }
+                                                />
+                                            )}
 
                                             <button
                                                 onClick={() =>
@@ -542,15 +543,15 @@ function ModalLogic({
                                         }
                                         onChange={(e) => {
                                             const updatedLogic: DisplayLogicType =
-                                            {
-                                                ...logic,
-                                                targetQuestionOrder:
-                                                    e.target.value === "end"
-                                                        ? "end"
-                                                        : parseInt(
-                                                            e.target.value
-                                                        ),
-                                            };
+                                                {
+                                                    ...logic,
+                                                    targetQuestionOrder:
+                                                        e.target.value === "end"
+                                                            ? "end"
+                                                            : parseInt(
+                                                                  e.target.value
+                                                              ),
+                                                };
                                             const newLogics = [
                                                 ...displayLogics,
                                             ];
@@ -579,9 +580,10 @@ function ModalLogic({
                                                     ` - ${q.content.substring(
                                                         0,
                                                         50
-                                                    )}${q.content.length > 50
-                                                        ? "..."
-                                                        : ""
+                                                    )}${
+                                                        q.content.length > 50
+                                                            ? "..."
+                                                            : ""
                                                     }`}
                                             </option>
                                         ))}
@@ -671,5 +673,17 @@ const styles = {
         fontWeight: "500",
         width: "100%",
         transition: "background-color 0.3s",
+    },
+    modalOverlay: {
+        position: "fixed" as const,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
     },
 };
