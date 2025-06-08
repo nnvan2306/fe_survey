@@ -1,11 +1,11 @@
-import api from "../../libs/axios";
 import { queryOptions, useQuery } from "@tanstack/react-query";
+import api from "../../libs/axios";
 import type { QueryConfig } from "../../libs/query";
 
 export const GET_QUERY_KEY = "edit";
 
 const get = async (id: number) => {
-    const { data } = await api.get(`/`);
+    const { data } = await api.get(`/survey?id=${id}`);
     return data;
 };
 

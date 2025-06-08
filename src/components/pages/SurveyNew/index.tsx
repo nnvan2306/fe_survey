@@ -1,5 +1,6 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
+import isEqual from "lodash/isEqual";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { HEADER_HEIGHT } from "../../../constants";
@@ -13,11 +14,10 @@ import ReportPage from "../../organisms/ReportPage/ReportPage";
 import SharePage from "../../organisms/SharePage/SharePage";
 import StartPage from "../../organisms/StartPage/StartPage";
 import MainTemPlate from "../../templates/MainTemPlate";
-import isEqual from "lodash/isEqual";
 
-import "./styles.scss";
 import { useParams } from "react-router-dom";
 import { useGetSurvey } from "../../../services/survey/get";
+import "./styles.scss";
 
 const defaultValue = {
     id: 999,
@@ -114,12 +114,13 @@ const SurveyNew = () => {
     const { mutate } = useUpdateSurvey({
         mutationConfig: {
             onSuccess(newData) {
-                setFormData(newData);
-                latestDataRef.current = newData;
+                setFormData(newData.data);
+                latestDataRef.current = newData.data;
                 toast("Success");
             },
         },
     });
+
 
     const handleSave = () => {
         setIsSaving(true);
@@ -155,11 +156,11 @@ const SurveyNew = () => {
     }, [formData]);
 
     useEffect(() => {
-        if (!id) {
-            mutate(defaultValue);
-        } else {
-            // setFormData(data?.data);
-        }
+        if (!id || !data) return;
+
+        setFormData(data.data);
+        latestDataRef.current = data.data;
+
     }, [id, data]);
 
     useBlocker(true);
@@ -206,19 +207,19 @@ const SurveyNew = () => {
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
-                                        backgroundColor: "#cccccc",
-                                        color: "#000000",
-                                        "&:hover": {
-                                            backgroundColor: "#bbbbbb",
-                                        },
-                                    }),
+                                    backgroundColor: "#cccccc",
+                                    color: "#000000",
+                                    "&:hover": {
+                                        backgroundColor: "#bbbbbb",
+                                    },
+                                }),
                             }}
                         >
                             {isSaving
                                 ? `Đang lưu ... ${saveCountdown}`
                                 : hasChanges
-                                ? "Lưu thay đổi"
-                                : "Đã lưu"}
+                                    ? "Lưu thay đổi"
+                                    : "Đã lưu"}
                         </Button>
                         {/* <Button variant="outlined">Tác vụ khác</Button> */}
                     </div>

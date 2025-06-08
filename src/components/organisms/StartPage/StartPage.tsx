@@ -89,22 +89,22 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
 
     const [skipStartPage, setSkipStartPage] = useState(false);
     const [brightness, setBrightness] = useState<number>(
-        formData?.configJsonString.brightness || 100
+        formData?.configJsonString?.brightness || 100
     );
     const [backgroundMode, setBackgroundMode] = useState<"image" | "color">(
         "image"
     );
     const [titleColor, setTitleColor] = useState<string>(
-        formData?.configJsonString.titleColor || "#FFFFFF"
+        formData?.configJsonString?.titleColor || "#FFFFFF"
     );
     const [contentColor, setContentColor] = useState<string>(
-        formData?.configJsonString.contentColor || "#CCCCCC"
+        formData?.configJsonString?.contentColor || "#CCCCCC"
     );
     const [buttonBgColor, setButtonBgColor] = useState<string>(
-        formData?.configJsonString.buttonBackgroundColor || "#007bff"
+        formData?.configJsonString?.buttonBackgroundColor || "#007bff"
     );
     const [buttonTextColor, setButtonTextColor] = useState<string>(
-        formData?.configJsonString.buttonContentColor || "#ffffff"
+        formData?.configJsonString?.buttonContentColor || "#ffffff"
     );
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showColorModal, setShowColorModal] = useState(false);
@@ -150,7 +150,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                 if (initialData.customBackgroundImageUrl === undefined) {
                     initialData.customBackgroundImageUrl = null;
                 }
-                if (initialData.configJsonString.brightness === undefined) {
+                if (initialData.configJsonString?.brightness === undefined) {
                     initialData.configJsonString.brightness = 100; // Default brightness
                 }
                 if (initialData.skipStartPage === undefined) {
@@ -178,7 +178,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
     useEffect(() => {
         setSelectedSurveyTopic(formData?.surveyTopicId);
         setSelectedSurveySpecificTopic(formData?.surveySpecificTopicId);
-        setBrightness(formData?.configJsonString.brightness);
+        setBrightness(formData?.configJsonString?.brightness);
         setSurveyStatusChecked(formData?.surveyStatusId === 1);
         setSelectedSecurityMode(formData?.securityModeId);
 
@@ -196,10 +196,10 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
             setBackgroundMode("color");
         }
 
-        setTitleColor(formData?.configJsonString.titleColor);
-        setContentColor(formData?.configJsonString.contentColor);
-        setButtonBgColor(formData?.configJsonString.buttonBackgroundColor);
-        setButtonTextColor(formData?.configJsonString.buttonContentColor);
+        setTitleColor(formData?.configJsonString?.titleColor);
+        setContentColor(formData?.configJsonString?.contentColor);
+        setButtonBgColor(formData?.configJsonString?.buttonBackgroundColor);
+        setButtonTextColor(formData?.configJsonString?.buttonContentColor);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData, backgrounds]);
@@ -269,13 +269,13 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     ...(backgroundMode === "color" && {
                         ...(formData?.background?.startsWith("#")
                             ? {
-                                  backgroundColor: formData?.background,
-                                  overflowY: "auto",
-                              }
+                                backgroundColor: formData?.background,
+                                overflowY: "auto",
+                            }
                             : {
-                                  background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                                  overflowY: "auto",
-                              }),
+                                background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
+                                overflowY: "auto",
+                            }),
                     }),
                 }}
             >
@@ -287,7 +287,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${brightness / 100})`,
+                            filter: `brightness(${brightness ? brightness : 100 / 100})`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
@@ -321,7 +321,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                                     buttonBgColor?.startsWith(
                                         "linear-gradient"
                                     ) ||
-                                    buttonBgColor?.startsWith("radial-gradient")
+                                        buttonBgColor?.startsWith("radial-gradient")
                                         ? buttonBgColor
                                         : "",
                                 backgroundColor: !(
@@ -534,10 +534,10 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                         if (pickerForBackground) {
                             initialColor1 =
                                 formData?.configJsonString
-                                    .backgroundGradient1Color || "#FCE38A";
+                                    ?.backgroundGradient1Color || "#FCE38A";
                             initialColor2 =
                                 formData?.configJsonString
-                                    .backgroundGradient2Color || "#F38181";
+                                    ?.backgroundGradient2Color || "#F38181";
                         } else if (activeColorSetter === setTitleColor) {
                             initialColor1 = titleColor;
                             initialColor2 = titleColor;
@@ -873,9 +873,8 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG HÌNH NỀN</h3>
                 <div
-                    className={`background-main-preview ${
-                        backgroundMode === "image" ? "active" : ""
-                    }`}
+                    className={`background-main-preview ${backgroundMode === "image" ? "active" : ""
+                        }`}
                     onClick={() => {
                         setBackgroundMode("image");
                         document.getElementById("backgroundInput")?.click();
@@ -934,17 +933,16 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG MÀU NỀN</h3>
                 <div
-                    className={`background-main-preview ${
-                        backgroundMode === "color" ? "active" : ""
-                    }`}
+                    className={`background-main-preview ${backgroundMode === "color" ? "active" : ""
+                        }`}
                     onClick={handleSelectColorBackground}
                     style={{
                         background:
                             formData?.background === "color_gradient"
                                 ? `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`
                                 : formData?.background?.startsWith("#")
-                                ? formData?.background
-                                : "#cccccc",
+                                    ? formData?.background
+                                    : "#cccccc",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}
@@ -1048,9 +1046,9 @@ function ButtonColor({
                                         buttonBgColor?.startsWith(
                                             "linear-gradient"
                                         ) ||
-                                        buttonBgColor?.startsWith(
-                                            "radial-gradient"
-                                        )
+                                            buttonBgColor?.startsWith(
+                                                "radial-gradient"
+                                            )
                                             ? buttonBgColor
                                             : "",
                                     backgroundColor: !(
@@ -1124,21 +1122,18 @@ function DesignSuggestions({
                                 return (
                                     <div
                                         key={index}
-                                        className={`background-thumbnail-item ${
-                                            formData?.background ===
-                                                `/assets/start${
-                                                    index + 1
-                                                }.webp` &&
+                                        className={`background-thumbnail-item ${formData?.background ===
+                                            `/assets/start${index + 1
+                                            }.webp` &&
                                             backgroundMode === "image"
-                                                ? "active"
-                                                : ""
-                                        }`}
+                                            ? "active"
+                                            : ""
+                                            }`}
                                         onClick={() => {
                                             setFormData((prev: any) => ({
                                                 ...prev,
-                                                background: `/assets/start${
-                                                    index + 1
-                                                }.webp`,
+                                                background: `/assets/start${index + 1
+                                                    }.webp`,
                                                 configJsonString: {
                                                     ...prev.configJsonString,
                                                     titleColor:
@@ -1159,9 +1154,8 @@ function DesignSuggestions({
                                         }}
                                     >
                                         <img
-                                            src={`/assets/start${
-                                                index + 1
-                                            }.webp`}
+                                            src={`/assets/start${index + 1
+                                                }.webp`}
                                             alt="background"
                                             className="w-full h-full object-cover"
                                         />
