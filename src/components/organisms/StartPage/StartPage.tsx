@@ -287,7 +287,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            // filter: `brightness(${brightness ? brightness : 100 / 100})`,
+                            filter: `brightness(${(brightness ? brightness : 100) / 100})`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
