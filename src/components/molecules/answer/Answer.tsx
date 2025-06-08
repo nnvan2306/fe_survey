@@ -3,7 +3,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import type { ChangeEvent } from "react";
-import type { OptionType } from "../../../types/survey";
+import type { OptionType, SurveyType } from "../../../types/survey";
 import "./styles.scss";
 
 type Props = {
@@ -11,12 +11,14 @@ type Props = {
     handleUpdateOption: (updatedOption: OptionType) => void;
     handleDeleteOption: (orderToDelete: number) => void;
     isDisableClose: boolean;
+    formData: SurveyType;
 };
 const Answer = ({
     data,
     handleUpdateOption,
     handleDeleteOption,
     isDisableClose,
+    formData,
 }: Props) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         handleUpdateOption({ ...data, content: event.target.value });
@@ -35,6 +37,9 @@ const Answer = ({
                 className="answer-input flex-grow"
                 placeholder="Nhập câu trả lời tại đây"
                 onChange={handleChange}
+                style={{
+                    color: `${formData?.configJsonString?.contentColor}`,
+                }}
             />
             <IconButton
                 size="small"
