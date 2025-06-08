@@ -27,7 +27,7 @@ const defaultValue = {
     surveyTopicId: 2,
     surveySpecificTopicId: 5,
     surveyStatusId: 1,
-    securityModeId: 2,
+    securityModeId: 1,
     background: "/assets/start1.webp",
     configJsonString: {
         backgroundGradient1Color: "#ffffff",
@@ -116,12 +116,15 @@ const SurveyNew = () => {
                 setFormData(newData.data);
                 latestDataRef.current = newData.data;
                 if (!id) {
-                    window.history.pushState({}, "", `/survey/update/${newData.data.id}`);
+                    window.history.pushState(
+                        {},
+                        "",
+                        `/survey/update/${newData.data.id}`
+                    );
                 }
             },
         },
     });
-
 
     const handleSave = () => {
         setIsSaving(true);
@@ -162,7 +165,6 @@ const SurveyNew = () => {
 
         setFormData(data.data);
         latestDataRef.current = data.data;
-
     }, [id, data]);
 
     useBlocker(true);
@@ -209,20 +211,19 @@ const SurveyNew = () => {
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
-                                    backgroundColor: "#cccccc",
-                                    color: "#000000",
-                                    "&:hover": {
-                                        backgroundColor: "#bbbbbb",
-                                    },
-
-                                }),
+                                        backgroundColor: "#cccccc",
+                                        color: "#000000",
+                                        "&:hover": {
+                                            backgroundColor: "#bbbbbb",
+                                        },
+                                    }),
                             }}
                         >
                             {isSaving
                                 ? `Đang lưu ... ${saveCountdown}`
                                 : hasChanges
-                                    ? "Đã Lưu"
-                                    : "Đã lưu"}
+                                ? "Đã Lưu"
+                                : "Đã lưu"}
                         </Button>
                         {/* <Button variant="outlined">Tác vụ khác</Button> */}
                     </div>

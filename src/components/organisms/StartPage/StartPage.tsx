@@ -269,13 +269,13 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     ...(backgroundMode === "color" && {
                         ...(formData?.background?.startsWith("#")
                             ? {
-                                backgroundColor: formData?.background,
-                                overflowY: "auto",
-                            }
+                                  backgroundColor: formData?.background,
+                                  overflowY: "auto",
+                              }
                             : {
-                                background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                                overflowY: "auto",
-                            }),
+                                  background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
+                                  overflowY: "auto",
+                              }),
                     }),
                 }}
             >
@@ -287,7 +287,9 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${(brightness ? brightness : 100) / 100})`,
+                            filter: `brightness(${
+                                (brightness ? brightness : 100) / 100
+                            })`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
@@ -321,7 +323,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                                     buttonBgColor?.startsWith(
                                         "linear-gradient"
                                     ) ||
-                                        buttonBgColor?.startsWith("radial-gradient")
+                                    buttonBgColor?.startsWith("radial-gradient")
                                         ? buttonBgColor
                                         : "",
                                 backgroundColor: !(
@@ -392,10 +394,12 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                         </div>
                     </div>
                     <CustomizePassword
-                        selectedSecurityMode={selectedSecurityMode}
-                        setSelectedSecurityMode={setSelectedSecurityMode}
-                        handleCustomizePassword={handleCustomizePassword}
+                        formData={formData}
                         setFormData={setFormData}
+                        Add
+                        commentMore
+                        actions
+                        handleCustomizePassword={handleCustomizePassword}
                     />
                     <SecurityMode
                         selectedSecurityMode={selectedSecurityMode}
@@ -447,14 +451,14 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     onSavePassword={(newPassword) => {
                         setFormData((prev) => ({
                             ...prev,
-                            securityModeId: newPassword ? 2 : 1,
+                            // securityModeId: newPassword ? 2 : 1,
                             configJsonString: {
                                 ...prev.configJsonString,
                                 password: newPassword,
                             },
                         }));
                     }}
-                    initialPassword={formData?.configJsonString.password || ""}
+                    initialPassword={formData.configJsonString.password || ""}
                 />
             )}
             {showColorModal && (
@@ -743,119 +747,82 @@ function SurveyStatus({
 }
 
 function CustomizePassword({
-    selectedSecurityMode: selectedSecurityMode,
-    setSelectedSecurityMode: setSelectedSecurityMode,
-    handleCustomizePassword: handleCustomizePassword,
-    setFormData: setFormData,
+    formData,
+    setFormData,
+    handleCustomizePassword,
 }: any) {
+    const hasPassword = formData.configJsonString.password !== null;
+
     return (
-        <>
-            <div className="config-section">
-                <div className="flex items-center mb-3">
-                    <h3 className="config-title">ĐẶT MẬT KHẨU CHO KHẢO SÁT</h3>
-                </div>
-                <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Bật</span>
-                    <label className="toggle-switch">
-                        <input
-                            type="checkbox"
-                            checked={selectedSecurityMode === 2}
-                            onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                setSelectedSecurityMode(isChecked ? 2 : 1);
-                                setFormData((prev: any) => ({
-                                    ...prev,
-                                    securityModeId: isChecked ? 2 : 1,
-                                    configJsonString: {
-                                        ...prev.configJsonString,
-                                        password: isChecked
-                                            ? prev.configJsonString.password
-                                            : "",
-                                    },
-                                }));
-                            }}
-                            aria-label="Đặt mật khẩu cho khảo sát"
-                        />
-                        <span className="toggle-slider"></span>
-                    </label>
-                </div>
-                {selectedSecurityMode === 2 && (
-                    <button
-                        className="customize-button"
-                        onClick={handleCustomizePassword}
-                    >
-                        <SettingsIcon fontSize="small" />
-                        <span>Tùy chỉnh</span>
-                    </button>
-                )}
+        <div className="config-section">
+            <div className="flex items-center mb-3">
+                <h3 className="config-title">ĐẶT MẬT KHẨU CHO KHẢO SÁT</h3>
             </div>
-        </>
+            <div className="flex items-center justify-between">
+                <span className="text-gray-600">Bật</span>
+                <label className="toggle-switch">
+                    <input
+                        type="checkbox"
+                        checked={hasPassword}
+                        onChange={(e) => {
+                            const on = e.target.checked;
+                            setFormData((prev: any) => ({
+                                ...prev,
+                                configJsonString: {
+                                    ...prev.configJsonString,
+                                    // khi bật: để chuỗi rỗng để hiển thị nút Tùy chỉnh
+                                    // khi tắt: set về null để ẩn nút Tùy chỉnh
+                                    password: on ? "" : null,
+                                },
+                            }));
+                        }}
+                        aria-label="Đặt mật khẩu cho khảo sát"
+                    />
+                    <span className="toggle-slider"></span>
+                </label>
+            </div>
+            {hasPassword && (
+                <button
+                    className="customize-button"
+                    onClick={handleCustomizePassword}
+                >
+                    <SettingsIcon fontSize="small" />
+                    <span>Tùy chỉnh</span>
+                </button>
+            )}
+        </div>
     );
 }
 
 function SecurityMode({
-    selectedSecurityMode: selectedSecurityMode,
-    setSelectedSecurityMode: setSelectedSecurityMode,
-    setFormData: setFormData,
+    selectedSecurityMode,
+    setSelectedSecurityMode,
+    setFormData,
 }: any) {
     return (
-        <>
-            <div>
-                <h3>CHẾ ĐỘ BẢO MẬT</h3>
-                <FormControl
-                    fullWidth
-                    sx={{
-                        ".MuiOutlinedInput-root": {
-                            height: "48px",
-                            borderRadius: "8px",
-                            border: "1px solid #D1D5DB",
-                            "& fieldset": { border: "none" },
-                            "&:hover fieldset": { border: "none" },
-                            "&.Mui-focused fieldset": { border: "none" },
-                        },
-                        ".MuiInputLabel-root": {
-                            transform: "translate(14px, 14px) scale(1)",
-                            "&.Mui-focused": {
-                                transform: "translate(14px, -9px) scale(0.75)",
-                            },
-                            "&.MuiInputLabel-shrink": {
-                                transform: "translate(14px, -9px) scale(0.75)",
-                            },
-                        },
-                        ".MuiSelect-select": {
-                            padding: "12px 14px",
-                            display: "flex",
-                            alignItems: "center",
-                        },
-                        ".MuiSelect-icon": {
-                            right: "14px",
-                            color: "#6B7280",
-                        },
+        <div className="config-section">
+            <h3 className="config-title">CHẾ ĐỘ BẢO MẬT</h3>
+            <FormControl fullWidth>
+                <Select
+                    value={selectedSecurityMode}
+                    onChange={(e) => {
+                        const newMode = e.target.value as number;
+                        setSelectedSecurityMode(newMode);
+                        setFormData((prev: any) => ({
+                            ...prev,
+                            securityModeId: newMode,
+                        }));
                     }}
                 >
-                    <Select
-                        labelId="security-mode-select-label"
-                        id="security-mode-select"
-                        value={selectedSecurityMode}
-                        label="Chọn chế độ bảo mật"
-                        onChange={(e) => {
-                            const newSecurityModeId = e.target.value as number;
-                            setSelectedSecurityMode(newSecurityModeId);
-                            setFormData((prev: any) => ({
-                                ...prev,
-                                securityModeId: newSecurityModeId,
-                            }));
-                        }}
-                    >
-                        {SurveySecurityMode.map((mode) => (
-                            <MenuItem key={mode.id} value={mode.id}>
-                                {mode.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </div>
-        </>
+                    {" "}
+                    {SurveySecurityMode.map((mode) => (
+                        <MenuItem key={mode.id} value={mode.id}>
+                            {mode.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </div>
     );
 }
 
@@ -873,8 +840,9 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG HÌNH NỀN</h3>
                 <div
-                    className={`background-main-preview ${backgroundMode === "image" ? "active" : ""
-                        }`}
+                    className={`background-main-preview ${
+                        backgroundMode === "image" ? "active" : ""
+                    }`}
                     onClick={() => {
                         setBackgroundMode("image");
                         document.getElementById("backgroundInput")?.click();
@@ -933,16 +901,17 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG MÀU NỀN</h3>
                 <div
-                    className={`background-main-preview ${backgroundMode === "color" ? "active" : ""
-                        }`}
+                    className={`background-main-preview ${
+                        backgroundMode === "color" ? "active" : ""
+                    }`}
                     onClick={handleSelectColorBackground}
                     style={{
                         background:
                             formData?.background === "color_gradient"
                                 ? `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`
                                 : formData?.background?.startsWith("#")
-                                    ? formData?.background
-                                    : "#cccccc",
+                                ? formData?.background
+                                : "#cccccc",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}
@@ -1046,9 +1015,9 @@ function ButtonColor({
                                         buttonBgColor?.startsWith(
                                             "linear-gradient"
                                         ) ||
-                                            buttonBgColor?.startsWith(
-                                                "radial-gradient"
-                                            )
+                                        buttonBgColor?.startsWith(
+                                            "radial-gradient"
+                                        )
                                             ? buttonBgColor
                                             : "",
                                     backgroundColor: !(
@@ -1122,18 +1091,21 @@ function DesignSuggestions({
                                 return (
                                     <div
                                         key={index}
-                                        className={`background-thumbnail-item ${formData?.background ===
-                                            `/assets/start${index + 1
-                                            }.webp` &&
+                                        className={`background-thumbnail-item ${
+                                            formData?.background ===
+                                                `/assets/start${
+                                                    index + 1
+                                                }.webp` &&
                                             backgroundMode === "image"
-                                            ? "active"
-                                            : ""
-                                            }`}
+                                                ? "active"
+                                                : ""
+                                        }`}
                                         onClick={() => {
                                             setFormData((prev: any) => ({
                                                 ...prev,
-                                                background: `/assets/start${index + 1
-                                                    }.webp`,
+                                                background: `/assets/start${
+                                                    index + 1
+                                                }.webp`,
                                                 configJsonString: {
                                                     ...prev.configJsonString,
                                                     titleColor:
@@ -1154,8 +1126,9 @@ function DesignSuggestions({
                                         }}
                                     >
                                         <img
-                                            src={`/assets/start${index + 1
-                                                }.webp`}
+                                            src={`/assets/start${
+                                                index + 1
+                                            }.webp`}
                                             alt="background"
                                             className="w-full h-full object-cover"
                                         />
