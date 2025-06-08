@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 interface SwitchCustomizeProps {
     label: React.ReactNode;
     question: any;
-    formData: SurveyType;
     isPro: boolean;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleUpdateQuestion: (
@@ -32,7 +31,6 @@ const Voice = ({
     label,
     isPro,
     question,
-    formData,
     setFormData,
     handleUpdateQuestion,
 }: SwitchCustomizeProps) => {
@@ -47,17 +45,11 @@ const Voice = ({
             if (!isPro) {
                 setFormData((prev) => ({ ...prev, securityModeId: 3 }));
             }
-            if (!checked && formData?.securityModeId !== 3) {
+            if (!checked && !isPro) {
                 toast("Đã cập nhật Chế độ bảo mật thành Pro");
             }
         },
-        [
-            checked,
-            formData?.securityModeId,
-            handleUpdateQuestion,
-            isPro,
-            setFormData,
-        ]
+        [checked, handleUpdateQuestion, isPro, setFormData]
     );
 
     return (

@@ -86,7 +86,6 @@ const Sidebar = ({
             <Voice
                 label="Sử dụng Voice"
                 isPro={isPro}
-                formData={formData}
                 setFormData={setFormData}
                 question={question}
                 handleUpdateQuestion={handleUpdateQuestion}
@@ -113,7 +112,6 @@ const Sidebar = ({
 
             <TimeLimit
                 isAdvance={isAdvance}
-                formData={formData}
                 setFormData={setFormData}
                 question={question}
                 handleUpdateQuestion={handleUpdateQuestion}

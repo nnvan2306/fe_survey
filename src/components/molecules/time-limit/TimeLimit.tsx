@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 
 type Props = {
     question: QuestionType;
-    formData: SurveyType;
     isAdvance: boolean;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleUpdateQuestion: (
@@ -29,7 +28,6 @@ type Props = {
 const TimeLimit = ({
     question,
     handleUpdateQuestion,
-    formData,
     isAdvance,
     setFormData,
 }: Props) => {
