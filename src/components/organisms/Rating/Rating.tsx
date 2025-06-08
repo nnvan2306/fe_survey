@@ -30,13 +30,25 @@ type Props = {
 };
 
 const Rating = ({ question, handleUpdateQuestion }: Props) => {
-    const count = useMemo(
-        () => Number(question?.configJsonString?.ratingLength) || 5,
-        [question?.configJsonString?.ratingLength]
+    const config = useMemo(
+        () =>
+            (question?.configJsonString as Record<string, string | number>) ||
+            {},
+        [question?.configJsonString]
+    );
+
+    const ratingLength = useMemo(
+        () => Number(config?.ratingLength) || 5,
+        [config?.ratingLength]
+    );
+
+    const ratingIcon = useMemo(
+        () => config?.ratingIcon || "StarBorderIcon",
+        [config?.ratingIcon]
     );
 
     const handleRenderIcons = useCallback(() => {
-        const type = question?.configJsonString?.ratingIcon || "";
+        const type = ratingIcon || "";
         switch (type) {
             case "FavoriteIcon":
                 return (
@@ -95,22 +107,21 @@ const Rating = ({ question, handleUpdateQuestion }: Props) => {
                     />
                 );
         }
-    }, [question]);
+    }, [ratingIcon]);
 
     useEffect(() => {
-        if (!question?.configJsonString?.ratingLength) {
+        if (!config?.ratingLength || !config?.ratingIcon) {
             handleUpdateQuestion("configJsonString", {
-                ratingIcon:
-                    question?.configJsonString?.ratingIcon ?? "StarBorderIcon",
-                ratingLength: 5,
+                ratingIcon: config?.ratingIcon ?? "StarBorderIcon",
+                ratingLength: config?.ratingLength ?? 5,
             });
         }
-    }, [handleUpdateQuestion, question]);
+    }, [config, handleUpdateQuestion]);
 
     return (
         <Box className="rating flex flex-col items-center justify-center p-4 bg-gray-100">
             <Box className="flex space-x-4">
-                {Array.from({ length: count }).map((_, index) => (
+                {Array.from({ length: ratingLength }).map((_, index) => (
                     <Box key={index} className="flex flex-col items-center">
                         {handleRenderIcons()}
                         <Typography

@@ -35,7 +35,7 @@ const ShortSentences = ({ question, handleUpdateQuestion }: Props) => {
     return (
         <div className="short-sentences-container">
             {question?.options?.length
-                ? question.options.map((item, index) => {
+                ? question.options.map((_, index) => {
                       return (
                           <input
                               key={index}

@@ -92,13 +92,7 @@ const SurveyNew = () => {
         {
             label: "Chia Sẻ",
             value: 4,
-            component: (
-                <SharePage
-                    formData={formData}
-                    handleTabClick={handleTabClick}
-                    setFormData={setFormData}
-                />
-            ),
+            component: <SharePage formData={formData} />,
         },
         {
             label: "Báo cáo",

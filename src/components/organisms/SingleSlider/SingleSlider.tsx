@@ -39,7 +39,7 @@ const SingleSlider = ({ question, handleUpdateQuestion }: Props) => {
         () => question?.configJsonString?.unit || "",
         [question]
     );
-    const handleSliderChange = (event: Event, newValue: number) => {
+    const handleSliderChange = (_event: Event, newValue: number) => {
         setValue(newValue);
     };
 
