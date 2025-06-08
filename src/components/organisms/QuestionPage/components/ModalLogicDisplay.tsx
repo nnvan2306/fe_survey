@@ -64,7 +64,7 @@ export default function LogicComponentDisplay({
 }
 
 // Mapping questionTypeId to question types
-const getQuestionType = (questionTypeId: number, config: any) => {
+const getQuestionType = (questionTypeId: number) => {
     switch (questionTypeId) {
         case 0: // Text/Input
             return "text";
@@ -83,6 +83,18 @@ const getQuestionType = (questionTypeId: number, config: any) => {
     }
 };
 
+type DisplayLogicType = {
+    conditions: {
+        id: number;
+        questionOrder: string;
+        conjunction: string | null;
+        operator: string;
+        optionOrder: string;
+        compareValue: string;
+    }[];
+    targetQuestionOrder: string;
+};
+
 function ModalLogic({
     onClose,
     questionsData,
@@ -91,7 +103,7 @@ function ModalLogic({
 }: {
     question: any;
     onClose: () => void;
-    questionsData: any;
+    questionsData: QuestionType[];
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -104,31 +116,31 @@ function ModalLogic({
             | Record<string, unknown>
     ) => void;
 }) {
-    const [conditions, setConditions] = useState([
+    const [displayLogics, setDisplayLogics] = useState<DisplayLogicType[]>([
         {
-            id: 1,
-            questionOrder: "",
-            conjunction: null,
-            operator: "Chọn",
-            optionOrder: "",
-            compareValue: "",
+            conditions: [
+                {
+                    id: 1,
+                    questionOrder: "",
+                    conjunction: null,
+                    operator: "Chọn",
+                    optionOrder: "",
+                    compareValue: "",
+                },
+            ],
+            targetQuestionOrder: "end",
         },
     ]);
-    const [targetQuestionOrder, setTargetQuestionOrder] = useState("end");
 
-    // Lấy operators phù hợp dựa trên loại câu hỏi
     const getAvailableOperators = (questionOrder: string) => {
         if (!questionOrder) return ["Chọn"];
 
         const question = questionsData.find(
-            (q) => q.order.toString() === questionOrder
+            (q: QuestionType) => q.order.toString() === questionOrder
         );
         if (!question) return ["Chọn"];
 
-        const questionType = getQuestionType(
-            question.questionTypeId,
-            question.configJsonString
-        );
+        const questionType = getQuestionType(question.questionTypeId);
         const baseOperators = ["Chọn", "Không Chọn"];
 
         if (questionType === "number" || questionType === "rating") {
@@ -138,32 +150,55 @@ function ModalLogic({
         return baseOperators;
     };
 
-    // Lấy options của câu hỏi
     const getQuestionOptions = (questionOrder: string) => {
         if (!questionOrder) return [];
 
         const question = questionsData.find(
-            (q) => q.order.toString() === questionOrder
+            (q: QuestionType) => q.order.toString() === questionOrder
         );
         if (!question || !question.options) return [];
 
-        return question.options.map((option: any, index: number) => ({
-            label: option.content || option.text || `Option ${index + 1}`,
-            value: index + 1,
+        return question.options.map((option: OptionType, index: number) => ({
+            label: option.content || `Option ${index + 1}`,
+            value: (index + 1).toString(),
         }));
     };
 
-    // Kiểm tra xem operator có cần input số không
     const isComparisonOperator = (operator: string) => {
         return ["=", "≠", ">", "≥", "<", "≤"].includes(operator);
     };
 
-    // Kiểm tra xem operator có cần chọn option không
     const isOptionOperator = (operator: string) => {
         return ["Chọn", "Không Chọn"].includes(operator);
     };
 
-    const handleAddCondition = () => {
+    const handleAddLogic = () => {
+        const newLogic: DisplayLogicType = {
+            conditions: [
+                {
+                    id: Date.now(),
+                    questionOrder: "",
+                    conjunction: null,
+                    operator: "Chọn",
+                    optionOrder: "",
+                    compareValue: "",
+                },
+            ],
+            targetQuestionOrder: "end",
+        };
+        setDisplayLogics([...displayLogics, newLogic]);
+    };
+
+    const handleDeleteLogic = (logicIndex: number) => {
+        if (displayLogics.length > 1) {
+            setDisplayLogics(
+                displayLogics.filter((_, index) => index !== logicIndex)
+            );
+        }
+    };
+
+    const handleAddCondition = (logicIndex: number) => {
+        const logic = displayLogics[logicIndex];
         const newCondition = {
             id: Date.now(),
             questionOrder: "",
@@ -172,45 +207,71 @@ function ModalLogic({
             optionOrder: "",
             compareValue: "",
         };
-        setConditions([...conditions, newCondition]);
+        const newLogics = [...displayLogics];
+        newLogics[logicIndex] = {
+            ...logic,
+            conditions: [...logic.conditions, newCondition],
+        };
+        setDisplayLogics(newLogics);
     };
 
-    const handleDeleteCondition = (id: number) => {
-        if (conditions.length > 1) {
-            setConditions(
-                conditions.filter((condition) => condition.id !== id)
-            );
+    const handleDeleteCondition = (logicIndex: number, conditionId: number) => {
+        const logic = displayLogics[logicIndex];
+        if (logic.conditions.length > 1) {
+            const newLogics = [...displayLogics];
+            newLogics[logicIndex] = {
+                ...logic,
+                conditions: logic.conditions.filter(
+                    (condition) => condition.id !== conditionId
+                ),
+            };
+            setDisplayLogics(newLogics);
         }
     };
 
-    const handleConditionChange = (id: number, field: string, value: any) => {
-        setConditions(
-            conditions.map((condition) => {
-                if (condition.id !== id) return condition;
+    const handleConditionChange = (
+        logicIndex: number,
+        conditionId: number,
+        field: string,
+        value: string
+    ) => {
+        const logic = displayLogics[logicIndex];
+        const newLogics = [...displayLogics];
+        newLogics[logicIndex] = {
+            ...logic,
+            conditions: logic.conditions.map((condition) => {
+                if (condition.id !== conditionId) return condition;
 
                 const updatedCondition = { ...condition, [field]: value };
 
-                // Reset dependent fields khi thay đổi question
                 if (field === "questionOrder") {
                     updatedCondition.operator = "Chọn";
                     updatedCondition.optionOrder = "";
                     updatedCondition.compareValue = "";
                 }
 
-                // Reset dependent fields khi thay đổi operator
                 if (field === "operator") {
                     updatedCondition.optionOrder = "";
                     updatedCondition.compareValue = "";
                 }
 
                 return updatedCondition;
-            })
-        );
+            }),
+        };
+        setDisplayLogics(newLogics);
     };
 
-    // Validation
+    const handleTargetQuestionChange = (logicIndex: number, value: string) => {
+        const newLogics = [...displayLogics];
+        newLogics[logicIndex] = {
+            ...newLogics[logicIndex],
+            targetQuestionOrder: value,
+        };
+        setDisplayLogics(newLogics);
+    };
+
     const isConditionValid = (condition: any) => {
-        if (!condition.questionOrder || condition.operator === "Chọn") {
+        if (!condition.questionOrder || !condition.operator) {
             return false;
         }
 
@@ -229,9 +290,11 @@ function ModalLogic({
     };
 
     const canSave = () => {
-        return (
-            conditions.every(isConditionValid) &&
-            (targetQuestionOrder === "end" || targetQuestionOrder !== "")
+        return displayLogics.every(
+            (logic) =>
+                logic.conditions.every(isConditionValid) &&
+                (logic.targetQuestionOrder === "end" ||
+                    logic.targetQuestionOrder !== "")
         );
     };
 
@@ -239,257 +302,348 @@ function ModalLogic({
         if (!canSave()) return;
 
         const output = {
-            conditions: conditions.map((condition) => {
-                const baseCondition = {
-                    questionOrder: parseInt(condition.questionOrder),
-                    conjunction: condition.conjunction,
-                    operator: condition.operator,
-                };
-
-                if (isOptionOperator(condition.operator)) {
-                    return {
-                        ...baseCondition,
-                        optionOrder: parseInt(condition.optionOrder),
+            displayLogics: displayLogics.map((logic) => ({
+                conditions: logic.conditions.map((condition) => {
+                    const baseCondition = {
+                        questionOrder: parseInt(condition.questionOrder),
+                        conjunction: condition.conjunction,
+                        operator: condition.operator,
                     };
-                }
 
-                if (isComparisonOperator(condition.operator)) {
-                    return {
-                        ...baseCondition,
-                        compareValue: parseInt(condition.compareValue),
-                    };
-                }
+                    if (isOptionOperator(condition.operator)) {
+                        return {
+                            ...baseCondition,
+                            optionOrder: parseInt(condition.optionOrder),
+                        };
+                    }
 
-                return baseCondition;
-            }),
-            targetQuestionOrder:
-                targetQuestionOrder === "end"
-                    ? "end"
-                    : parseInt(targetQuestionOrder),
+                    if (isComparisonOperator(condition.operator)) {
+                        return {
+                            ...baseCondition,
+                            compareValue: parseInt(condition.compareValue),
+                        };
+                    }
+
+                    return baseCondition;
+                }),
+                targetQuestionOrder:
+                    logic.targetQuestionOrder === "end"
+                        ? "end"
+                        : parseInt(logic.targetQuestionOrder),
+            })),
         };
 
-        console.log("check output: ", output);
+        handleUpdateQuestion("configJsonString", {
+            ...question.configJsonString,
+            ...output,
+        });
 
         onClose();
     };
 
     return (
-        <div style={styles.modalOverlay}>
-            <div style={styles.modalContent}>
-                <div style={styles.modalHeader}>
-                    <h4 style={styles.modalTitle}>
-                        DISPLAY LOGICS - ĐIỀU KIỆN HIỆN CÂU HỎI
-                    </h4>
-                    <button style={styles.closeButton} onClick={onClose}>
-                        ×
-                    </button>
-                </div>
-                <div className="px-5">
-                    <p style={styles.description}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg w-[90%] max-w-3xl max-h-[90vh] flex flex-col">
+                <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                        Display Logic - Điều kiện hiện câu hỏi
+                    </h2>
+                    <p className="text-sm text-gray-600">
                         Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn,
-                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
-                        <strong>2</strong>. Bạn không cần phải đặt điều kiện để
-                        nhảy đến câu này.
+                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo. Bạn
+                        không cần phải đặt điều kiện để nhảy đến câu này.
                     </p>
                 </div>
-                <div style={styles.conditionContainer}>
-                    {conditions.map((condition, index) => (
-                        <div key={condition.id} style={styles.conditionRow}>
-                            {/* Conjunction */}
-                            <div style={styles.operatorContainer}>
-                                {index === 0 ? (
-                                    <span style={styles.operatorLabel}>
-                                        NẾU
-                                    </span>
-                                ) : (
-                                    <select
-                                        style={styles.conjunctionDropdown}
-                                        value={condition.conjunction || "Và"}
-                                        onChange={(e) =>
-                                            handleConditionChange(
-                                                condition.id,
-                                                "conjunction",
-                                                e.target.value
-                                            )
+
+                <div className="flex-1 overflow-y-auto p-4">
+                    {displayLogics.map((logic, logicIndex) => (
+                        <div
+                            key={logicIndex}
+                            className="mb-6 bg-white border border-gray-200 rounded-lg p-4"
+                        >
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-lg font-semibold text-gray-800">
+                                    Logic {logicIndex + 1}
+                                </h3>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() =>
+                                            handleAddCondition(logicIndex)
                                         }
+                                        className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                     >
-                                        <option value="Và">Và</option>
-                                        <option value="Hoặc">Hoặc</option>
-                                    </select>
+                                        + Thêm điều kiện
+                                    </button>
+                                    {displayLogics.length > 1 && (
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteLogic(logicIndex)
+                                            }
+                                            className="px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                                        >
+                                            Xóa logic
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                {logic.conditions.map(
+                                    (condition, conditionIndex) => (
+                                        <div
+                                            key={condition.id}
+                                            className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                                        >
+                                            {conditionIndex === 0 ? (
+                                                <span className="px-3 py-1.5 bg-gray-200 text-gray-700 rounded font-medium">
+                                                    NẾU
+                                                </span>
+                                            ) : (
+                                                <select
+                                                    value={
+                                                        condition.conjunction ||
+                                                        "Và"
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleConditionChange(
+                                                            logicIndex,
+                                                            condition.id,
+                                                            "conjunction",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-20 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                >
+                                                    <option value="Và">
+                                                        Và
+                                                    </option>
+                                                    <option value="Hoặc">
+                                                        Hoặc
+                                                    </option>
+                                                </select>
+                                            )}
+
+                                            <select
+                                                value={condition.questionOrder}
+                                                onChange={(e) =>
+                                                    handleConditionChange(
+                                                        logicIndex,
+                                                        condition.id,
+                                                        "questionOrder",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="flex-1 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            >
+                                                <option value="">
+                                                    Chọn câu hỏi
+                                                </option>
+                                                {questionsData
+                                                    .filter((q: QuestionType) =>
+                                                        [1, 2, 6].includes(
+                                                            q.questionTypeId
+                                                        )
+                                                    )
+                                                    .map((q: QuestionType) => (
+                                                        <option
+                                                            key={q.order}
+                                                            value={q.order}
+                                                        >
+                                                            Câu {q.order}
+                                                            {q.content
+                                                                ? `: ${q.content.substring(
+                                                                      0,
+                                                                      50
+                                                                  )}${
+                                                                      q.content
+                                                                          .length >
+                                                                      50
+                                                                          ? "..."
+                                                                          : ""
+                                                                  }`
+                                                                : ` (Question Type ${q.questionTypeId})`}
+                                                        </option>
+                                                    ))}
+                                            </select>
+
+                                            <select
+                                                value={condition.operator}
+                                                onChange={(e) =>
+                                                    handleConditionChange(
+                                                        logicIndex,
+                                                        condition.id,
+                                                        "operator",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={
+                                                    !condition.questionOrder
+                                                }
+                                                className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                            >
+                                                {getAvailableOperators(
+                                                    condition.questionOrder
+                                                ).map((op) => (
+                                                    <option key={op} value={op}>
+                                                        {op}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            {isOptionOperator(
+                                                condition.operator
+                                            ) &&
+                                                condition.questionOrder && (
+                                                    <select
+                                                        value={
+                                                            condition.optionOrder
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleConditionChange(
+                                                                logicIndex,
+                                                                condition.id,
+                                                                "optionOrder",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="w-40 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                    >
+                                                        <option value="">
+                                                            Chọn tùy chọn
+                                                        </option>
+                                                        {getQuestionOptions(
+                                                            condition.questionOrder
+                                                        ).map((option) => (
+                                                            <option
+                                                                key={
+                                                                    option.value
+                                                                }
+                                                                value={
+                                                                    option.value
+                                                                }
+                                                            >
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                )}
+
+                                            {isComparisonOperator(
+                                                condition.operator
+                                            ) && (
+                                                <input
+                                                    type="number"
+                                                    value={
+                                                        condition.compareValue
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleConditionChange(
+                                                            logicIndex,
+                                                            condition.id,
+                                                            "compareValue",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Nhập giá trị"
+                                                    className="w-32 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                                />
+                                            )}
+
+                                            {logic.conditions.length > 1 && (
+                                                <button
+                                                    onClick={() =>
+                                                        handleDeleteCondition(
+                                                            logicIndex,
+                                                            condition.id
+                                                        )
+                                                    }
+                                                    className="p-1.5 text-red-500 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            )}
+
+                                            <div
+                                                className={`w-2 h-2 rounded-full ${
+                                                    isConditionValid(condition)
+                                                        ? "bg-green-500"
+                                                        : "bg-red-500"
+                                                }`}
+                                            />
+                                        </div>
+                                    )
                                 )}
                             </div>
 
-                            {/* Question Selection */}
-                            <select
-                                style={styles.dropdown}
-                                value={condition.questionOrder}
-                                onChange={(e) =>
-                                    handleConditionChange(
-                                        condition.id,
-                                        "questionOrder",
-                                        e.target.value
-                                    )
-                                }
-                            >
-                                <option value="">Chọn câu hỏi</option>
-                                {questionsData
-                                    ?.filter(
-                                        (item) =>
-                                            item?.questionTypeId === 1 ||
-                                            item?.questionTypeId === 2 ||
-                                            item?.questionTypeId === 6
-                                    )
-                                    ?.map((q) => (
-                                        <option key={q.order} value={q.order}>
-                                            Câu {q.order}
-                                            {q.content
-                                                ? `: ${q.content}`
-                                                : ` (Question Type ${q.questionTypeId})`}
-                                        </option>
-                                    ))}
-                            </select>
-
-                            {/* Operator Selection */}
-                            <select
-                                style={styles.dropdown}
-                                value={condition.operator}
-                                onChange={(e) =>
-                                    handleConditionChange(
-                                        condition.id,
-                                        "operator",
-                                        e.target.value
-                                    )
-                                }
-                                disabled={!condition.questionOrder}
-                            >
-                                {getAvailableOperators(
-                                    condition.questionOrder
-                                ).map((op) => (
-                                    <option key={op} value={op}>
-                                        {op}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {/* Option/Value Input */}
-                            {isOptionOperator(condition.operator) &&
-                                condition.questionOrder && (
+                            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <span className="font-semibold text-gray-700 whitespace-nowrap">
+                                        THÌ
+                                    </span>
+                                    <button className="px-3 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                        Hiện
+                                    </button>
                                     <select
-                                        style={styles.dropdown}
-                                        value={condition.optionOrder}
+                                        value={logic.targetQuestionOrder}
                                         onChange={(e) =>
-                                            handleConditionChange(
-                                                condition.id,
-                                                "optionOrder",
+                                            handleTargetQuestionChange(
+                                                logicIndex,
                                                 e.target.value
                                             )
                                         }
+                                        className="flex-1 px-2 py-1.5 border border-gray-300 rounded hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     >
-                                        <option value="">Chọn tùy chọn</option>
-                                        {getQuestionOptions(
-                                            condition.questionOrder
-                                        ).length > 0 ? (
-                                            getQuestionOptions(
-                                                condition.questionOrder
-                                            ).map((option) => (
+                                        <option value="end">Kết thúc</option>
+                                        {questionsData.map(
+                                            (q: QuestionType) => (
                                                 <option
-                                                    key={option.value}
-                                                    value={option.value}
+                                                    key={q.order}
+                                                    value={q.order}
                                                 >
-                                                    {option.label}
+                                                    Câu {q.order}
                                                 </option>
-                                            ))
-                                        ) : (
-                                            <option value="1">
-                                                Default Option
-                                            </option>
+                                            )
                                         )}
                                     </select>
-                                )}
-
-                            {isComparisonOperator(condition.operator) && (
-                                <input
-                                    type="number"
-                                    style={styles.numberInput}
-                                    placeholder="Nhập giá trị"
-                                    value={condition.compareValue}
-                                    onChange={(e) =>
-                                        handleConditionChange(
-                                            condition.id,
-                                            "compareValue",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            )}
-
-                            {/* Delete Button */}
-                            {conditions.length > 1 && (
-                                <button
-                                    style={styles.deleteButton}
-                                    onClick={() =>
-                                        handleDeleteCondition(condition.id)
-                                    }
-                                    title="Xóa điều kiện"
-                                >
-                                    ×
-                                </button>
-                            )}
-
-                            {/* Validation Indicator */}
-                            <div
-                                style={{
-                                    ...styles.validationIndicator,
-                                    backgroundColor: isConditionValid(condition)
-                                        ? "#52c41a"
-                                        : "#ff4d4f",
-                                }}
-                            />
+                                </div>
+                            </div>
                         </div>
                     ))}
 
-                    <div style={styles.addLogicContainer}>
-                        <button
-                            style={styles.addConditionButton}
-                            onClick={handleAddCondition}
-                        >
-                            + Thêm điều kiện
-                        </button>
-                    </div>
-                </div>
-
-                <div style={styles.jumpToContainer}>
-                    <div style={styles.jumpToRow}>
-                        <span style={styles.jumpToLabel}>THÌ</span>
-                        <div style={styles.jumpToActionContainer}>
-                            <button style={styles.jumpToButton}>Hiện</button>
-                            <select
-                                style={styles.targetDropdown}
-                                value={targetQuestionOrder}
-                                onChange={(e) =>
-                                    setTargetQuestionOrder(e.target.value)
-                                }
-                            >
-                                <option value="end">Kết thúc</option>
-                                {questionsData.map((q) => (
-                                    <option key={q.order} value={q.order}>
-                                        Câu {q.order}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div style={styles.actionContainer}>
                     <button
-                        style={{
-                            ...styles.saveButton,
-                            opacity: canSave() ? 1 : 0.5,
-                            cursor: canSave() ? "pointer" : "not-allowed",
-                        }}
+                        onClick={handleAddLogic}
+                        className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    >
+                        + Thêm logic mới
+                    </button>
+                </div>
+
+                <div className="p-4 border-t border-gray-200 flex justify-end gap-3">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    >
+                        Hủy
+                    </button>
+                    <button
                         onClick={handleSave}
                         disabled={!canSave()}
+                        className={`px-4 py-2 text-white rounded focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                            canSave()
+                                ? "bg-blue-500 hover:bg-blue-600 focus:ring-blue-500"
+                                : "bg-gray-400 cursor-not-allowed"
+                        }`}
                     >
                         Lưu Logic
                     </button>
