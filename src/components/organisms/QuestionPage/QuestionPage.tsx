@@ -31,7 +31,7 @@ const questionDefault = {
     content: "",
     description: "",
     timeLimit: 0,
-    isVoiced: false,
+    isVoice: false,
     order: 0,
     configJsonString: {},
     options: [],
