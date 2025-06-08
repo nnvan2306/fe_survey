@@ -13,9 +13,7 @@ type SliderDataType = {
 export type RangeSliderConfigJsonStringType = SliderDataType;
 
 type Props = {
-    question: QuestionType & {
-        configJsonString?: RangeSliderConfigJsonStringType;
-    };
+    question: QuestionType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -72,11 +70,20 @@ const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
                 setValue([defaultData.min, defaultData.max]);
             }
         } else {
-            setValue([config.min, config.max]);
+            setValue([Number(config.min), Number(config.max)]);
         }
     }, [question?.configJsonString, handleUpdateQuestion]);
 
-    const currentData = question?.configJsonString || defaultData;
+    const config = question?.configJsonString as SliderDataType | undefined;
+    const currentData =
+        config &&
+        typeof config === "object" &&
+        "min" in config &&
+        "max" in config &&
+        "step" in config &&
+        "unit" in config
+            ? config
+            : defaultData;
 
     return (
         <div className="range-slider">
