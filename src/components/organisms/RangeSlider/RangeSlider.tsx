@@ -10,9 +10,7 @@ type SliderDataType = {
     unit: string;
 };
 
-export type RangeSliderConfigJsonStringType = {
-    data: SliderDataType;
-};
+export type RangeSliderConfigJsonStringType = SliderDataType;
 
 type Props = {
     question: QuestionType & {
@@ -51,13 +49,10 @@ const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
         (key: keyof SliderDataType, newValue: SliderDataType[typeof key]) => {
             if (typeof handleUpdateQuestion !== "function") return;
 
-            const currentData = question?.configJsonString?.data || defaultData;
+            const currentData = question?.configJsonString || defaultData;
             handleUpdateQuestion("configJsonString", {
-                ...question?.configJsonString,
-                data: {
-                    ...currentData,
-                    [key]: newValue,
-                },
+                ...currentData,
+                [key]: newValue,
             });
         },
         [handleUpdateQuestion, question?.configJsonString]
@@ -69,21 +64,19 @@ const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
             config &&
             typeof config === "object" &&
             Object.keys(config).length === 0;
-        const isDataMissing = !config?.data;
+        const isDataMissing = !config;
 
         if (isEmptyConfigObject || isDataMissing) {
             if (typeof handleUpdateQuestion === "function") {
-                handleUpdateQuestion("configJsonString", {
-                    data: { ...defaultData },
-                });
+                handleUpdateQuestion("configJsonString", { ...defaultData });
                 setValue([defaultData.min, defaultData.max]);
             }
         } else {
-            setValue([config.data.min, config.data.max]);
+            setValue([config.min, config.max]);
         }
     }, [question?.configJsonString, handleUpdateQuestion]);
 
-    const currentData = question?.configJsonString?.data || defaultData;
+    const currentData = question?.configJsonString || defaultData;
 
     return (
         <div className="range-slider">
