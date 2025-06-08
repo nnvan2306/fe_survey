@@ -268,7 +268,6 @@ function ModalLogic({
                     : parseInt(targetQuestionOrder),
         };
 
-        console.log("check output: ", output);
 
         onClose();
     };

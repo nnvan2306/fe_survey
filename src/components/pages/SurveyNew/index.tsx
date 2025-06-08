@@ -2,7 +2,6 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import isEqual from "lodash/isEqual";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
 import { useUpdateSurvey } from "../../../services/survey/update";
@@ -116,7 +115,9 @@ const SurveyNew = () => {
             onSuccess(newData) {
                 setFormData(newData.data);
                 latestDataRef.current = newData.data;
-                toast("Success");
+                if (!id) {
+                    window.history.pushState({}, "", `/survey/update/${newData.data.id}`);
+                }
             },
         },
     });
@@ -202,7 +203,7 @@ const SurveyNew = () => {
                     </div>
                     <div className="survey-actions">
                         <Button
-                            variant="contained"
+                            variant="text"
                             className="btn-save"
                             sx={{
                                 ...(hasChanges &&
@@ -212,13 +213,14 @@ const SurveyNew = () => {
                                     "&:hover": {
                                         backgroundColor: "#bbbbbb",
                                     },
+
                                 }),
                             }}
                         >
                             {isSaving
                                 ? `Đang lưu ... ${saveCountdown}`
                                 : hasChanges
-                                    ? "Lưu thay đổi"
+                                    ? "Đã Lưu"
                                     : "Đã lưu"}
                         </Button>
                         {/* <Button variant="outlined">Tác vụ khác</Button> */}
