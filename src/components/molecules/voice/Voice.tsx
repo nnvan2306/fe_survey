@@ -48,7 +48,7 @@ const Voice = ({
                 setFormData((prev) => ({ ...prev, securityModeId: 3 }));
             }
             if (!checked && formData?.securityModeId !== 3) {
-                toast("Đã cập nhật Chế độ bảo mật thành Advance");
+                toast("Đã cập nhật Chế độ bảo mật thành Pro");
             }
         },
         [

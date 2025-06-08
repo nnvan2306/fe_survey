@@ -112,6 +112,9 @@ const Sidebar = ({
             ) : null}
 
             <TimeLimit
+                isAdvance={isAdvance}
+                formData={formData}
+                setFormData={setFormData}
                 question={question}
                 handleUpdateQuestion={handleUpdateQuestion}
             />

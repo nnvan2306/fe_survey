@@ -1,10 +1,18 @@
 import { Box, Input, Switch, Typography } from "@mui/material";
-import type { OptionType, QuestionType } from "../../../types/survey";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 import type { RangeSliderConfigJsonStringType } from "../../organisms/RangeSlider/RangeSlider";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 type Props = {
     question: QuestionType;
+    formData: SurveyType;
+    isAdvance: boolean;
+    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -18,16 +26,26 @@ type Props = {
     ) => void;
 };
 
-const TimeLimit = ({ question, handleUpdateQuestion }: Props) => {
+const TimeLimit = ({
+    question,
+    handleUpdateQuestion,
+    formData,
+    isAdvance,
+    setFormData,
+}: Props) => {
     const [isOpen, setIsOpne] = useState(false);
     const value = useMemo(() => Number(question?.timeLimit) || 0, [question]);
 
-    const handleChangeSwitch = () => {
+    const handleChangeSwitch = useCallback(() => {
         if (isOpen) {
             handleUpdateQuestion("timeLimit", 0);
         }
+        if (!isOpen && !isAdvance) {
+            setFormData((prev) => ({ ...prev, securityModeId: 2 }));
+            toast("Đã cập nhật Chế độ bảo mật thành Advance");
+        }
         setIsOpne(!isOpen);
-    };
+    }, [handleUpdateQuestion, isAdvance, isOpen, setFormData]);
 
     const handleChangeValue = (value: number) => {
         handleUpdateQuestion("timeLimit", value);
