@@ -12,15 +12,18 @@ import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider
 import { useMemo } from "react";
 import SwitchCustomize from "../QuestionPage/components/SwitchCustomize";
 import TimeLimit from "../../molecules/time-limit/TimeLimit";
+import Voice from "../../molecules/voice/Voice";
 
 const Sidebar = ({
     question,
     formData,
+    setFormData,
     handleUpdateQuestion,
     listComponent,
 }: {
     question: QuestionType;
     formData: SurveyType;
+    setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -43,8 +46,8 @@ const Sidebar = ({
     };
 
     const isBasic = useMemo(() => formData?.securityModeId === 1, [formData]);
-    // const isAdvance = useMemo(() => formData?.securityModeId === 2, [formData]);
-    // const isPro = useMemo(() => formData?.securityModeId === 3, [formData]);
+    const isAdvance = useMemo(() => formData?.securityModeId === 2, [formData]);
+    const isPro = useMemo(() => formData?.securityModeId === 3, [formData]);
     return (
         <>
             <p>Chọn loại câu hỏi</p>
@@ -78,6 +81,15 @@ const Sidebar = ({
                 question={question}
                 handleUpdateQuestion={handleUpdateQuestion}
                 label="Hình ảnh/Video ở đầu câu hỏi"
+            />
+
+            <Voice
+                label="Sử dụng Voice"
+                isAdvance={isAdvance}
+                formData={formData}
+                setFormData={setFormData}
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
             />
             {listComponent &&
                 listComponent.map((Item: any) => {

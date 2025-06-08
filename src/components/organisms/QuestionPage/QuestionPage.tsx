@@ -526,6 +526,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 <div className="question-sidebar flex flex-col overflow-y-auto">
                     <Sidebar
                         formData={formData}
+                        setFormData={setFormData}
                         handleUpdateQuestion={handleUpdateQuestion as any}
                         question={questionedit as QuestionType}
                         listComponent={

@@ -15,7 +15,7 @@ export type QuestionType = {
     content: string;
     description: string;
     timeLimit: number;
-    isVoiced: boolean;
+    isVoice: boolean;
     order: number;
     configJsonString: Record<string, string | number | SlideType[]>;
     options: OptionType[];
