@@ -343,10 +343,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     </div>
                 </div>
             </div>
-            <div
-                className="startpage-options w-[420px] bg-white h-full overflow-y-auto shadow-lg p-8"
-                style={{ overflowY: "auto" }}
-            >
+            <div className="startpage-options w-[420px] bg-white h-full overflow-y-auto shadow-lg p-8">
                 <div className="space-y-6">
                     <div className="config-section">
                         <h3 className="config-title">BỎ QUA TRANG BẮT ĐẦU</h3>

@@ -104,13 +104,13 @@
   padding-bottom    : 100px;
   box-shadow        : 0 8px 32px 0 rgba(31, 38, 135, 0.08);
   border-left       : 1px solid #f0f0f0;
-  scrollbar-width   : none;
-  -ms-overflow-style: none;
+  // scrollbar-width   : none;
+  // -ms-overflow-style: none;
 }
 
-.startpage-options::-webkit-scrollbar {
-  display: none;
-}
+// .startpage-options::-webkit-scrollbar {
+//   display: none;
+// }
 
 .config-section {
   margin-bottom: 2rem;
