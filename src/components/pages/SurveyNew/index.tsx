@@ -220,7 +220,7 @@ const SurveyNew = () => {
                                 ? "Lưu thay đổi"
                                 : "Đã lưu"}
                         </Button>
-                        <Button variant="outlined">Tác vụ khác</Button>
+                        {/* <Button variant="outlined">Tác vụ khác</Button> */}
                     </div>
                 </div>
                 <div
