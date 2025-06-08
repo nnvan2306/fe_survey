@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import type { OptionType, QuestionType } from "../../../types/survey";
 import "./styles.scss";
 import { Box, Slider, TextField, Typography } from "@mui/material";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 type SliderDataType = {
     min: number;
@@ -12,7 +11,7 @@ type SliderDataType = {
 };
 
 export type RangeSliderConfigJsonStringType = {
-    data?: SliderDataType[];
+    data: SliderDataType;
 };
 
 type Props = {
@@ -39,239 +38,186 @@ const defaultData: SliderDataType = {
 };
 
 const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
-    const [values, setValues] = useState<number[]>([]);
+    const [value, setValue] = useState<number[]>([
+        defaultData.min,
+        defaultData.max,
+    ]);
 
-    const handleSliderChange = (newValue: number, target: number) => {
-        setValues(
-            values.map((item, index) => {
-                if (index === target) {
-                    return newValue;
-                }
-                return item;
-            })
-        );
+    const handleSliderChange = (_event: Event, newValue: number | number[]) => {
+        setValue(newValue as number[]);
     };
 
     const handleRangeConfigChange = useCallback(
-        (
-            index: number,
-            key: keyof SliderDataType,
-            value: SliderDataType[typeof key]
-        ) => {
-            const newRanges = Array.isArray(question?.configJsonString?.data)
-                ? [...question.configJsonString.data]
-                : [];
-            if (!newRanges[index]) return;
+        (key: keyof SliderDataType, newValue: SliderDataType[typeof key]) => {
+            if (typeof handleUpdateQuestion !== "function") return;
 
-            newRanges[index] = {
-                ...newRanges[index],
-                [key]: value,
-            };
-            if (typeof handleUpdateQuestion === "function") {
-                handleUpdateQuestion("configJsonString", {
-                    ...question?.configJsonString,
-                    data: newRanges,
-                });
-            }
+            const currentData = question?.configJsonString?.data || defaultData;
+            handleUpdateQuestion("configJsonString", {
+                ...question?.configJsonString,
+                data: {
+                    ...currentData,
+                    [key]: newValue,
+                },
+            });
         },
-        [handleUpdateQuestion, question?.configJsonString?.data]
+        [handleUpdateQuestion, question?.configJsonString]
     );
-
-    const handleAddRange = useCallback(() => {
-        if (typeof handleUpdateQuestion !== "function") return;
-        const currentData = Array.isArray(question?.configJsonString?.data)
-            ? question.configJsonString.data
-            : [];
-        const newData = [...currentData, { ...defaultData }];
-        handleUpdateQuestion("configJsonString", {
-            ...question?.configJsonString,
-            data: newData,
-        });
-        setValues([...values, defaultData.max]);
-    }, [handleUpdateQuestion, question?.configJsonString?.data, values]);
 
     useEffect(() => {
         const config = question?.configJsonString;
-        // Check if configJsonString is an empty object OR if data is missing/empty
         const isEmptyConfigObject =
             config &&
             typeof config === "object" &&
             Object.keys(config).length === 0;
-        const isDataMissingOrEmpty =
-            !Array.isArray(config?.data) || config.data.length === 0;
+        const isDataMissing = !config?.data;
 
-        if (isEmptyConfigObject || isDataMissingOrEmpty) {
-            // Only call handleUpdateQuestion if it is a function
+        if (isEmptyConfigObject || isDataMissing) {
             if (typeof handleUpdateQuestion === "function") {
                 handleUpdateQuestion("configJsonString", {
-                    ...config, // Preserve other existing properties if any (unlikely for empty object)
-                    data: [{ ...defaultData }],
+                    data: { ...defaultData },
                 });
-                setValues([defaultData.max]); // Initialize values for the first item
+                setValue([defaultData.min, defaultData.max]);
             }
+        } else {
+            setValue([config.data.min, config.data.max]);
         }
-    }, [question?.configJsonString, handleUpdateQuestion]); // Depend on configJsonString itself
+    }, [question?.configJsonString, handleUpdateQuestion]);
+
+    const currentData = question?.configJsonString?.data || defaultData;
 
     return (
         <div className="range-slider">
-            {question?.configJsonString?.data?.length
-                ? question.configJsonString.data.map((item, index) => {
-                      return (
-                          <Box
-                              key={index}
-                              className="range-slider-item flex flex-col gap-4 "
-                          >
-                              <Box className="flex flex-col items-center w-full">
-                                  <Box className="flex justify-between w-full px-1 mb-2">
-                                      <Typography variant="body2" color="white">
-                                          {item.min}
-                                      </Typography>
-                                      <Typography
-                                          variant="body2"
-                                          color="white"
-                                          sx={{
-                                              flexGrow: 1,
-                                              textAlign: "center",
-                                          }}
-                                      >
-                                          {item.step}
-                                      </Typography>
-                                      <Typography variant="body2" color="white">
-                                          {item.max}
-                                      </Typography>
-                                  </Box>
-                                  <Slider
-                                      value={values[index] ?? item.min}
-                                      onChange={(_, value) =>
-                                          handleSliderChange(
-                                              value as number,
-                                              index
-                                          )
-                                      }
-                                      aria-labelledby={`range-slider-${index}`}
-                                      valueLabelDisplay="auto"
-                                      min={item.min}
-                                      max={item.max}
-                                      step={item.step}
-                                      sx={{
-                                          "& .MuiSlider-thumb": {
-                                              width: 24,
-                                              height: 24,
-                                              "&:focus, &:hover, &.Mui-active":
-                                                  {
-                                                      boxShadow: "inherit",
-                                                  },
-                                          },
-                                      }}
-                                  />
-                              </Box>
+            <Box className="range-slider-item flex flex-col gap-4">
+                <Box className="flex flex-col items-center w-full">
+                    <Box className="flex justify-between w-full px-1 mb-2">
+                        <Typography variant="body2" color="white">
+                            {currentData.min}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="white"
+                            sx={{
+                                flexGrow: 1,
+                                textAlign: "center",
+                            }}
+                        >
+                            {currentData.step}
+                        </Typography>
+                        <Typography variant="body2" color="white">
+                            {currentData.max}
+                        </Typography>
+                    </Box>
+                    <Slider
+                        value={value}
+                        onChange={handleSliderChange}
+                        aria-labelledby="range-slider"
+                        valueLabelDisplay="auto"
+                        min={currentData.min}
+                        max={currentData.max}
+                        step={currentData.step}
+                        sx={{
+                            "& .MuiSlider-thumb": {
+                                width: 24,
+                                height: 24,
+                                "&:focus, &:hover, &.Mui-active": {
+                                    boxShadow: "inherit",
+                                },
+                            },
+                        }}
+                    />
+                </Box>
 
-                              <Box className="flex justify-between gap-4">
-                                  <Box>
-                                      <Typography color="white" mb={2}>
-                                          Min
-                                      </Typography>
-                                      <TextField
-                                          type="number"
-                                          value={item.min}
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>
-                                          ) =>
-                                              handleRangeConfigChange(
-                                                  index,
-                                                  "min",
-                                                  Number(e.target.value)
-                                              )
-                                          }
-                                          InputLabelProps={{ shrink: true }}
-                                          sx={{
-                                              flexGrow: 1,
-                                              backgroundColor: "white",
-                                              borderRadius: 1,
-                                          }}
-                                      />
-                                  </Box>
-                                  <Box>
-                                      <Typography color="white" mb={2}>
-                                          Step
-                                      </Typography>
-                                      <TextField
-                                          type="number"
-                                          value={item.step}
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>
-                                          ) =>
-                                              handleRangeConfigChange(
-                                                  index,
-                                                  "step",
-                                                  Number(e.target.value)
-                                              )
-                                          }
-                                          InputLabelProps={{ shrink: true }}
-                                          sx={{
-                                              flexGrow: 1,
-                                              backgroundColor: "white",
-                                              borderRadius: 1,
-                                          }}
-                                      />
-                                  </Box>
-                                  <Box>
-                                      <Typography color="white" mb={2}>
-                                          Max
-                                      </Typography>
-                                      <TextField
-                                          type="number"
-                                          value={item.max}
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>
-                                          ) =>
-                                              handleRangeConfigChange(
-                                                  index,
-                                                  "max",
-                                                  Number(e.target.value)
-                                              )
-                                          }
-                                          InputLabelProps={{ shrink: true }}
-                                          sx={{
-                                              flexGrow: 1,
-                                              backgroundColor: "white",
-                                              borderRadius: 1,
-                                          }}
-                                      />
-                                  </Box>
-                                  <Box>
-                                      <Typography color="white" mb={2}>
-                                          Unit
-                                      </Typography>
-                                      <TextField
-                                          value={item.unit}
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>
-                                          ) =>
-                                              handleRangeConfigChange(
-                                                  index,
-                                                  "unit",
-                                                  e.target.value
-                                              )
-                                          }
-                                          InputLabelProps={{ shrink: true }}
-                                          placeholder="Đơn vị"
-                                          sx={{
-                                              flexGrow: 1,
-                                              backgroundColor: "white",
-                                              borderRadius: 1,
-                                          }}
-                                      />
-                                  </Box>
-                              </Box>
-                          </Box>
-                      );
-                  })
-                : null}
-
-            <Box className="add-range-button" onClick={handleAddRange}>
-                <AddCircleIcon fontSize="small" />
-                <Typography>Thêm mới</Typography>
+                <Box className="flex justify-between gap-4">
+                    <Box>
+                        <Typography color="white" mb={2}>
+                            Min
+                        </Typography>
+                        <TextField
+                            type="number"
+                            value={currentData.min}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                                handleRangeConfigChange(
+                                    "min",
+                                    Number(e.target.value)
+                                )
+                            }
+                            InputLabelProps={{ shrink: true }}
+                            sx={{
+                                flexGrow: 1,
+                                backgroundColor: "white",
+                                borderRadius: 1,
+                            }}
+                        />
+                    </Box>
+                    <Box>
+                        <Typography color="white" mb={2}>
+                            Step
+                        </Typography>
+                        <TextField
+                            type="number"
+                            value={currentData.step}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                                handleRangeConfigChange(
+                                    "step",
+                                    Number(e.target.value)
+                                )
+                            }
+                            InputLabelProps={{ shrink: true }}
+                            sx={{
+                                flexGrow: 1,
+                                backgroundColor: "white",
+                                borderRadius: 1,
+                            }}
+                        />
+                    </Box>
+                    <Box>
+                        <Typography color="white" mb={2}>
+                            Max
+                        </Typography>
+                        <TextField
+                            type="number"
+                            value={currentData.max}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                                handleRangeConfigChange(
+                                    "max",
+                                    Number(e.target.value)
+                                )
+                            }
+                            InputLabelProps={{ shrink: true }}
+                            sx={{
+                                flexGrow: 1,
+                                backgroundColor: "white",
+                                borderRadius: 1,
+                            }}
+                        />
+                    </Box>
+                    <Box>
+                        <Typography color="white" mb={2}>
+                            Unit
+                        </Typography>
+                        <TextField
+                            value={currentData.unit}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) =>
+                                handleRangeConfigChange("unit", e.target.value)
+                            }
+                            InputLabelProps={{ shrink: true }}
+                            placeholder="Đơn vị"
+                            sx={{
+                                flexGrow: 1,
+                                backgroundColor: "white",
+                                borderRadius: 1,
+                            }}
+                        />
+                    </Box>
+                </Box>
             </Box>
         </div>
     );
