@@ -332,14 +332,21 @@ function ModalLogic({
                                 }
                             >
                                 <option value="">Chọn câu hỏi</option>
-                                {questionsData.map((q) => (
-                                    <option key={q.order} value={q.order}>
-                                        Câu {q.order}
-                                        {q.content
-                                            ? `: ${q.content}`
-                                            : ` (Question Type ${q.questionTypeId})`}
-                                    </option>
-                                ))}
+                                {questionsData
+                                    ?.filter(
+                                        (item) =>
+                                            item?.questionTypeId === 1 ||
+                                            item?.questionTypeId === 2 ||
+                                            item?.questionTypeId === 6
+                                    )
+                                    ?.map((q) => (
+                                        <option key={q.order} value={q.order}>
+                                            Câu {q.order}
+                                            {q.content
+                                                ? `: ${q.content}`
+                                                : ` (Question Type ${q.questionTypeId})`}
+                                        </option>
+                                    ))}
                             </select>
 
                             {/* Operator Selection */}

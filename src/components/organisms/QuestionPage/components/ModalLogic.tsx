@@ -44,12 +44,6 @@ export default function LogicComponent({
                         ×
                     </button>
                 </div>
-                {/* <p style={styles.description}>
-                    Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn, hệ
-                    thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
-                    <strong>2</strong>. Bạn không cần phải đặt điều kiện để nhảy
-                    đến câu này.
-                </p> */}
                 <button style={styles.addButton} onClick={handleOpenModal}>
                     Thêm logic
                 </button>
@@ -315,23 +309,31 @@ function ModalLogic({
                                     }
                                 >
                                     <option value="">CHỌN CÂU HỎI</option>
-                                    {questions.map((question) => (
-                                        <option
-                                            key={question.order}
-                                            value={question.order.toString()}
-                                        >
-                                            Câu hỏi {question.order}
-                                            {question.content &&
-                                                ` - ${question.content.substring(
-                                                    0,
-                                                    30
-                                                )}${
-                                                    question.content.length > 30
-                                                        ? "..."
-                                                        : ""
-                                                }`}
-                                        </option>
-                                    ))}
+                                    {questions
+                                        ?.filter(
+                                            (item) =>
+                                                item?.questionTypeId === 1 ||
+                                                item?.questionTypeId === 2 ||
+                                                item?.questionTypeId === 6
+                                        )
+                                        ?.map((question) => (
+                                            <option
+                                                key={question.order}
+                                                value={question.order.toString()}
+                                            >
+                                                Câu hỏi {question.order}
+                                                {question.content &&
+                                                    ` - ${question.content.substring(
+                                                        0,
+                                                        30
+                                                    )}${
+                                                        question.content
+                                                            .length > 30
+                                                            ? "..."
+                                                            : ""
+                                                    }`}
+                                            </option>
+                                        ))}
                                 </select>
 
                                 {/* Operator Selection */}
