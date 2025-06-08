@@ -38,7 +38,7 @@ const mockSurveyData: SurveyType = {
         contentColor: "#CCCCCC",
         buttonBackgroundColor: "#007bff",
         buttonContentColor: "#ffffff",
-        password: "",
+        password: null,
         brightness: 100,
     },
     description: "Mô tả khảo sát mặc định",
@@ -392,10 +392,9 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                         </div>
                     </div>
                     <CustomizePassword
-                        selectedSecurityMode={selectedSecurityMode}
-                        setSelectedSecurityMode={setSelectedSecurityMode}
-                        handleCustomizePassword={handleCustomizePassword}
+                        formData={formData}
                         setFormData={setFormData}
+                        handleCustomizePassword={handleCustomizePassword}
                     />
                     <SecurityMode
                         selectedSecurityMode={selectedSecurityMode}
@@ -447,16 +446,16 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                     onSavePassword={(newPassword) => {
                         setFormData((prev) => ({
                             ...prev,
-                            securityModeId: newPassword ? 2 : 1,
                             configJsonString: {
                                 ...prev.configJsonString,
                                 password: newPassword,
                             },
                         }));
                     }}
-                    initialPassword={formData?.configJsonString.password || ""}
+                    initialPassword={formData.configJsonString.password || ""}
                 />
             )}
+
             {showColorModal && (
                 <ColorPickerModal
                     open={showColorModal}
@@ -743,121 +742,85 @@ function SurveyStatus({
 }
 
 function CustomizePassword({
-    selectedSecurityMode: selectedSecurityMode,
-    setSelectedSecurityMode: setSelectedSecurityMode,
-    handleCustomizePassword: handleCustomizePassword,
-    setFormData: setFormData,
+    formData,
+    setFormData,
+    handleCustomizePassword,
 }: any) {
+    const hasPassword = formData.configJsonString.password !== null;
+
     return (
-        <>
-            <div className="config-section">
-                <div className="flex items-center mb-3">
-                    <h3 className="config-title">ĐẶT MẬT KHẨU CHO KHẢO SÁT</h3>
-                </div>
-                <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Bật</span>
-                    <label className="toggle-switch">
-                        <input
-                            type="checkbox"
-                            checked={selectedSecurityMode === 2}
-                            onChange={(e) => {
-                                const isChecked = e.target.checked;
-                                setSelectedSecurityMode(isChecked ? 2 : 1);
-                                setFormData((prev: any) => ({
-                                    ...prev,
-                                    securityModeId: isChecked ? 2 : 1,
-                                    configJsonString: {
-                                        ...prev.configJsonString,
-                                        password: isChecked
-                                            ? prev.configJsonString.password
-                                            : "",
-                                    },
-                                }));
-                            }}
-                            aria-label="Đặt mật khẩu cho khảo sát"
-                        />
-                        <span className="toggle-slider"></span>
-                    </label>
-                </div>
-                {selectedSecurityMode === 2 && (
-                    <button
-                        className="customize-button"
-                        onClick={handleCustomizePassword}
-                    >
-                        <SettingsIcon fontSize="small" />
-                        <span>Tùy chỉnh</span>
-                    </button>
-                )}
+        <div className="config-section">
+            <div className="flex items-center mb-3">
+                <h3 className="config-title">ĐẶT MẬT KHẨU CHO KHẢO SÁT</h3>
             </div>
-        </>
+            <div className="flex items-center justify-between">
+                <span className="text-gray-600">Bật</span>
+                <label className="toggle-switch">
+                    <input
+                        type="checkbox"
+                        checked={hasPassword}
+                        onChange={(e) => {
+                            const on = e.target.checked;
+                            setFormData((prev: any) => ({
+                                ...prev,
+                                configJsonString: {
+                                    ...prev.configJsonString,
+                                    // khi bật: để chuỗi rỗng để hiển thị nút Tùy chỉnh
+                                    // khi tắt: set về null để ẩn nút Tùy chỉnh
+                                    password: on ? "" : null,
+                                },
+                            }));
+                        }}
+                        aria-label="Đặt mật khẩu cho khảo sát"
+                    />
+                    <span className="toggle-slider"></span>
+                </label>
+            </div>
+
+            {hasPassword && (
+                <button
+                    className="customize-button"
+                    onClick={handleCustomizePassword}
+                >
+                    <SettingsIcon fontSize="small" />
+                    <span>Tùy chỉnh</span>
+                </button>
+            )}
+        </div>
     );
 }
 
 function SecurityMode({
-    selectedSecurityMode: selectedSecurityMode,
-    setSelectedSecurityMode: setSelectedSecurityMode,
-    setFormData: setFormData,
+    selectedSecurityMode,
+    setSelectedSecurityMode,
+    setFormData,
 }: any) {
     return (
-        <>
-            <div>
-                <h3>CHẾ ĐỘ BẢO MẬT</h3>
-                <FormControl
-                    fullWidth
-                    sx={{
-                        ".MuiOutlinedInput-root": {
-                            height: "48px",
-                            borderRadius: "8px",
-                            border: "1px solid #D1D5DB",
-                            "& fieldset": { border: "none" },
-                            "&:hover fieldset": { border: "none" },
-                            "&.Mui-focused fieldset": { border: "none" },
-                        },
-                        ".MuiInputLabel-root": {
-                            transform: "translate(14px, 14px) scale(1)",
-                            "&.Mui-focused": {
-                                transform: "translate(14px, -9px) scale(0.75)",
-                            },
-                            "&.MuiInputLabel-shrink": {
-                                transform: "translate(14px, -9px) scale(0.75)",
-                            },
-                        },
-                        ".MuiSelect-select": {
-                            padding: "12px 14px",
-                            display: "flex",
-                            alignItems: "center",
-                        },
-                        ".MuiSelect-icon": {
-                            right: "14px",
-                            color: "#6B7280",
-                        },
+        <div className="config-section">
+            <h3 className="config-title">CHẾ ĐỘ BẢO MẬT</h3>
+            <FormControl fullWidth>
+                <Select
+                    value={selectedSecurityMode}
+                    onChange={(e) => {
+                        const newMode = e.target.value as number;
+                        setSelectedSecurityMode(newMode);
+                        setFormData((prev: any) => ({
+                            ...prev,
+                            securityModeId: newMode,
+                        }));
                     }}
                 >
-                    <Select
-                        labelId="security-mode-select-label"
-                        id="security-mode-select"
-                        value={selectedSecurityMode}
-                        label="Chọn chế độ bảo mật"
-                        onChange={(e) => {
-                            const newSecurityModeId = e.target.value as number;
-                            setSelectedSecurityMode(newSecurityModeId);
-                            setFormData((prev: any) => ({
-                                ...prev,
-                                securityModeId: newSecurityModeId,
-                            }));
-                        }}
-                    >
-                        {SurveySecurityMode.map((mode) => (
-                            <MenuItem key={mode.id} value={mode.id}>
-                                {mode.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </div>
-        </>
+                    {SurveySecurityMode.map((mode) => (
+                        <MenuItem key={mode.id} value={mode.id}>
+                            {mode.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </div>
     );
 }
+
 
 function BackgroundMode({
     backgroundMode: backgroundMode,
