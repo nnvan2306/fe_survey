@@ -40,18 +40,15 @@ const Voice = ({
         return question?.isVoice || false;
     }, [question]);
 
-    const handleChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            handleUpdateQuestion("isVoice", !checked);
-            if (!isPro) {
-                setFormData((prev) => ({ ...prev, securityModeId: 3 }));
-            }
-            if (!checked && !isPro) {
-                toast("Đã cập nhật Chế độ bảo mật thành Pro");
-            }
-        },
-        [checked, handleUpdateQuestion, isPro, setFormData]
-    );
+    const handleChange = useCallback(() => {
+        handleUpdateQuestion("isVoice", !checked);
+        if (!isPro) {
+            setFormData((prev) => ({ ...prev, securityModeId: 3 }));
+        }
+        if (!checked && !isPro) {
+            toast("Đã cập nhật Chế độ bảo mật thành Pro");
+        }
+    }, [checked, handleUpdateQuestion, isPro, setFormData]);
 
     return (
         <div className="">

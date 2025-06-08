@@ -1,72 +1,81 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
-import type { PageProps, SurveyType } from "../../../types/survey";
+import type { SurveyType } from "../../../types/survey";
 import "./styles.scss";
 
-const SharePage = ({ formData, setFormData }: PageProps) => {
-    const [isResizableIframeEnabled, setIsResizableIframeEnabled] = useState(formData.configJsonString.isResizableIframeEnabled || false);
+interface SharePageProps {
+    formData: SurveyType;
+}
 
-    const handleToggleResizableIframe = (checked: boolean) => {
-        setIsResizableIframeEnabled(checked);
-        setFormData((prev) => ({
-            ...prev,
-            configJsonString: {
-                ...prev.configJsonString,
-                isResizableIframeEnabled: checked,
-            },
-        }));
-    };
-
+const SharePage = ({ formData }: SharePageProps) => {
     const getBackgroundMode = (data: SurveyType) => {
-        if (data.background === 'custom' && data.customBackgroundImageUrl) {
-            return 'image';
-        } else if (data.background.startsWith('/assets/start')) {
-            return 'image';
-        } else if (data.background.startsWith('#') || data.background === 'color_gradient') {
-            return 'color';
+        if (data.background === "custom" && data.customBackgroundImageUrl) {
+            return "image";
+        } else if (data.background.startsWith("/assets/start")) {
+            return "image";
+        } else if (
+            data.background.startsWith("#") ||
+            data.background === "color_gradient"
+        ) {
+            return "color";
         }
-        return 'image'; // Default to image mode
+        return "image"; // Default to image mode
     };
 
     const backgroundMode = getBackgroundMode(formData);
     const [isCopyLink, setIsCopyLink] = useState(false);
 
     return (
-        <div className="startpage-root flex" style={{ height: '100vh', overflow: 'hidden' }}>
+        <div
+            className="startpage-root flex"
+            style={{ height: "100vh", overflow: "hidden" }}
+        >
             <div
                 className="relative flex-1 flex items-center justify-center"
                 style={{
-                    ...(backgroundMode === 'image' && {
-                        backgroundImage: `url(${formData.customBackgroundImageUrl || formData.background})`,
+                    ...(backgroundMode === "image" && {
+                        backgroundImage: `url(${formData.customBackgroundImageUrl ||
+                            formData.background
+                            })`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",
-                        filter: `brightness(${formData.configJsonString.brightness / 100})`,
-                        backgroundColor: 'transparent',
+                        filter: `brightness(${formData.configJsonString.brightness / 100
+                            })`,
+                        backgroundColor: "transparent",
                     }),
-                    ...(backgroundMode === 'color' && {
-                        ...(formData.background.startsWith('#') ? {
-                            backgroundColor: formData.background,
-                        } : {
-                            background: `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`,
-                        }),
+                    ...(backgroundMode === "color" && {
+                        ...(formData.background.startsWith("#")
+                            ? {
+                                backgroundColor: formData.background,
+                            }
+                            : {
+                                background: `linear-gradient(to right, ${formData.configJsonString.backgroundGradient1Color}, ${formData.configJsonString.backgroundGradient2Color})`,
+                            }),
                     }),
                 }}
             >
-                <div className="flex flex-col items-center gap-8">
-                    <div className="bg-white p-8 rounded-lg  w-[1200px] shadow-lg">
-                        <h3 className="text-xl font-bold text-center text-gray-800 mb-4"
-                            style={{ color: formData.configJsonString.titleColor || '#000000' }}
+                <div className="flex justify-center">
+                    <div className="bg-white p-5 rounded-lg w-[1200px]">
+                        <h3
+                            className="text-2xl font-semibold mb-4 text-center"
+                            style={{
+                                color:
+                                    formData.configJsonString.titleColor ||
+                                    "#ffffff",
+                            }}
                         >
                             CHIA SẺ KHẢO SÁT CỦA BẠN
                         </h3>
-                        <div className="border-b-2 border-teal-400 w-20 mx-auto mb-6"></div>
-                        <p className="text-center text-gray-600 text-[15px] mb-8">
-                            Sao chép đường dẫn sau và gửi cho bạn bè của bạn hoặc đáp viên
+                        <p className="text-center">
+                            Sao chép đường dẫn sau và gửi cho bạn bè của bạn
+                            hoặc đáp viên
                         </p>
-
-                        <div className="border border-gray-300 rounded-lg p-4">
-                            <p className="text-gray-700 text-[14px] mb-4">
-                                Bạn phải hoàn tất khảo sát để nhận đường dẫn chia sẻ
+                        <hr className="my-4 border-gray-300" />
+                        <div className="text-center">
+                            <p>
+                                Bạn phải hoàn tất khảo sát để nhận đường dẫn
+                                chia sẻ
                             </p>
                             <hr className="my-4 border-gray-300" />
                             <div className="flex justify-end">
@@ -116,26 +125,34 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
             </div>
             <div
                 className="startpage-options w-[420px] bg-white h-full overflow-y-auto shadow-lg p-8"
-                style={{ overflowY: 'auto' }}
+                style={{ overflowY: "auto" }}
             >
                 <div className="config-section">
                     <h3 className="config-title">TẠO ĐƯỜNG LINK RÚT GỌN</h3>
                     <div>
                         <div className="flex items-center justify-between">
-                            <button style={{
-                                backgroundImage: 'linear-gradient(-30deg, rgb(23, 234, 217), rgb(96, 120, 234))',
-                                padding: '5px 10px',
-                                borderRadius: '4px',
-                                color: 'white',
-                                border: 'none',
-                                cursor: 'pointer',
-                            }} onClick={() => {
-                                navigator.clipboard.writeText(`${window.location.origin}/survey/share/${formData.id}`);
-                                setIsCopyLink(true);
-                                setTimeout(() => {
-                                    setIsCopyLink(false);
-                                }, 2000);
-                            }}>{isCopyLink ? 'Đã sao chép' : 'Sao chép'}</button>
+                            <button
+                                style={{
+                                    backgroundImage:
+                                        "linear-gradient(-30deg, rgb(23, 234, 217), rgb(96, 120, 234))",
+                                    padding: "5px 10px",
+                                    borderRadius: "4px",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        `${window.location.origin}/survey/share/${formData.id}`
+                                    );
+                                    setIsCopyLink(true);
+                                    setTimeout(() => {
+                                        setIsCopyLink(false);
+                                    }, 2000);
+                                }}
+                            >
+                                {isCopyLink ? "Đã sao chép" : "Sao chép"}
+                            </button>
                         </div>
                     </div>
                 </div>

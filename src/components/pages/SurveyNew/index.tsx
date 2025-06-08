@@ -1,7 +1,7 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import isEqual from "lodash/isEqual";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
 import { useUpdateSurvey } from "../../../services/survey/update";
@@ -60,36 +60,47 @@ const SurveyNew = () => {
         setActiveTab(tabValue);
     };
 
-    const tabs: {
-        label: string;
-        value: number;
-        component: React.ReactNode;
-        disabled?: boolean;
-    }[] = [
-            {
-                label: "Trang Bắt Đầu",
-                value: 0,
-                component: (
-                    <StartPage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} />
-                ),
-            },
-            {
-                label: "Bảng Hỏi",
-                value: 1,
-                component: (
-                    <QuestionPage formData={formData} setFormData={setFormData} />
-                ),
-            },
-            { label: "Trang Kết Thúc", value: 2, component: <EndPage /> },
-            { label: "Hoàn Tất", value: 3, component: <CompletePage /> },
-            { label: "Chia Sẻ", value: 4, component: <SharePage formData={formData} setFormData={setFormData} handleTabClick={handleTabClick} /> },
-            {
-                label: "Báo cáo",
-                value: 5,
-                component: <ReportPage />,
-                disabled: true,
-            },
-        ];
+    const tabs = [
+        {
+            label: "Trang Bắt Đầu",
+            value: 0,
+            component: (
+                <StartPage
+                    formData={formData}
+                    setFormData={setFormData}
+                    handleTabClick={handleTabClick}
+                />
+            ),
+        },
+        {
+            label: "Bảng Hỏi",
+            value: 1,
+            component: (
+                <QuestionPage formData={formData} setFormData={setFormData} />
+            ),
+        },
+        {
+            label: "Trang Kết Thúc",
+            value: 2,
+            component: <EndPage formData={formData} />,
+        },
+        {
+            label: "Hoàn Tất",
+            value: 3,
+            component: <CompletePage formData={formData} />,
+        },
+        {
+            label: "Chia Sẻ",
+            value: 4,
+            component: <SharePage formData={formData} />,
+        },
+        {
+            label: "Báo cáo",
+            value: 5,
+            component: <ReportPage />,
+            disabled: true,
+        },
+    ];
 
     const ActiveComponent = tabs[activeTab].component;
 
@@ -194,19 +205,19 @@ const SurveyNew = () => {
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
-                                        backgroundColor: "#cccccc",
-                                        color: "#000000",
-                                        "&:hover": {
-                                            backgroundColor: "#bbbbbb",
-                                        },
-                                    }),
+                                    backgroundColor: "#cccccc",
+                                    color: "#000000",
+                                    "&:hover": {
+                                        backgroundColor: "#bbbbbb",
+                                    },
+                                }),
                             }}
                         >
                             {isSaving
                                 ? `Đang lưu ... ${saveCountdown}`
                                 : hasChanges
-                                ? "Đã Lưu"
-                                : "Đã lưu"}
+                                    ? "Đã Lưu"
+                                    : "Đã lưu"}
                         </Button>
                         {/* <Button variant="outlined">Tác vụ khác</Button> */}
                     </div>

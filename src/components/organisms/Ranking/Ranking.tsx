@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { OptionType, QuestionType } from "../../../types/survey";
+/* eslint-enable @typescript-eslint/no-unused-vars */
 import ButtonAddAnswer from "../../molecules/buttons/ButtonAddAnswer";
 import "./styles.scss";
 import { answerDefault } from "../../../constants/question";
@@ -59,6 +61,31 @@ const Ranking = ({ question, handleUpdateQuestion }: Props) => {
                               key={item.order}
                               handleUpdateOption={handleUpdateOption}
                               handleDeleteOption={handleDeleteOption}
+                              isDisableClose={false}
+                              formData={{
+                                  id: 0,
+                                  requesterId: 0,
+                                  title: "",
+                                  description: "",
+                                  surveyTypeId: 0,
+                                  surveyTopicId: 0,
+                                  surveySpecificTopicId: 0,
+                                  surveyStatusId: 0,
+                                  securityModeId: 0,
+                                  background: "",
+                                  configJsonString: {
+                                      backgroundGradient1Color: "",
+                                      backgroundGradient2Color: "",
+                                      titleColor: "",
+                                      contentColor: "",
+                                      buttonBackgroundColor: "",
+                                      buttonContentColor: "",
+                                      password: "",
+                                      brightness: 0,
+                                  },
+                                  questions: [],
+                                  skipStartPage: false,
+                              }}
                           />
                       );
                   })
