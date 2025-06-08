@@ -109,7 +109,18 @@ const Sidebar = ({
                     />
                 </>
             ) : null}
-
+            <SwitchCustomize
+                type="not_back"
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+                label="Không cho quay lại câu trước"
+            />
+            <SwitchCustomize
+                type="view_number_quétion"
+                question={question}
+                handleUpdateQuestion={handleUpdateQuestion}
+                label="Hiện số thứ tự gốc của câu trả lời"
+            />
             <TimeLimit
                 isAdvance={isAdvance}
                 setFormData={setFormData}
