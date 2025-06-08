@@ -34,7 +34,7 @@ export default function LogicComponent({
 
     return (
         <>
-            <div style={styles.modalContainer}>
+            <div style={styles.modalContainer} className="w-full">
                 <div style={styles.header}>
                     <h3 style={styles.title}>KHẢO SÁT RẼ NHÁNH</h3>
                     <button
@@ -44,12 +44,12 @@ export default function LogicComponent({
                         ×
                     </button>
                 </div>
-                <p style={styles.description}>
+                {/* <p style={styles.description}>
                     Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn, hệ
                     thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
                     <strong>2</strong>. Bạn không cần phải đặt điều kiện để nhảy
                     đến câu này.
-                </p>
+                </p> */}
                 <button style={styles.addButton} onClick={handleOpenModal}>
                     Thêm logic
                 </button>
@@ -243,15 +243,20 @@ function ModalLogic({
         <div style={styles.modalOverlay}>
             <div style={styles.modalContent}>
                 <div style={styles.modalHeader}>
-                    <h4 style={styles.modalTitle}>Cài đặt Logic</h4>
+                    <h4 style={styles.modalTitle}>Khảo sát tẻ nhánh</h4>
                     <button style={styles.closeButton} onClick={onClose}>
                         ×
                     </button>
                 </div>
-
+                <div className="px-5">
+                    <p style={styles.description}>
+                        Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn,
+                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
+                        <strong>2</strong>. Bạn không cần phải đặt điều kiện để
+                        nhảy đến câu này.
+                    </p>
+                </div>
                 <div style={styles.conditionContainer}>
-                    <h5 style={styles.sectionTitle}>Điều kiện</h5>
-
                     {conditions.map((condition, index) => {
                         const selectedQuestion = questions.find(
                             (q) =>
@@ -511,7 +516,7 @@ const styles = {
     },
     description: {
         backgroundColor: "#f8f9fa",
-        padding: "15px",
+        padding: "15px 15px 0",
         borderRadius: "6px",
         fontSize: "14px",
         color: "#666",
