@@ -56,7 +56,7 @@ const fetchSurveyData = (): Promise<SurveyType> => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const saveSurveyData = (data: SurveyType): Promise<void> => {
+const saveSurveyData = (_data: SurveyType): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
