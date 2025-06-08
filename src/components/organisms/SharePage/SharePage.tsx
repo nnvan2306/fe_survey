@@ -28,6 +28,7 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
     };
 
     const backgroundMode = getBackgroundMode(formData);
+    const [isCopyLink, setIsCopyLink] = useState(false);
 
     return (
         <div className="startpage-root flex" style={{ height: '100vh', overflow: 'hidden' }}>
@@ -128,23 +129,14 @@ const SharePage = ({ formData, setFormData }: PageProps) => {
                                 color: 'white',
                                 border: 'none',
                                 cursor: 'pointer',
-                            }} >Truy cập trang Quản lí link</button>
+                            }} onClick={() => {
+                                navigator.clipboard.writeText(`${window.location.origin}/survey/share/${formData.id}`);
+                                setIsCopyLink(true);
+                                setTimeout(() => {
+                                    setIsCopyLink(false);
+                                }, 2000);
+                            }}>{isCopyLink ? 'Đã sao chép' : 'Sao chép'}</button>
                         </div>
-                    </div>
-                </div>
-                <div className="config-section">
-                    <h3 className="config-title">RESIZABLE IFRAME</h3>
-                    <div className="flex items-center justify-between">
-                        <span className="text-gray-600">kích hoạt</span>
-                        <label className="toggle-switch">
-                            <input
-                                type="checkbox"
-                                checked={isResizableIframeEnabled}
-                                onChange={(e) => handleToggleResizableIframe(e.target.checked)}
-                                aria-label="Bỏ qua trang bắt đầu"
-                            />
-                            <span className="toggle-slider"></span>
-                        </label>
                     </div>
                 </div>
             </div>

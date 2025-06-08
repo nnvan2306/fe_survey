@@ -56,7 +56,7 @@ const fetchSurveyData = (): Promise<SurveyType> => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const saveSurveyData = (data: SurveyType): Promise<void> => {
+const saveSurveyData = (_data: SurveyType): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
@@ -287,7 +287,8 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${(brightness ? brightness : 100) / 100})`,
+                            filter: `brightness(${(brightness ? brightness : 100) / 100
+                                })`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
@@ -776,7 +777,6 @@ function CustomizePassword({
                     <span className="toggle-slider"></span>
                 </label>
             </div>
-
             {hasPassword && (
                 <button
                     className="customize-button"
@@ -810,14 +810,16 @@ function SecurityMode({
                         }));
                     }}
                 >
-                    {SurveySecurityMode.map((mode) => (
-                        <MenuItem key={mode.id} value={mode.id}>
-                            {mode.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        </div>
+                    {
+                        SurveySecurityMode.map((mode) => (
+                            <MenuItem key={mode.id} value={mode.id}>
+                                {mode.name}
+                            </MenuItem>
+                        ))
+                    }
+                </Select >
+            </FormControl >
+        </div >
     );
 }
 

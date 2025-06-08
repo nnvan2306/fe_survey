@@ -7,3 +7,6 @@ export const MySurvey = lazy(() => import("../components/pages/MySurvey"));
 export const SurveyEdit = lazy(
     () => import("../components/pages/SurveyUpdate")
 );
+export const SurveyShare = lazy(
+    () => import("../components/pages/SurveyShare")
+);

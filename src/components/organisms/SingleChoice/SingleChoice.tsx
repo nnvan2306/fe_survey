@@ -1,11 +1,16 @@
 import { useEffect } from "react";
-import type { OptionType, QuestionType } from "../../../types/survey";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 import ButtonAddAnswer from "../../molecules/buttons/ButtonAddAnswer";
 import "./styles.scss";
 import { answerDefault } from "../../../constants/question";
 import Answer from "../../molecules/answer/Answer";
 
 type Props = {
+    formData: SurveyType;
     question: QuestionType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
@@ -17,7 +22,7 @@ type Props = {
             | Record<string, string | number>
     ) => void;
 };
-const SingleChoice = ({ question, handleUpdateQuestion }: Props) => {
+const SingleChoice = ({ question, handleUpdateQuestion, formData }: Props) => {
     const handleUpdateOption = (updatedOption: OptionType) => {
         const updatedOptions = question.options.map((option) =>
             option.order === updatedOption.order ? updatedOption : option
@@ -57,6 +62,7 @@ const SingleChoice = ({ question, handleUpdateQuestion }: Props) => {
                               isDisableClose={
                                   index === 0 && question?.options?.length === 1
                               }
+                              formData={formData}
                               data={item}
                               key={item.order}
                               handleUpdateOption={handleUpdateOption}

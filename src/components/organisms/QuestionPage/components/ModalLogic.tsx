@@ -252,7 +252,7 @@ function ModalLogic({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div style={styles.modalOverlay}>
             <div className="bg-white rounded-lg w-[90%] max-w-3xl max-h-[90vh] flex flex-col">
                 <div className="p-6 border-b border-gray-200">
                     <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -675,16 +675,26 @@ const styles = {
         width: "100%",
         transition: "background-color 0.3s",
     },
+    addLogicButton: {
+        backgroundColor: "#3b82f6",
+        color: "white",
+        padding: "0.5rem 1rem",
+        borderRadius: "0.375rem",
+        border: "none",
+        cursor: "pointer",
+        fontSize: "0.875rem",
+        fontWeight: 500,
+    },
     modalOverlay: {
         position: "fixed" as const,
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
         zIndex: 1000,
     },
     modalContent: {
@@ -742,16 +752,6 @@ const styles = {
         display: "flex",
         justifyContent: "flex-end",
         gap: "0.75rem",
-    },
-    addButton: {
-        backgroundColor: "#3b82f6",
-        color: "white",
-        padding: "0.5rem 1rem",
-        borderRadius: "0.375rem",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "0.875rem",
-        fontWeight: 500,
     },
     deleteButton: {
         backgroundColor: "#ef4444",

@@ -263,6 +263,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 1:
                     return questionedit ? (
                         <SingleChoice
+                            formData={formData}
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                         />
@@ -318,7 +319,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                     );
             }
         },
-        [handleUpdateQuestion, questionedit]
+        [handleUpdateQuestion, questionedit, formData]
     );
 
     const handleAddQuestion = useCallback(() => {
