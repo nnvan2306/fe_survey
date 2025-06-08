@@ -1,7 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { OptionType, QuestionType } from "../../../../types/survey";
 import type { RangeSliderConfigJsonStringType } from "../../RangeSlider/RangeSlider";
+
+type ConditionType = {
+    id: number;
+    questionOrder: string;
+    conjunction: string | null;
+    operator: string;
+    optionOrder: string;
+    compareValue: string;
+};
+
+type JumpLogicType = {
+    conditions: {
+        questionOrder: number;
+        conjunction: string | null;
+        operator: string;
+        optionOrder?: number;
+        compareValue?: number;
+    }[];
+    targetQuestionOrder: number | "end";
+};
+
+type ConfigJsonStringType = {
+    jumpLogics?: JumpLogicType[];
+    backgroundGradient1Color?: string;
+    backgroundGradient2Color?: string;
+    titleColor?: string;
+    contentColor?: string;
+    buttonBackgroundColor?: string;
+    buttonContentColor?: string;
+    password?: string;
+    brightness?: number;
+    isResizableIframeEnabled?: boolean;
+};
 
 export default function LogicComponent({
     questions,
@@ -68,7 +101,7 @@ function ModalLogic({
 }: {
     onClose: () => void;
     questions: QuestionType[];
-    question: any;
+    question: QuestionType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -81,16 +114,7 @@ function ModalLogic({
             | Record<string, unknown>
     ) => void;
 }) {
-    const [conditions, setConditions] = useState([
-        {
-            id: 1,
-            questionOrder: "",
-            conjunction: null,
-            operator: "Chọn",
-            optionOrder: "",
-            compareValue: "",
-        },
-    ]);
+    const [conditions, setConditions] = useState<ConditionType[]>([]);
     const [targetQuestionOrder, setTargetQuestionOrder] = useState("");
 
     const getOperatorsForQuestion = (questionOrder: string) => {
@@ -233,11 +257,34 @@ function ModalLogic({
         return ["Chọn", "Không Chọn"].includes(operator);
     };
 
+    useEffect(() => {
+        const configJson = question?.configJsonString as ConfigJsonStringType;
+        if (configJson?.jumpLogics?.[0]) {
+            const logic = configJson.jumpLogics[0];
+            const mappedConditions = logic.conditions.map(
+                (condition, index) => ({
+                    id: index + 1,
+                    questionOrder: condition.questionOrder.toString(),
+                    conjunction: condition.conjunction,
+                    operator: condition.operator,
+                    optionOrder: condition.optionOrder?.toString() || "",
+                    compareValue: condition.compareValue?.toString() || "",
+                })
+            );
+            setConditions(mappedConditions);
+            setTargetQuestionOrder(
+                logic.targetQuestionOrder === "end"
+                    ? "end"
+                    : logic.targetQuestionOrder.toString()
+            );
+        }
+    }, [question]);
+
     return (
-        <div style={styles.modalOverlay}>
+        <div style={styles.modalOverlay as React.CSSProperties}>
             <div style={styles.modalContent}>
                 <div style={styles.modalHeader}>
-                    <h4 style={styles.modalTitle}>Khảo sát tẻ nhánh</h4>
+                    <h4 style={styles.modalTitle}>Khảo sát rẽ nhánh</h4>
                     <button style={styles.closeButton} onClick={onClose}>
                         ×
                     </button>
@@ -245,17 +292,12 @@ function ModalLogic({
                 <div className="px-5">
                     <p style={styles.description}>
                         Lưu ý: Nếu không có trả lời nào thỏa điều kiện của bạn,
-                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo{" "}
-                        <strong>2</strong>. Bạn không cần phải đặt điều kiện để
-                        nhảy đến câu này.
+                        hệ thống sẽ tự động chuyển sang câu hỏi tiếp theo. Bạn
+                        không cần phải đặt điều kiện để nhảy đến câu này.
                     </p>
                 </div>
                 <div style={styles.conditionContainer}>
                     {conditions.map((condition, index) => {
-                        const selectedQuestion = questions.find(
-                            (q) =>
-                                q.order.toString() === condition.questionOrder
-                        );
                         const availableOptions = getOptionsForQuestion(
                             condition.questionOrder
                         );
@@ -264,8 +306,13 @@ function ModalLogic({
                         );
 
                         return (
-                            <div key={condition.id} style={styles.conditionRow}>
-                                {/* Conjunction */}
+                            <div
+                                key={condition.id}
+                                style={
+                                    styles.conditionRow as React.CSSProperties
+                                }
+                                className="hover:bg-gray-50 transition-colors"
+                            >
                                 {index > 0 && (
                                     <select
                                         style={{
@@ -280,6 +327,7 @@ function ModalLogic({
                                                 e.target.value
                                             )
                                         }
+                                        className="hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     >
                                         <option value="Và">Và</option>
                                         <option value="Hoặc">Hoặc</option>
@@ -291,6 +339,7 @@ function ModalLogic({
                                             ...styles.label,
                                             minWidth: "80px",
                                         }}
+                                        className="font-semibold text-gray-700"
                                     >
                                         NẾU
                                     </span>
@@ -307,6 +356,7 @@ function ModalLogic({
                                             e.target.value
                                         )
                                     }
+                                    className="hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">CHỌN CÂU HỎI</option>
                                     {questions
@@ -316,19 +366,18 @@ function ModalLogic({
                                                 item?.questionTypeId === 2 ||
                                                 item?.questionTypeId === 6
                                         )
-                                        ?.map((question) => (
+                                        ?.map((q) => (
                                             <option
-                                                key={question.order}
-                                                value={question.order.toString()}
+                                                key={q.order}
+                                                value={q.order.toString()}
                                             >
-                                                Câu hỏi {question.order}
-                                                {question.content &&
-                                                    ` - ${question.content.substring(
+                                                Câu hỏi {q.order}
+                                                {q.content &&
+                                                    ` - ${q.content.substring(
                                                         0,
                                                         30
                                                     )}${
-                                                        question.content
-                                                            .length > 30
+                                                        q.content.length > 30
                                                             ? "..."
                                                             : ""
                                                     }`}
@@ -425,50 +474,59 @@ function ModalLogic({
                     <button
                         style={styles.addConditionButton}
                         onClick={handleAddCondition}
+                        className="hover:bg-blue-50 transition-colors"
                     >
                         + Thêm điều kiện
                     </button>
                 </div>
 
-                <div style={styles.jumpToContainer}>
+                <div style={styles.jumpToContainer} className="bg-gray-50">
                     <div style={styles.jumpToHeader}>
-                        <span style={styles.label}>Nhảy tới</span>
+                        <span
+                            style={styles.label}
+                            className="font-semibold text-gray-700"
+                        >
+                            Nhảy tới
+                        </span>
                         <select
                             style={styles.jumpToDropdown}
                             value={targetQuestionOrder}
                             onChange={(e) =>
                                 setTargetQuestionOrder(e.target.value)
                             }
+                            className="hover:border-blue-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         >
                             <option value="">Chọn câu hỏi đích</option>
-                            {questions.map((question) => (
+                            {questions.map((q) => (
                                 <option
-                                    key={question.order}
-                                    value={question.order.toString()}
+                                    key={q.order}
+                                    value={q.order.toString()}
                                 >
-                                    Câu hỏi {question.order}
-                                    {question.content &&
-                                        ` - ${question.content.substring(
-                                            0,
-                                            50
-                                        )}${
-                                            question.content.length > 50
-                                                ? "..."
-                                                : ""
+                                    Câu hỏi {q.order}
+                                    {q.content &&
+                                        ` - ${q.content.substring(0, 50)}${
+                                            q.content.length > 50 ? "..." : ""
                                         }`}
                                 </option>
                             ))}
                             <option value="end">Kết thúc khảo sát</option>
                         </select>
                     </div>
-                    <div style={styles.jumpToBar}></div>
                 </div>
 
                 <div style={styles.modalActions}>
-                    <button style={styles.cancelButton} onClick={onClose}>
+                    <button
+                        style={styles.cancelButton}
+                        onClick={onClose}
+                        className="hover:bg-gray-100 transition-colors"
+                    >
                         Hủy
                     </button>
-                    <button style={styles.saveButton} onClick={handleSaveLogic}>
+                    <button
+                        style={styles.saveButton}
+                        onClick={handleSaveLogic}
+                        className="hover:bg-green-600 transition-colors"
+                    >
                         Lưu logic
                     </button>
                 </div>
@@ -539,7 +597,7 @@ const styles = {
         transition: "background-color 0.3s",
     },
     modalOverlay: {
-        position: "fixed",
+        position: "fixed" as const,
         top: 0,
         left: 0,
         right: 0,
@@ -592,7 +650,7 @@ const styles = {
         backgroundColor: "#f8f9fa",
         borderRadius: "6px",
         border: "1px solid #e9ecef",
-        flexWrap: "wrap",
+        flexWrap: "wrap" as const,
     },
     label: {
         fontSize: "14px",
