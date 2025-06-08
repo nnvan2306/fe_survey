@@ -1,39 +1,40 @@
 .startpage-root {
   font-family: inherit;
+  max-height : 100%;
 }
 
 .startpage-bg-image {
-  background-size: cover;
+  background-size    : cover;
   background-position: center;
-  position: relative;
+  position           : relative;
 }
 
 .startpage-overlay {
   background: rgba(0, 0, 0, 0.45);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
+  width     : 100%;
+  height    : 100%;
+  position  : absolute;
+  top       : 0;
+  left      : 0;
+  z-index   : 1;
 }
 
 .startpage-content {
-  border-radius: 8px;
-  padding: 2.5rem 2rem 2rem 2rem;
-  margin: 0 auto;
+  border-radius  : 8px;
+  padding        : 2.5rem 2rem 2rem 2rem;
+  margin         : 0 auto;
   //   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  max-width: 700px;
+  max-width      : 700px;
 }
 
 .startpage-title-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 3rem;
-  font-weight: 300;
-  text-align: center;
+  width        : 100%;
+  background   : transparent;
+  border       : none;
+  outline      : none;
+  font-size    : 3rem;
+  font-weight  : 300;
+  text-align   : center;
   margin-bottom: 1.5rem;
 
   &:hover {
@@ -46,15 +47,15 @@
 }
 
 .startpage-desc-input {
-  padding: 8px 0;
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 1.25rem;
-  text-align: center;
+  padding      : 8px 0;
+  width        : 100%;
+  background   : transparent;
+  border       : none;
+  outline      : none;
+  font-size    : 1.25rem;
+  text-align   : center;
   margin-bottom: 2.5rem;
-  resize: none;
+  resize       : none;
 
   &:hover {
     background-color: rgb(249 249 249);
@@ -66,86 +67,86 @@
 }
 
 .startpage-btn {
-  background: #156e8a;
-  color: #fff;
-  font-size: 1.25rem;
-  border-radius: 2rem;
-  padding: 0.35rem 1rem;
-  font-weight: 500;
-  transition: background 0.2s;
-  border: none;
-  outline: none;
-  display: flex;
-  align-items: center;
+  background     : #156e8a;
+  color          : #fff;
+  font-size      : 1.25rem;
+  border-radius  : 2rem;
+  padding        : 0.35rem 1rem;
+  font-weight    : 500;
+  transition     : background 0.2s;
+  border         : none;
+  outline        : none;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  margin: 0 auto;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  margin         : 0 auto;
+  cursor         : pointer;
+  transition     : all 0.2s ease-in-out;
 }
 
 .startpage-btn:hover {
-  transform: translateY(-5px);
+  transform : translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.1);
+  transform : scale(1.1);
 }
 
 .startpage-icon-wrapper {
   background-color: #00000033;
-  padding: 8px 8px 8px 8px;
-  border-radius: 50%;
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding         : 8px 8px 8px 8px;
+  border-radius   : 50%;
+  margin-left     : 10px;
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
 }
 
 .startpage-options {
-  padding-bottom: 100px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
-  border-left: 1px solid #f0f0f0;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  padding-bottom    : 100px;
+  box-shadow        : 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+  border-left       : 1px solid #f0f0f0;
+  // scrollbar-width   : none;
+  // -ms-overflow-style: none;
 }
 
-.startpage-options::-webkit-scrollbar {
-  display: none;
-}
+// .startpage-options::-webkit-scrollbar {
+//   display: none;
+// }
 
 .config-section {
   margin-bottom: 2rem;
 }
 
 .config-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 0.5rem;
+  font-size     : 0.95rem;
+  font-weight   : 700;
+  color         : #222;
+  margin-bottom : 0.5rem;
   letter-spacing: 0.02em;
 }
 
 .toggle-switch {
   position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
+  display : inline-block;
+  width   : 40px;
+  height  : 22px;
 }
 
 .toggle-switch input {
   opacity: 0;
-  width: 0;
-  height: 0;
+  width  : 0;
+  height : 0;
 }
 
 .toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position        : absolute;
+  cursor          : pointer;
+  top             : 0;
+  left            : 0;
+  right           : 0;
+  bottom          : 0;
   background-color: #ccc;
-  border-radius: 22px;
-  transition: 0.2s;
+  border-radius   : 22px;
+  transition      : 0.2s;
 }
 
 .toggle-switch input:checked+.toggle-slider {
@@ -153,15 +154,15 @@
 }
 
 .toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 2px;
-  bottom: 2px;
+  position        : absolute;
+  content         : "";
+  height          : 18px;
+  width           : 18px;
+  left            : 2px;
+  bottom          : 2px;
   background-color: white;
-  border-radius: 50%;
-  transition: 0.2s;
+  border-radius   : 50%;
+  transition      : 0.2s;
 }
 
 .toggle-switch input:checked+.toggle-slider:before {
@@ -170,15 +171,15 @@
 
 .buy-now-button {
   background-color: #26ba99;
-  color: white;
-  border: 1px solid transparent;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 1.5rem;
-  padding: 0.5rem 1.5rem;
-  font-weight: 500;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
+  color           : white;
+  border          : 1px solid transparent;
+  box-shadow      : 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border-radius   : 1.5rem;
+  padding         : 0.5rem 1.5rem;
+  font-weight     : 500;
+  font-size       : 1rem;
+  cursor          : pointer;
+  transition      : background 0.2s;
 }
 
 .buy-now-button:hover {
@@ -186,19 +187,19 @@
 }
 
 .customize-button {
-  background: linear-gradient(to right, #4fd1c5, #2d9a8c);
-  color: #fff;
-  border: none;
+  background   : linear-gradient(to right, #4fd1c5, #2d9a8c);
+  color        : #fff;
+  border       : none;
   border-radius: 0.5rem;
-  padding: 0.35rem 1rem;
-  font-weight: 500;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  transition: opacity 0.2s ease-in-out;
+  padding      : 0.35rem 1rem;
+  font-weight  : 500;
+  font-size    : 1rem;
+  cursor       : pointer;
+  display      : flex;
+  align-items  : center;
+  gap          : 0.5rem;
+  margin-top   : 1rem;
+  transition   : opacity 0.2s ease-in-out;
 
   &:hover {
     opacity: 0.9;
@@ -206,23 +207,23 @@
 }
 
 .date-picker-button {
-  background: #f5f5f5;
-  color: #222;
-  border: none;
+  background   : #f5f5f5;
+  color        : #222;
+  border       : none;
   border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  padding      : 0.75rem 1.5rem;
+  font-size    : 1rem;
+  font-weight  : 500;
+  cursor       : pointer;
+  display      : flex;
+  align-items  : center;
+  gap          : 0.5rem;
 }
 
 .date-picker-button.date-selected {
   background-color: #f44336;
   /* Red background */
-  color: #fff;
+  color           : #fff;
   /* White text */
 
   .MuiSvgIcon-root {
@@ -233,7 +234,7 @@
 
 .clear-icon {
   margin-left: 10px;
-  cursor: pointer;
+  cursor     : pointer;
 
   &:hover {
     color: #f44336;
@@ -242,26 +243,26 @@
 }
 
 .background-preview {
-  display: flex;
+  display       : flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items   : flex-start;
 }
 
 .background-main-preview {
-  position: relative;
-  width: 100%;
-  height: 80px;
-  border-radius: 8px;
-  cursor: pointer;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
+  position       : relative;
+  width          : 100%;
+  height         : 80px;
+  border-radius  : 8px;
+  cursor         : pointer;
+  overflow       : hidden;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  margin-bottom: 1rem;
-  transition: all 0.2s ease-in-out;
+  margin-bottom  : 1rem;
+  transition     : all 0.2s ease-in-out;
 
   &:hover {
-    transform: translateY(-3px);
+    transform : translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
@@ -270,14 +271,14 @@
   }
 
   .main-check-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: white;
+    position        : absolute;
+    top             : 10px;
+    right           : 10px;
+    color           : white;
     background-color: grey; // Default grey background for inactive state
-    border-radius: 50%;
-    padding: 5px;
-    transition: background-color 0.2s ease-in-out;
+    border-radius   : 50%;
+    padding         : 5px;
+    transition      : background-color 0.2s ease-in-out;
 
     &.MuiSvgIcon-root {
       font-size: 2rem;
@@ -290,29 +291,29 @@
 }
 
 .background-thumbnail {
-  width: 100%;
+  width        : 100%;
   border-radius: 0.5rem;
-  overflow: hidden;
-  position: relative;
+  overflow     : hidden;
+  position     : relative;
   margin-bottom: 0.5rem;
 
   img {
-    width: 60px;
+    width : 60px;
     height: 40px;
   }
 }
 
 .background-thumbnail-item {
-  position: relative;
-  cursor: pointer;
+  position     : relative;
+  cursor       : pointer;
   border-radius: 0.25rem;
-  overflow: hidden;
-  border: 2px solid transparent;
+  overflow     : hidden;
+  border       : 2px solid transparent;
   /* Default border */
 
   img {
-    width: 100%;
-    height: auto;
+    width  : 100%;
+    height : auto;
     display: block;
   }
 
@@ -322,27 +323,27 @@
   }
 
   .check-icon {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    color: #4fd1c5;
+    position        : absolute;
+    bottom          : 5px;
+    right           : 5px;
+    color           : #4fd1c5;
     /* Green color for check icon */
     background-color: white;
-    border-radius: 50%;
+    border-radius   : 50%;
   }
 }
 
 .upload-icon-container {
-  cursor: pointer;
-  padding: 15px;
-  border: 1px dashed #ccc;
-  border-radius: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  cursor         : pointer;
+  padding        : 15px;
+  border         : 1px dashed #ccc;
+  border-radius  : 0.5rem;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
   justify-content: center;
-  width: 100%;
-  margin-top: 1rem;
+  width          : 100%;
+  margin-top     : 1rem;
 
   &:hover {
     background-color: #f0f0f0;
@@ -351,59 +352,59 @@
   .upload-icon {
     font-size: 2.5rem !important;
     /* Larger icon */
-    color: #666;
+    color    : #666;
   }
 
   .click-to-change-text {
-    font-size: 0.9rem;
-    color: #666;
+    font-size : 0.9rem;
+    color     : #666;
     margin-top: 5px;
   }
 }
 
 .background-check-button {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: #4fd1c5;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
+  position       : absolute;
+  bottom         : 8px;
+  right          : 8px;
+  background     : #4fd1c5;
+  color          : #fff;
+  border         : none;
+  border-radius  : 50%;
+  width          : 32px;
+  height         : 32px;
+  display        : flex;
+  align-items    : center;
   justify-content: center;
-  font-size: 1.25rem;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size      : 1.25rem;
+  cursor         : pointer;
+  box-shadow     : 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .color-picker-container {
-  width: 100%;
-  display: flex;
+  width          : 100%;
+  display        : flex;
   justify-content: center;
 }
 
 .security-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position        : fixed;
+  top             : 0;
+  left            : 0;
+  right           : 0;
+  bottom          : 0;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 50;
+  display         : flex;
+  justify-content : center;
+  align-items     : center;
+  z-index         : 50;
 }
 
 .security-modal-content {
   background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  max-width: 448px;
+  border-radius   : 0.5rem;
+  box-shadow      : 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width           : 100%;
+  max-width       : 448px;
   /* max-w-md is 28rem = 448px */
-  position: relative;
+  position        : relative;
 }

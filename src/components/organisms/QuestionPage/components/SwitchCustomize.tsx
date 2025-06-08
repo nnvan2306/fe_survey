@@ -82,6 +82,7 @@ export default function SwitchCustomize({
 
     return (
         <div
+            className="mb-2"
             style={{
                 border: `${isMinMax ? "1px solid #ccc" : ""}`,
                 borderRadius: 10,
@@ -102,7 +103,7 @@ export default function SwitchCustomize({
                     sx={{
                         fontWeight: 600,
                         color: "#000",
-                        fontSize: "12px",
+                        fontSize: "14px",
                     }}
                 >
                     {label}

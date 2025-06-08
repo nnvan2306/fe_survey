@@ -9,15 +9,28 @@ export type SlideType = {
     step: number;
     unit: string;
 };
+
+export type JumpLogicsType = {
+    conditions: {
+        questionOrder: number;
+        conjunction: string;
+        operator: string;
+        compareValue: number;
+    }[];
+    targetQuestionOrder: number;
+};
 export type QuestionType = {
     image_header?: string;
     questionTypeId: number;
     content: string;
     description: string;
     timeLimit: number;
-    isVoiced: boolean;
+    isVoice: boolean;
     order: number;
-    configJsonString: Record<string, string | number | SlideType[]>;
+    configJsonString: Record<
+        string,
+        string | number | SlideType[] | JumpLogicsType[]
+    >;
     options: OptionType[];
 };
 
