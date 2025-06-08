@@ -125,8 +125,8 @@ function ModalLogic({
 
         const baseOperators = ["Chọn", "Không Chọn"];
 
-        if (question.questionTypeId === 2 || question.questionTypeId === 3) {
-            return [...baseOperators, "=", "≠", ">", "≥", "<", "≤"];
+        if (question.questionTypeId === 6) {
+            return ["=", "≠", ">", "≥", "<", "≤"];
         }
 
         return baseOperators;
@@ -164,7 +164,7 @@ function ModalLogic({
                           [field]: value,
                           // Reset dependent fields when question changes
                           ...(field === "questionOrder" && {
-                              operator: "Chọn",
+                              operator: "",
                               optionOrder: "",
                               compareValue: "",
                           }),
@@ -398,6 +398,7 @@ function ModalLogic({
                                     }
                                     disabled={!condition.questionOrder}
                                 >
+                                    <option value="">Chọn diều kiện</option>
                                     {availableOperators.map((op) => (
                                         <option key={op} value={op}>
                                             {op}
