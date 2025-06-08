@@ -13,7 +13,7 @@ interface SwitchCustomizeProps {
     label: React.ReactNode;
     question: any;
     formData: SurveyType;
-    isAdvance: boolean;
+    isPro: boolean;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleUpdateQuestion: (
         key: keyof QuestionType,
@@ -30,7 +30,7 @@ interface SwitchCustomizeProps {
 
 const Voice = ({
     label,
-    isAdvance,
+    isPro,
     question,
     formData,
     setFormData,
@@ -44,10 +44,10 @@ const Voice = ({
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             handleUpdateQuestion("isVoice", !checked);
-            if (!isAdvance) {
-                setFormData((prev) => ({ ...prev, securityModeId: 2 }));
+            if (!isPro) {
+                setFormData((prev) => ({ ...prev, securityModeId: 3 }));
             }
-            if (!checked && formData?.securityModeId !== 2) {
+            if (!checked && formData?.securityModeId !== 3) {
                 toast("Đã cập nhật Chế độ bảo mật thành Advance");
             }
         },
@@ -55,7 +55,7 @@ const Voice = ({
             checked,
             formData?.securityModeId,
             handleUpdateQuestion,
-            isAdvance,
+            isPro,
             setFormData,
         ]
     );

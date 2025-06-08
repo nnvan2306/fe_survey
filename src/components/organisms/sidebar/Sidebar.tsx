@@ -85,7 +85,7 @@ const Sidebar = ({
 
             <Voice
                 label="Sử dụng Voice"
-                isAdvance={isAdvance}
+                isPro={isPro}
                 formData={formData}
                 setFormData={setFormData}
                 question={question}
