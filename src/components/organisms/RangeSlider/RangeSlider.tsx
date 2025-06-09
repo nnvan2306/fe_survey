@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import type { OptionType, QuestionType } from "../../../types/survey";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 import "./styles.scss";
 import { Box, Slider, TextField, Typography } from "@mui/material";
 
@@ -14,6 +18,7 @@ export type RangeSliderConfigJsonStringType = SliderDataType;
 
 type Props = {
     question: QuestionType;
+    formData: SurveyType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -33,7 +38,7 @@ const defaultData: SliderDataType = {
     unit: "",
 };
 
-const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
+const RangeSlider = ({ question, handleUpdateQuestion, formData }: Props) => {
     const [value, setValue] = useState<number[]>([
         defaultData.min,
         defaultData.max,
@@ -117,8 +122,14 @@ const RangeSlider = ({ question, handleUpdateQuestion }: Props) => {
                         step={currentData.step}
                         sx={{
                             "& .MuiSlider-thumb": {
-                                width: 24,
-                                height: 24,
+                                backgroundColor: formData?.configJsonString
+                                    ?.buttonBackgroundColor
+                                    ? formData?.configJsonString
+                                          ?.buttonBackgroundColor
+                                    : "#000",
+                                borderRadius: 0,
+                                width: 26,
+                                height: 26,
                                 "&:focus, &:hover, &.Mui-active": {
                                     boxShadow: "inherit",
                                 },
