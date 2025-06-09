@@ -117,7 +117,7 @@ export default function SwitchCustomize({
                         onChange={handleChangeInputMin}
                         placeholder="Chọn ít nhất câu trả lời"
                         style={{
-                            height: 20,
+                            height: 32,
                             fontSize: 12,
                             border: "1px solid #ccc",
                             borderRadius: 6,
@@ -143,7 +143,7 @@ export default function SwitchCustomize({
                         min={"0"}
                         placeholder="Chọn nhiều nhất câu trả lời"
                         style={{
-                            height: 20,
+                            height: 32,
                             fontSize: 12,
                             border: "1px solid #ccc",
                             borderRadius: 6,
