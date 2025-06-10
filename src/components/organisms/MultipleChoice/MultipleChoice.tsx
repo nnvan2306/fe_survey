@@ -67,6 +67,7 @@ const MultipleChoice = ({ question, handleUpdateQuestion }: Props) => {
                                   requesterId: 0,
                                   title: "",
                                   description: "",
+                                  marketSurveyVersionStatusId: 1,
                                   surveyTypeId: 0,
                                   surveyTopicId: 0,
                                   surveySpecificTopicId: 0,

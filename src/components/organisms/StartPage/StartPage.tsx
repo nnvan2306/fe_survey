@@ -24,6 +24,7 @@ const backgrounds = Array.from(
 const mockSurveyData: SurveyType = {
     id: 1,
     requesterId: 1,
+    marketSurveyVersionStatusId: 1,
     surveyTypeId: 1,
     surveyTopicId: 0,
     surveySpecificTopicId: 0,

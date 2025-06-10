@@ -14,6 +14,7 @@ import SharePage from "../../organisms/SharePage/SharePage";
 import StartPage from "../../organisms/StartPage/StartPage";
 import MainTemPlate from "../../templates/MainTemPlate";
 import Swal from "sweetalert2";
+import type { SweetAlertResult } from "sweetalert2";
 import { useParams } from "react-router-dom";
 import { useGetSurvey } from "../../../services/survey/get";
 import "./styles.scss";
@@ -135,7 +136,7 @@ const SurveyNew = () => {
             title: "Bạn muốn lưu các thay đổi?",
             showCancelButton: true,
             confirmButtonText: "Save",
-        }).then((result) => {
+        }).then((result: SweetAlertResult) => {
             if (result.isConfirmed) {
                 mutate({ ...latestDataRef.current, type: "update" });
             }
