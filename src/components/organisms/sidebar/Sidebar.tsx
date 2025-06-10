@@ -95,7 +95,7 @@ const Sidebar = ({
                     return Item.children;
                 })}
 
-            {(!isBasic && formData?.surveyTypeId !== 3) ? (
+            {isBasic || formData?.surveyStatusId === 3 ? null : (
                 <>
                     <LogicComponent
                         questions={formData?.questions || []}
@@ -108,7 +108,7 @@ const Sidebar = ({
                         handleUpdateQuestion={handleUpdateQuestion}
                     />
                 </>
-            ) : null}
+            )}
             <SwitchCustomize
                 type="not_back"
                 question={question}

@@ -57,9 +57,10 @@ const SurveyNew = () => {
     const countdownRef = useRef<number | null>(null);
 
     const isTrigger = useMemo(() => {
-        if (formData?.marketSurveyVersionStatusId === 1) {
-            return true;
-        } else if (formData?.surveyStatusId === 2) {
+        // if (formData?.marketSurveyVersionStatusId === 1) {
+        //     return true;
+        // } else
+        if (formData?.surveyStatusId === 2) {
             return false;
         }
         return true;
