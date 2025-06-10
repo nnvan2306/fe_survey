@@ -54,7 +54,7 @@ export type SurveyType = {
         contentColor: string;
         buttonBackgroundColor: string;
         buttonContentColor: string;
-        password: string;
+        password: string | null;
         brightness: number;
         isResizableIframeEnabled?: boolean;
     };

@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MenuItem, Select } from "@mui/material";
+import { useMemo } from "react";
+import { SurveyQuestionType } from "../../../constants/question";
 import type {
     OptionType,
     QuestionType,
     SurveyType,
 } from "../../../types/survey";
-import { SurveyQuestionType } from "../../../constants/question";
-import LogicComponent from "../QuestionPage/components/ModalLogic";
-import LogicComponentDisplay from "../QuestionPage/components/ModalLogicDisplay";
-import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
-import { useMemo } from "react";
-import SwitchCustomize from "../QuestionPage/components/SwitchCustomize";
 import TimeLimit from "../../molecules/time-limit/TimeLimit";
 import Voice from "../../molecules/voice/Voice";
+import LogicComponent from "../QuestionPage/components/ModalLogic";
+import LogicComponentDisplay from "../QuestionPage/components/ModalLogicDisplay";
+import SwitchCustomize from "../QuestionPage/components/SwitchCustomize";
+import type { RangeSliderConfigJsonStringType } from "../RangeSlider/RangeSlider";
 
 const Sidebar = ({
     question,
@@ -95,7 +95,7 @@ const Sidebar = ({
                     return Item.children;
                 })}
 
-            {!isBasic ? (
+            {(!isBasic && formData?.surveyTypeId !== 3) ? (
                 <>
                     <LogicComponent
                         questions={formData?.questions || []}
