@@ -63,6 +63,7 @@ export type SurveyType = {
 };
 
 export interface PageProps {
+    isDisable: boolean;
     formData: SurveyType;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleTabClick: (tabValue: number) => void;

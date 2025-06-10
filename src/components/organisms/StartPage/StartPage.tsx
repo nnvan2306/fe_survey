@@ -15,6 +15,7 @@ import type { PageProps, SurveyType } from "../../../types/survey";
 import ColorPickerModal from "./Components/ColorPickerModal";
 import SecurityModal from "./Components/SecurityModal";
 import "./styles.scss";
+import OverlayDisable from "../../molecules/overlay-disable/OverlayDisable";
 
 const backgrounds = Array.from(
     { length: 11 },
@@ -65,7 +66,12 @@ const saveSurveyData = (_data: SurveyType): Promise<void> => {
     });
 };
 
-const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
+const StartPage = ({
+    formData,
+    setFormData,
+    handleTabClick,
+    isDisable,
+}: PageProps) => {
     const handleInputChange = (
         field: keyof SurveyType,
         value: string | boolean
@@ -264,6 +270,7 @@ const StartPage = ({ formData, setFormData, handleTabClick }: PageProps) => {
             className="startpage-root flex"
             style={{ height: "100vh", overflow: "hidden" }}
         >
+            {isDisable ? <OverlayDisable /> : null}
             <div
                 className="relative flex-1 flex items-center justify-center"
                 style={{

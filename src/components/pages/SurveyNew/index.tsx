@@ -56,15 +56,11 @@ const SurveyNew = () => {
     const timeoutRef = useRef<number | null>(null);
     const countdownRef = useRef<number | null>(null);
 
-    const isTrigger = useMemo(() => {
-        // if (formData?.marketSurveyVersionStatusId === 1) {
-        //     return true;
-        // } else
-        if (formData?.surveyStatusId === 2) {
-            return false;
-        }
-        return true;
-    }, [formData]);
+    const isTrigger = useMemo(() => formData?.surveyStatusId !== 2, [formData]);
+    const isDisable = useMemo(
+        () => formData?.marketSurveyVersionStatusId !== 1,
+        [formData]
+    );
 
     const { data } = useGetSurvey({ id: Number(id) || 0 });
 
@@ -81,6 +77,7 @@ const SurveyNew = () => {
                     formData={formData}
                     setFormData={setFormData}
                     handleTabClick={handleTabClick}
+                    isDisable={isDisable}
                 />
             ),
         },
