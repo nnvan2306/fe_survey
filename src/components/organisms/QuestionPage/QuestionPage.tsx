@@ -101,7 +101,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             <SwitchCustomize
                                 type="is_choose_muitiple"
                                 question={questionedit}
-                                // isMinMax
+                                isMinMax
                                 handleUpdateQuestion={handleUpdateQuestion}
                                 label="Chọn nhiều trả lời"
                             />
@@ -278,6 +278,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 3:
                     return questionedit ? (
                         <SingleSlider
+                            formData={formData}
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                         />
@@ -285,6 +286,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                 case 4:
                     return questionedit ? (
                         <RangeSlider
+                            formData={formData}
                             question={questionedit}
                             handleUpdateQuestion={handleUpdateQuestion}
                         />

@@ -4,10 +4,15 @@ import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import type { OptionType, QuestionType } from "../../../types/survey";
+import type {
+    OptionType,
+    QuestionType,
+    SurveyType,
+} from "../../../types/survey";
 
 type Props = {
     question: QuestionType;
+    formData: SurveyType;
     handleUpdateQuestion: (
         key: keyof QuestionType,
         value:
@@ -19,7 +24,7 @@ type Props = {
     ) => void;
 };
 
-const SingleSlider = ({ question, handleUpdateQuestion }: Props) => {
+const SingleSlider = ({ question, handleUpdateQuestion, formData }: Props) => {
     const [value, setValue] = useState(
         Number(question?.configJsonString?.max) || 10
     );
@@ -131,8 +136,14 @@ const SingleSlider = ({ question, handleUpdateQuestion }: Props) => {
                     step={step}
                     sx={{
                         "& .MuiSlider-thumb": {
-                            width: 24,
-                            height: 24,
+                            backgroundColor: formData?.configJsonString
+                                ?.buttonBackgroundColor
+                                ? formData?.configJsonString
+                                      ?.buttonBackgroundColor
+                                : "#000",
+                            borderRadius: 0,
+                            width: 26,
+                            height: 26,
                             "&:focus, &:hover, &.Mui-active": {
                                 boxShadow: "inherit",
                             },
