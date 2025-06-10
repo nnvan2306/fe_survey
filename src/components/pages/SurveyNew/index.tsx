@@ -1,7 +1,7 @@
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import isEqual from "lodash/isEqual";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
 import { useUpdateSurvey } from "../../../services/survey/update";
@@ -13,7 +13,7 @@ import ReportPage from "../../organisms/ReportPage/ReportPage";
 import SharePage from "../../organisms/SharePage/SharePage";
 import StartPage from "../../organisms/StartPage/StartPage";
 import MainTemPlate from "../../templates/MainTemPlate";
-
+import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 import { useGetSurvey } from "../../../services/survey/get";
 import "./styles.scss";
@@ -23,7 +23,8 @@ const defaultValue = {
     requesterId: 10,
     title: "",
     description: "",
-    surveyTypeId: 1,
+    marketSurveyVersionStatusId: 1,
+    surveyTypeId: 2,
     surveyTopicId: 2,
     surveySpecificTopicId: 5,
     surveyStatusId: 1,
@@ -53,6 +54,15 @@ const SurveyNew = () => {
     const latestDataRef = useRef(formData);
     const timeoutRef = useRef<number | null>(null);
     const countdownRef = useRef<number | null>(null);
+
+    const isTrigger = useMemo(() => {
+        if (formData?.marketSurveyVersionStatusId === 1) {
+            return true;
+        } else if (formData?.surveyStatusId === 2) {
+            return false;
+        }
+        return true;
+    }, [formData]);
 
     const { data } = useGetSurvey({ id: Number(id) || 0 });
 
@@ -119,6 +129,18 @@ const SurveyNew = () => {
             },
         },
     });
+
+    const handleConfirm = () => {
+        Swal.fire({
+            title: "Bạn muốn lưu các thay đổi?",
+            showCancelButton: true,
+            confirmButtonText: "Save",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                mutate({ ...latestDataRef.current, type: "update" });
+            }
+        });
+    };
 
     const handleSave = () => {
         setIsSaving(true);
@@ -202,6 +224,7 @@ const SurveyNew = () => {
                         <Button
                             variant="text"
                             className="btn-save"
+                            onClick={() => (isTrigger ? null : handleConfirm())}
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
@@ -213,13 +236,14 @@ const SurveyNew = () => {
                                     }),
                             }}
                         >
-                            {isSaving
-                                ? `Đang lưu ... ${saveCountdown}`
-                                : hasChanges
-                                ? "Đã Lưu"
-                                : "Đã lưu"}
+                            {isTrigger
+                                ? isSaving
+                                    ? `Đang lưu ... ${saveCountdown}`
+                                    : hasChanges
+                                    ? "Đã Lưu"
+                                    : "Đã lưu"
+                                : "Lưu"}
                         </Button>
-                        {/* <Button variant="outlined">Tác vụ khác</Button> */}
                     </div>
                 </div>
                 <div
