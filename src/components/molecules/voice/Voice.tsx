@@ -9,6 +9,7 @@ import type {
 import type { RangeSliderConfigJsonStringType } from "../../organisms/RangeSlider/RangeSlider";
 import { useCallback, useMemo } from "react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 interface SwitchCustomizeProps {
     label: React.ReactNode;
@@ -41,13 +42,23 @@ const Voice = ({
     }, [question]);
 
     const handleChange = useCallback(() => {
-        handleUpdateQuestion("isVoice", !checked);
-        if (!isPro) {
-            setFormData((prev) => ({ ...prev, securityModeId: 3 }));
-        }
-        if (!checked && !isPro) {
-            toast("Đã cập nhật Chế độ bảo mật thành Pro");
-        }
+        Swal.fire({
+            title: checked
+                ? "Bạn muốn tắt chế độ ghi âm ?"
+                : "Bạn muốn bật chế độ ghi âm ?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleUpdateQuestion("isVoice", !checked);
+                if (!isPro) {
+                    setFormData((prev) => ({ ...prev, securityModeId: 3 }));
+                }
+                if (!checked && !isPro) {
+                    toast("Đã cập nhật Chế độ bảo mật thành Pro");
+                }
+            }
+        });
     }, [checked, handleUpdateQuestion, isPro, setFormData]);
 
     return (
