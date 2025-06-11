@@ -33,9 +33,9 @@ const Header: React.FC = () => {
                 </nav>
             </div>
             <div className="flex items-center gap-4">
-                <span className="header-username">van23062003</span>
+                <span className="header-username">Khaosat</span>
                 <div className="header-avatar flex items-center justify-center bg-gradient-to-r from-teal-400 to-blue-400 text-white font-bold rounded-full w-10 h-10">
-                    VA
+                    KS
                 </div>
             </div>
         </header>
