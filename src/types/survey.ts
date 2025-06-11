@@ -67,4 +67,5 @@ export interface PageProps {
     formData: SurveyType;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
     handleTabClick: (tabValue: number) => void;
+    isTrigger: boolean;
 }

@@ -12,10 +12,10 @@ import {
 } from "../../../data/surveyData";
 import { handleSelectBackground } from "../../../helpers/handleSelectBackground";
 import type { PageProps, SurveyType } from "../../../types/survey";
+import OverlayDisable from "../../molecules/overlay-disable/OverlayDisable";
 import ColorPickerModal from "./Components/ColorPickerModal";
 import SecurityModal from "./Components/SecurityModal";
 import "./styles.scss";
-import OverlayDisable from "../../molecules/overlay-disable/OverlayDisable";
 
 const backgrounds = Array.from(
     { length: 11 },
@@ -71,6 +71,7 @@ const StartPage = ({
     setFormData,
     handleTabClick,
     isDisable,
+    isTrigger
 }: PageProps) => {
     const handleInputChange = (
         field: keyof SurveyType,
@@ -277,13 +278,13 @@ const StartPage = ({
                     ...(backgroundMode === "color" && {
                         ...(formData?.background?.startsWith("#")
                             ? {
-                                  backgroundColor: formData?.background,
-                                  overflowY: "auto",
-                              }
+                                backgroundColor: formData?.background,
+                                overflowY: "auto",
+                            }
                             : {
-                                  background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                                  overflowY: "auto",
-                              }),
+                                background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
+                                overflowY: "auto",
+                            }),
                     }),
                 }}
             >
@@ -295,9 +296,8 @@ const StartPage = ({
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${
-                                (brightness ? brightness : 100) / 100
-                            })`,
+                            filter: `brightness(${(brightness ? brightness : 100) / 100
+                                })`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
@@ -331,7 +331,7 @@ const StartPage = ({
                                     buttonBgColor?.startsWith(
                                         "linear-gradient"
                                     ) ||
-                                    buttonBgColor?.startsWith("radial-gradient")
+                                        buttonBgColor?.startsWith("radial-gradient")
                                         ? buttonBgColor
                                         : "",
                                 backgroundColor: !(
@@ -377,6 +377,7 @@ const StartPage = ({
                     <ToppicSurvey
                         selectedSurveyTopic={selectedSurveyTopic}
                         setSelectedSurveyTopic={setSelectedSurveyTopic}
+                        isTrigger={isTrigger}
                         selectedSurveySpecificTopic={
                             selectedSurveySpecificTopic
                         }
@@ -595,12 +596,14 @@ function ToppicSurvey({
     selectedSurveySpecificTopic,
     setSelectedSurveySpecificTopic,
     setFormData,
+    isTrigger
 }: any) {
     return (
         <>
             <div className="config-section">
                 <h3>CHỦ ĐỀ KHẢO SÁT</h3>
                 <FormControl
+                    disabled={isTrigger}
                     fullWidth
                     sx={{
                         ".MuiOutlinedInput-root": {
@@ -691,6 +694,7 @@ function ToppicSurvey({
                     disabled={!selectedSurveyTopic}
                 >
                     <Select
+                        disabled={isTrigger}
                         labelId="survey-specific-topic-select-label"
                         id="survey-specific-topic-select"
                         value={selectedSurveySpecificTopic}
@@ -848,9 +852,8 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG HÌNH NỀN</h3>
                 <div
-                    className={`background-main-preview ${
-                        backgroundMode === "image" ? "active" : ""
-                    }`}
+                    className={`background-main-preview ${backgroundMode === "image" ? "active" : ""
+                        }`}
                     onClick={() => {
                         setBackgroundMode("image");
                         document.getElementById("backgroundInput")?.click();
@@ -909,17 +912,16 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG MÀU NỀN</h3>
                 <div
-                    className={`background-main-preview ${
-                        backgroundMode === "color" ? "active" : ""
-                    }`}
+                    className={`background-main-preview ${backgroundMode === "color" ? "active" : ""
+                        }`}
                     onClick={handleSelectColorBackground}
                     style={{
                         background:
                             formData?.background === "color_gradient"
                                 ? `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`
                                 : formData?.background?.startsWith("#")
-                                ? formData?.background
-                                : "#cccccc",
+                                    ? formData?.background
+                                    : "#cccccc",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}
@@ -1023,9 +1025,9 @@ function ButtonColor({
                                         buttonBgColor?.startsWith(
                                             "linear-gradient"
                                         ) ||
-                                        buttonBgColor?.startsWith(
-                                            "radial-gradient"
-                                        )
+                                            buttonBgColor?.startsWith(
+                                                "radial-gradient"
+                                            )
                                             ? buttonBgColor
                                             : "",
                                     backgroundColor: !(
@@ -1099,21 +1101,18 @@ function DesignSuggestions({
                                 return (
                                     <div
                                         key={index}
-                                        className={`background-thumbnail-item ${
-                                            formData?.background ===
-                                                `/assets/start${
-                                                    index + 1
-                                                }.webp` &&
+                                        className={`background-thumbnail-item ${formData?.background ===
+                                            `/assets/start${index + 1
+                                            }.webp` &&
                                             backgroundMode === "image"
-                                                ? "active"
-                                                : ""
-                                        }`}
+                                            ? "active"
+                                            : ""
+                                            }`}
                                         onClick={() => {
                                             setFormData((prev: any) => ({
                                                 ...prev,
-                                                background: `/assets/start${
-                                                    index + 1
-                                                }.webp`,
+                                                background: `/assets/start${index + 1
+                                                    }.webp`,
                                                 configJsonString: {
                                                     ...prev.configJsonString,
                                                     titleColor:
@@ -1134,9 +1133,8 @@ function DesignSuggestions({
                                         }}
                                     >
                                         <img
-                                            src={`/assets/start${
-                                                index + 1
-                                            }.webp`}
+                                            src={`/assets/start${index + 1
+                                                }.webp`}
                                             alt="background"
                                             className="w-full h-full object-cover"
                                         />

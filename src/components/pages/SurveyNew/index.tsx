@@ -25,11 +25,11 @@ const defaultValue = {
     requesterId: 10,
     title: "",
     description: "",
-    marketSurveyVersionStatusId: 1,
+    marketSurveyVersionStatusId: null, // surveyStatusId: 3
     surveyTypeId: 2,
     surveyTopicId: 2,
     surveySpecificTopicId: 5,
-    surveyStatusId: 1,
+    surveyStatusId: 2, // 
     securityModeId: 1,
     background: "/assets/start1.webp",
     configJsonString: {
@@ -57,9 +57,9 @@ const SurveyNew = () => {
     const timeoutRef = useRef<number | null>(null);
     const countdownRef = useRef<number | null>(null);
 
-    const isTrigger = useMemo(() => formData?.surveyStatusId !== 2, [formData]);
+    const isTrigger = useMemo(() => formData?.surveyStatusId === 2 && formData?.marketSurveyVersionStatusId !== 1, [formData]);
     const isDisable = useMemo(
-        () => formData?.marketSurveyVersionStatusId !== 1,
+        () => typeof formData?.marketSurveyVersionStatusId === "object" ? false : formData?.marketSurveyVersionStatusId !== 1,
         [formData]
     );
 
@@ -75,6 +75,7 @@ const SurveyNew = () => {
             value: 0,
             component: (
                 <StartPage
+                    isTrigger={isTrigger}
                     formData={formData}
                     setFormData={setFormData}
                     handleTabClick={handleTabClick}
@@ -86,7 +87,7 @@ const SurveyNew = () => {
             label: "Bảng Hỏi",
             value: 1,
             component: (
-                <QuestionPage formData={formData} setFormData={setFormData} />
+                <QuestionPage formData={formData} setFormData={setFormData} isTrigger={isTrigger} />
             ),
         },
         {
@@ -138,7 +139,7 @@ const SurveyNew = () => {
             confirmButtonText: "Save",
         }).then((result: SweetAlertResult) => {
             if (result.isConfirmed) {
-                mutate({ ...latestDataRef.current, type: "update" });
+                mutate({ ...latestDataRef.current, ...formData, type: "update" });
             }
         });
     };
@@ -167,6 +168,8 @@ const SurveyNew = () => {
     };
 
     useEffect(() => {
+        if (isTrigger || isDisable) return;
+
         if (!isEqual(latestDataRef.current, formData)) {
             latestDataRef.current = formData;
             setHasChanges(true);
@@ -242,7 +245,7 @@ const SurveyNew = () => {
                         <Button
                             variant="text"
                             className="btn-save"
-                            onClick={() => (isTrigger ? null : handleConfirm())}
+                            onClick={() => (!isTrigger ? null : handleConfirm())}
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
@@ -254,7 +257,7 @@ const SurveyNew = () => {
                                 }),
                             }}
                         >
-                            {isTrigger
+                            {!isTrigger
                                 ? isSaving
                                     ? `Đang lưu ... ${saveCountdown}`
                                     : hasChanges

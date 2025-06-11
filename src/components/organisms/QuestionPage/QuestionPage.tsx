@@ -40,9 +40,10 @@ const questionDefault = {
 type Props = {
     formData: SurveyType;
     setFormData: React.Dispatch<React.SetStateAction<SurveyType>>;
+    isTrigger?: boolean;
 };
 
-const QuestionPage = ({ formData, setFormData }: Props) => {
+const QuestionPage = ({ formData, setFormData, isTrigger }: Props) => {
     const [orderCurrent, setOrderCurrent] = useState(1);
     const [isOpenOverlay, setIsOpenOverlay] = useState(false);
 
@@ -325,6 +326,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
     );
 
     const handleAddQuestion = useCallback(() => {
+        if (isTrigger) return;
         setFormData((prev) => ({
             ...prev,
             questions: [
@@ -336,7 +338,7 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
             ],
         }));
         setOrderCurrent(formData?.questions?.length + 1);
-    }, [formData?.questions?.length, setFormData]);
+    }, [formData?.questions?.length, setFormData, isTrigger]);
 
     const handleChangeQuestion = (order: number) => {
         setOrderCurrent(order);
