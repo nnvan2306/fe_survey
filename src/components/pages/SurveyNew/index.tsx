@@ -2,21 +2,22 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Button, Tab } from "@mui/material";
 import isEqual from "lodash/isEqual";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import type { SweetAlertResult } from "sweetalert2";
+import Swal from "sweetalert2";
 import { HEADER_HEIGHT } from "../../../constants";
 import useBlocker from "../../../hooks/useBlocker";
+import { useGetSurvey } from "../../../services/survey/get";
 import { useUpdateSurvey } from "../../../services/survey/update";
 import type { SurveyType } from "../../../types/survey";
 import CompletePage from "../../organisms/CompletePage/CompletePage";
 import EndPage from "../../organisms/EndPage/EndPage";
+import OverlayDisable from "../../organisms/overlay/OverlayDisable";
 import QuestionPage from "../../organisms/QuestionPage/QuestionPage";
 import ReportPage from "../../organisms/ReportPage/ReportPage";
 import SharePage from "../../organisms/SharePage/SharePage";
 import StartPage from "../../organisms/StartPage/StartPage";
 import MainTemPlate from "../../templates/MainTemPlate";
-import Swal from "sweetalert2";
-import type { SweetAlertResult } from "sweetalert2";
-import { useParams } from "react-router-dom";
-import { useGetSurvey } from "../../../services/survey/get";
 import "./styles.scss";
 
 const defaultValue = {
@@ -77,7 +78,7 @@ const SurveyNew = () => {
                     formData={formData}
                     setFormData={setFormData}
                     handleTabClick={handleTabClick}
-                    isDisable={isDisable}
+                    isDisable={false}
                 />
             ),
         },
@@ -130,6 +131,7 @@ const SurveyNew = () => {
     });
 
     const handleConfirm = () => {
+        if (isDisable) return;
         Swal.fire({
             title: "Bạn muốn lưu các thay đổi?",
             showCancelButton: true,
@@ -142,6 +144,7 @@ const SurveyNew = () => {
     };
 
     const handleSave = () => {
+        if (isDisable) return;
         setIsSaving(true);
         setHasChanges(false);
         let seconds = 5;
@@ -182,10 +185,26 @@ const SurveyNew = () => {
         latestDataRef.current = data.data;
     }, [id, data]);
 
+    useEffect(() => {
+        if (!isDisable) return;
+
+        window.addEventListener("keydown", (e) => {
+            e.preventDefault();
+        })
+
+        return () => {
+            window.removeEventListener("keydown", (e) => {
+                e.preventDefault();
+            });
+        };
+
+    }, [isDisable]);
+
     useBlocker(true);
 
     return (
         <MainTemPlate>
+            {isDisable && <OverlayDisable />}
             <div
                 style={{
                     maxHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
@@ -227,20 +246,20 @@ const SurveyNew = () => {
                             sx={{
                                 ...(hasChanges &&
                                     !isSaving && {
-                                        backgroundColor: "#cccccc",
-                                        color: "#000000",
-                                        "&:hover": {
-                                            backgroundColor: "#bbbbbb",
-                                        },
-                                    }),
+                                    backgroundColor: "#cccccc",
+                                    color: "#000000",
+                                    "&:hover": {
+                                        backgroundColor: "#bbbbbb",
+                                    },
+                                }),
                             }}
                         >
                             {isTrigger
                                 ? isSaving
                                     ? `Đang lưu ... ${saveCountdown}`
                                     : hasChanges
-                                    ? "Đã Lưu"
-                                    : "Đã lưu"
+                                        ? "Đã Lưu"
+                                        : "Đã lưu"
                                 : "Lưu"}
                         </Button>
                     </div>

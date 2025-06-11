@@ -361,44 +361,34 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
         const targetOrder = target;
 
         if (currentOrder === targetOrder || !currentOrder || !targetOrder) {
-            return; // Cannot swap with itself or invalid targets
+            return; // Không hợp lệ
         }
 
         const questions = [...formData.questions];
-        const currentIndex = questions.findIndex(
-            (item) => item.order === currentOrder
-        );
-        const targetIndex = questions.findIndex(
-            (item) => item.order === targetOrder
-        );
+        const currentIndex = questions.findIndex((item) => item.order === currentOrder);
+        const targetIndex = questions.findIndex((item) => item.order === targetOrder);
 
         if (currentIndex === -1 || targetIndex === -1) {
-            return; // Current or target question not found
+            return;
         }
 
-        // Swap the questions in the array copy
-        const newQuestions = [...questions];
-        [newQuestions[currentIndex], newQuestions[targetIndex]] = [
-            newQuestions[targetIndex],
-            newQuestions[currentIndex],
-        ];
+        // Lấy ra câu hỏi cần di chuyển
+        const [movedQuestion] = questions.splice(currentIndex, 1);
+        // Chèn vào vị trí mới
+        questions.splice(targetIndex, 0, movedQuestion);
 
-        // Update the order property for the swapped questions
-        newQuestions[currentIndex] = {
-            ...newQuestions[currentIndex],
-            order: currentIndex + 1,
-        };
-        newQuestions[targetIndex] = {
-            ...newQuestions[targetIndex],
-            order: targetIndex + 1,
-        };
+        // Cập nhật lại order cho tất cả câu hỏi
+        const newQuestions = questions.map((item, idx) => ({
+            ...item,
+            order: idx + 1,
+        }));
 
         setFormData((prev) => ({
             ...prev,
             questions: newQuestions,
         }));
 
-        // Update current order to the target question's new order
+        // Đặt lại orderCurrent là vị trí mới
         setOrderCurrent(targetOrder);
     };
 
@@ -454,28 +444,25 @@ const QuestionPage = ({ formData, setFormData }: Props) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${
-                                formData?.configJsonString.brightness / 100
-                            })`,
+                            filter: `brightness(${formData?.configJsonString.brightness / 100
+                                })`,
                             backgroundColor: "transparent",
                         }),
                         ...(formData?.background === "color_gradient" && {
                             background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                            filter: `brightness(${
-                                formData?.configJsonString.brightness / 100
-                            })`,
+                            filter: `brightness(${formData?.configJsonString.brightness / 100
+                                })`,
                         }),
                         ...(formData?.background?.startsWith("#") && {
                             backgroundColor: formData?.background,
-                            filter: `brightness(${
-                                formData?.configJsonString.brightness / 100
-                            })`,
+                            filter: `brightness(${formData?.configJsonString.brightness / 100
+                                })`,
                         }),
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">
                         {questionedit?.image_header &&
-                        questionedit.configJsonString?.image_end_question ? (
+                            questionedit.configJsonString?.image_end_question ? (
                             <img
                                 src={questionedit?.image_header}
                                 className="rounded-2xl "
@@ -581,9 +568,8 @@ const QuestionItem = ({
 }) => {
     return (
         <div
-            className={`question-item flex flex-col items-center justify-center ${
-                order === orderCurrent && "question-active"
-            }`}
+            className={`question-item flex flex-col items-center justify-center ${order === orderCurrent && "question-active"
+                }`}
             onClick={() => onChange(order)}
         >
             <CheckCircleIcon
