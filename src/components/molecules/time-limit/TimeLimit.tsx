@@ -7,6 +7,7 @@ import type {
 import type { RangeSliderConfigJsonStringType } from "../../organisms/RangeSlider/RangeSlider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 type Props = {
     question: QuestionType;
@@ -34,7 +35,7 @@ const TimeLimit = ({
     const [isOpen, setIsOpne] = useState(false);
     const value = useMemo(() => Number(question?.timeLimit) || 0, [question]);
 
-    const handleChangeSwitch = useCallback(() => {
+    const action = useCallback(() => {
         if (isOpen) {
             handleUpdateQuestion("timeLimit", 0);
         }
@@ -44,6 +45,42 @@ const TimeLimit = ({
         }
         setIsOpne(!isOpen);
     }, [handleUpdateQuestion, isAdvance, isOpen, setFormData]);
+
+    const handleChangeSwitch = () => {
+        if (isAdvance) {
+            action();
+            return;
+        }
+
+        Swal.fire({
+            title: isOpen
+                ? "Bạn muốn tắt Giới hạn thời gian câu hỏi?"
+                : "Bạn muốn bật Giới hạn thời gian câu hỏi ?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            html: `
+                <div style="text-align: left; padding: 15px; font-family: Arial, sans-serif;">
+                    <div style="margin-bottom: 15px;">
+                        <p style="font-size: 16px; font-weight: bold; color: #333;">Basic</p>
+                        <p style="font-size: 14px;">6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Time-limit cho câu hỏi.</p>
+                    </div>
+                    <div style="background-color: #4caf50; color: #ffffff; padding: 10px; border-radius: 5px;">                   
+                        <p style="font-size: 16px; font-weight: bold;">Advance</p>
+                        <p style="font-size: 14px;">6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn.</p>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <p style="font-size: 16px; font-weight: bold; color: #333;">Pro</p>
+                        <p style="font-size: 14px;">6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn. Tính năng set voice-answer cho câu hỏi.</p>
+                    </div>
+                </div>
+            `,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                action();
+            }
+        });
+    };
 
     const handleChangeValue = (value: number) => {
         handleUpdateQuestion("timeLimit", value);

@@ -42,6 +42,16 @@ const Voice = ({
     }, [question]);
 
     const handleChange = useCallback(() => {
+        if (isPro) {
+            handleUpdateQuestion("isVoice", !checked);
+            if (!isPro) {
+                setFormData((prev) => ({ ...prev, securityModeId: 3 }));
+            }
+            if (!checked && !isPro) {
+                toast("Đã cập nhật Chế độ bảo mật thành Pro");
+            }
+            return;
+        }
         Swal.fire({
             title: checked
                 ? "Bạn muốn tắt chế độ ghi âm ?"
@@ -65,7 +75,7 @@ const Voice = ({
                         <p style="font-size: 14px;">6 loại câu hỏi để bạn tha hồ tùy chỉnh khảo sát. Random captcha giữa những câu hỏi. Random Re-question câu hỏi bất kỳ cho bài khảo sát. Chủ động điều chỉnh Time-limit cho từng câu hỏi. Cơ chế Jump Logic giúp khảo sát được liền mạch và chắt lọc thông tin hơn. Tính năng set voice-answer cho câu hỏi.</p>
                     </div>
                 </div>
-            `
+            `,
         }).then((result) => {
             if (result.isConfirmed) {
                 handleUpdateQuestion("isVoice", !checked);

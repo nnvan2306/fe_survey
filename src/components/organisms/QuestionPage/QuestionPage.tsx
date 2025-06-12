@@ -97,17 +97,17 @@ const QuestionPage = ({ formData, setFormData, isTrigger }: Props) => {
             return {
                 type: item.id,
                 rules: [
-                    {
-                        children: (
-                            <SwitchCustomize
-                                type="is_choose_muitiple"
-                                question={questionedit}
-                                isMinMax
-                                handleUpdateQuestion={handleUpdateQuestion}
-                                label="Chọn nhiều trả lời"
-                            />
-                        ),
-                    },
+                    // {
+                    //     children: (
+                    //         <SwitchCustomize
+                    //             type="is_choose_muitiple"
+                    //             question={questionedit}
+                    //             isMinMax
+                    //             handleUpdateQuestion={handleUpdateQuestion}
+                    //             label="Chọn nhiều trả lời"
+                    //         />
+                    //     ),
+                    // },
                     {
                         children: (
                             <SwitchCustomize
@@ -367,8 +367,12 @@ const QuestionPage = ({ formData, setFormData, isTrigger }: Props) => {
         }
 
         const questions = [...formData.questions];
-        const currentIndex = questions.findIndex((item) => item.order === currentOrder);
-        const targetIndex = questions.findIndex((item) => item.order === targetOrder);
+        const currentIndex = questions.findIndex(
+            (item) => item.order === currentOrder
+        );
+        const targetIndex = questions.findIndex(
+            (item) => item.order === targetOrder
+        );
 
         if (currentIndex === -1 || targetIndex === -1) {
             return;
@@ -446,25 +450,28 @@ const QuestionPage = ({ formData, setFormData, isTrigger }: Props) => {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${formData?.configJsonString.brightness / 100
-                                })`,
+                            filter: `brightness(${
+                                formData?.configJsonString.brightness / 100
+                            })`,
                             backgroundColor: "transparent",
                         }),
                         ...(formData?.background === "color_gradient" && {
                             background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                            filter: `brightness(${formData?.configJsonString.brightness / 100
-                                })`,
+                            filter: `brightness(${
+                                formData?.configJsonString.brightness / 100
+                            })`,
                         }),
                         ...(formData?.background?.startsWith("#") && {
                             backgroundColor: formData?.background,
-                            filter: `brightness(${formData?.configJsonString.brightness / 100
-                                })`,
+                            filter: `brightness(${
+                                formData?.configJsonString.brightness / 100
+                            })`,
                         }),
                     }}
                 >
                     <div className="question-input-container relative z-10 flex flex-col items-center">
                         {questionedit?.image_header &&
-                            questionedit.configJsonString?.image_end_question ? (
+                        questionedit.configJsonString?.image_end_question ? (
                             <img
                                 src={questionedit?.image_header}
                                 className="rounded-2xl "
@@ -570,8 +577,9 @@ const QuestionItem = ({
 }) => {
     return (
         <div
-            className={`question-item flex flex-col items-center justify-center ${order === orderCurrent && "question-active"
-                }`}
+            className={`question-item flex flex-col items-center justify-center ${
+                order === orderCurrent && "question-active"
+            }`}
             onClick={() => onChange(order)}
         >
             <CheckCircleIcon
