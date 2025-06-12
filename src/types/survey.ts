@@ -1,6 +1,7 @@
 export type OptionType = {
     content: string;
     order: number;
+    image?: string; // base64 image data
 };
 
 export type SlideType = {
