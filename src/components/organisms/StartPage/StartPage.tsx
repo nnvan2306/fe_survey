@@ -2,6 +2,7 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SettingsIcon from "@mui/icons-material/Settings";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { FormControl, MenuItem, Select, Slider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
@@ -71,7 +72,7 @@ const StartPage = ({
     setFormData,
     handleTabClick,
     isDisable,
-    isTrigger
+    isTrigger,
 }: PageProps) => {
     const handleInputChange = (
         field: keyof SurveyType,
@@ -278,13 +279,13 @@ const StartPage = ({
                     ...(backgroundMode === "color" && {
                         ...(formData?.background?.startsWith("#")
                             ? {
-                                backgroundColor: formData?.background,
-                                overflowY: "auto",
-                            }
+                                  backgroundColor: formData?.background,
+                                  overflowY: "auto",
+                              }
                             : {
-                                background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
-                                overflowY: "auto",
-                            }),
+                                  background: `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`,
+                                  overflowY: "auto",
+                              }),
                     }),
                 }}
             >
@@ -296,8 +297,9 @@ const StartPage = ({
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            filter: `brightness(${(brightness ? brightness : 100) / 100
-                                })`,
+                            filter: `brightness(${
+                                (brightness ? brightness : 100) / 100
+                            })`,
                             backgroundColor: "transparent",
                         }}
                     ></div>
@@ -331,7 +333,7 @@ const StartPage = ({
                                     buttonBgColor?.startsWith(
                                         "linear-gradient"
                                     ) ||
-                                        buttonBgColor?.startsWith("radial-gradient")
+                                    buttonBgColor?.startsWith("radial-gradient")
                                         ? buttonBgColor
                                         : "",
                                 backgroundColor: !(
@@ -391,6 +393,63 @@ const StartPage = ({
                         setSurveyStatusChecked={setSurveyStatusChecked}
                         setFormData={setFormData}
                     />
+                    <div className="config-section">
+                        <h3 className="config-title">UPLOAD ẢNH</h3>
+                        <div className="upload-container">
+                            <input
+                                type="file"
+                                id="imageUpload"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(event) => {
+                                    const file = event.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            const base64 =
+                                                reader.result as string;
+                                            setFormData((prev: any) => ({
+                                                ...prev,
+                                                ImageBase64: base64,
+                                            }));
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            />
+                            <label
+                                htmlFor="imageUpload"
+                                className="upload-button"
+                            >
+                                <CloudUploadIcon className="upload-icon" />
+                                <span className="upload-text">
+                                    {formData?.ImageBase64
+                                        ? "Thay đổi ảnh"
+                                        : "Chọn ảnh"}
+                                </span>
+                            </label>
+                            {formData?.ImageBase64 && (
+                                <div className="image-preview">
+                                    <img
+                                        src={formData.ImageBase64}
+                                        alt="Preview"
+                                        className="preview-image"
+                                    />
+                                    <button
+                                        className="remove-image-btn"
+                                        onClick={() => {
+                                            setFormData((prev: any) => ({
+                                                ...prev,
+                                                ImageBase64: null,
+                                            }));
+                                        }}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <div className="config-section">
                         <h3 className="config-title">
                             KHẢO SÁT TRÊN NỀN AUDIO
@@ -596,7 +655,7 @@ function ToppicSurvey({
     selectedSurveySpecificTopic,
     setSelectedSurveySpecificTopic,
     setFormData,
-    isTrigger
+    isTrigger,
 }: any) {
     return (
         <>
@@ -852,8 +911,9 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG HÌNH NỀN</h3>
                 <div
-                    className={`background-main-preview ${backgroundMode === "image" ? "active" : ""
-                        }`}
+                    className={`background-main-preview ${
+                        backgroundMode === "image" ? "active" : ""
+                    }`}
                     onClick={() => {
                         setBackgroundMode("image");
                         document.getElementById("backgroundInput")?.click();
@@ -912,16 +972,17 @@ function BackgroundMode({
             <div>
                 <h3>SỬ DỤNG MÀU NỀN</h3>
                 <div
-                    className={`background-main-preview ${backgroundMode === "color" ? "active" : ""
-                        }`}
+                    className={`background-main-preview ${
+                        backgroundMode === "color" ? "active" : ""
+                    }`}
                     onClick={handleSelectColorBackground}
                     style={{
                         background:
                             formData?.background === "color_gradient"
                                 ? `linear-gradient(to right, ${formData?.configJsonString.backgroundGradient1Color}, ${formData?.configJsonString.backgroundGradient2Color})`
                                 : formData?.background?.startsWith("#")
-                                    ? formData?.background
-                                    : "#cccccc",
+                                ? formData?.background
+                                : "#cccccc",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                     }}
@@ -1025,9 +1086,9 @@ function ButtonColor({
                                         buttonBgColor?.startsWith(
                                             "linear-gradient"
                                         ) ||
-                                            buttonBgColor?.startsWith(
-                                                "radial-gradient"
-                                            )
+                                        buttonBgColor?.startsWith(
+                                            "radial-gradient"
+                                        )
                                             ? buttonBgColor
                                             : "",
                                     backgroundColor: !(
@@ -1101,18 +1162,21 @@ function DesignSuggestions({
                                 return (
                                     <div
                                         key={index}
-                                        className={`background-thumbnail-item ${formData?.background ===
-                                            `/assets/start${index + 1
-                                            }.webp` &&
+                                        className={`background-thumbnail-item ${
+                                            formData?.background ===
+                                                `/assets/start${
+                                                    index + 1
+                                                }.webp` &&
                                             backgroundMode === "image"
-                                            ? "active"
-                                            : ""
-                                            }`}
+                                                ? "active"
+                                                : ""
+                                        }`}
                                         onClick={() => {
                                             setFormData((prev: any) => ({
                                                 ...prev,
-                                                background: `/assets/start${index + 1
-                                                    }.webp`,
+                                                background: `/assets/start${
+                                                    index + 1
+                                                }.webp`,
                                                 configJsonString: {
                                                     ...prev.configJsonString,
                                                     titleColor:
@@ -1133,8 +1197,9 @@ function DesignSuggestions({
                                         }}
                                     >
                                         <img
-                                            src={`/assets/start${index + 1
-                                                }.webp`}
+                                            src={`/assets/start${
+                                                index + 1
+                                            }.webp`}
                                             alt="background"
                                             className="w-full h-full object-cover"
                                         />

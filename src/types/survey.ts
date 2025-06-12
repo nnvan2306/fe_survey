@@ -46,6 +46,7 @@ export type SurveyType = {
     surveyStatusId: number;
     securityModeId: number;
     background: string;
+    ImageBase64?: string;
     customBackgroundImageUrl?: string | null;
     configJsonString: {
         backgroundGradient1Color: string;

@@ -45,7 +45,7 @@ const Sidebar = ({
         }
     };
 
-    const isBasic = useMemo(() => formData?.securityModeId === 1, [formData]);
+    // const isBasic = useMemo(() => formData?.securityModeId === 1, [formData]);
     const isAdvance = useMemo(() => formData?.securityModeId === 2, [formData]);
     const isPro = useMemo(() => formData?.securityModeId === 3, [formData]);
     return (
