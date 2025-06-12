@@ -38,6 +38,7 @@ const TimeLimit = ({
     const action = useCallback(() => {
         if (isOpen) {
             handleUpdateQuestion("timeLimit", 0);
+            setFormData((prev) => ({ ...prev, securityModeId: 1 }));
         }
         if (!isOpen && !isAdvance) {
             setFormData((prev) => ({ ...prev, securityModeId: 2 }));
@@ -47,7 +48,7 @@ const TimeLimit = ({
     }, [handleUpdateQuestion, isAdvance, isOpen, setFormData]);
 
     const handleChangeSwitch = () => {
-        if (isAdvance) {
+        if (isAdvance && !isOpen) {
             action();
             return;
         }
